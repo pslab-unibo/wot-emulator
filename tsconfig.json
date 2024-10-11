@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",                         // Aggiornato a ES2022
+    "module": "commonjs",                       // Utilizza CommonJS, il modulo usato da Node.js
+    "strict": true,                             
+    "esModuleInterop": true,                    // Necessario per compatibilità con moduli CommonJS
+    "skipLibCheck": true,                       // Ignora controlli di tipo nelle librerie
+    "forceConsistentCasingInFileNames": true,  
+    "outDir": "./dist",                         // Cartella di output
+    "rootDir": "./src",                         // Cartella sorgente
+    "moduleResolution": "node",                 
+    "types": ["node"]                           // Include i tipi di Node.js
+  },
+  "include": ["src/**/*"],                      
+  "exclude": ["node_modules"]                   
+}
