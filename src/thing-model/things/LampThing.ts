@@ -1,26 +1,30 @@
-import { Servient } from "@node-wot/core";
+import { ExposedThing, Servient } from "@node-wot/core";
 import { ThingInterface } from "../ThingInterface";
 
 export class LampThing extends ThingInterface {
-    private intensity: number = 0; // Intensità corrente della lampada
 
-    constructor(servient: Servient, init: WoT.ExposedThingInit) {
+    private intensity: number = 0; 
+
+    constructor(servient: Servient, init: WoT.ExposedThingInit, ) {
         super(servient, init, 3);
+
+        this.getThing().setPropertyReadHandler("intensity", async () => {
+            return this.intensity;
+        });
+    
+        this.getThing().setPropertyWriteHandler("intensity", async (newValue) => {
+            if (typeof newValue === "number" && newValue >= 0 && newValue <= 100) {
+                this.intensity = newValue;
+                console.log(`Intensity updated to: ${this.intensity}`);
+            } else {
+                throw new Error("Invalid intensity value. Must be between 0 and 100.");
+            }
+        });
     }
 
-    /**
-     * Aumenta l'intensità della lampada di 1 fino a 100.
-     */
-    private increaseIntensity(): void {
-        if (this.intensity < 100) {
-            this.intensity++;
-            console.log(`Intensità della lampada aggiornata: ${this.intensity}`);
-        } else {
-            console.log("L'intensità ha raggiunto il massimo (100). Fermando il loop.");
-        }
-    }
-
-    tickEvent(): void {
-        this.increaseIntensity();
+    public tickEvent(): void {
+        this.intensity += 1;
+        if (this.intensity > 100) this.intensity = 100; 
+        console.log(`Tick action invoked, intensity increased to: ${this.intensity}`);
     }
 }

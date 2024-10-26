@@ -1,50 +1,47 @@
-import Servient from "@node-wot/core";
+// src/scheduler.ts
+
+import { ExposedThing, DefaultContent, Thing } from "@node-wot/core";
+import { Readable } from "stream";
 import { ThingInterface } from "../thing-model/ThingInterface";
-import { Content } from "@node-wot/core"; 
 
 export class Scheduler {
-    private servient: Servient;
     private period: number;
+    private things: ThingInterface[];
 
-    constructor(period: number, servient: Servient) {
-        this.servient = servient; 
-        this.period = period;
+    constructor(period: number) {
+        this.period = period; // Periodo in millisecondi
+        this.things = [];
     }
 
-    public addThing(thing: ThingInterface): boolean {
-        return this.servient.addThing(thing);
+    public addThing(thing: ThingInterface): void {
+        this.things.push(thing);
+        console.log(`Thing added: ${thing.getThing().title}`);
     }
 
-    private wait(ms: number) {
+    public async start(): Promise<void> {
+        console.log("Scheduler started");
+
+        while (true) {
+            for (const thing of this.things) {
+                const th = thing.getThing();
+                const actionName = "tick"; 
+
+                if (th.actions && actionName in th.actions) {
+                    try {
+                        console.log(`Invoking tick action for ${th.title}`);
+                        await th.handleInvokeAction(actionName, new DefaultContent(Readable.from([])), { formIndex: 0 });
+                    } catch (error) {
+                        console.error(`Error invoking tick for ${th.title}:`, error);
+                    }
+                } else {
+                    console.log(`No tick action found for ${th.title}`);
+                }
+            }
+            await this.wait(this.period);
+        }
+    }
+
+    private wait(ms: number): Promise<void> {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
-
-    public async schedule(): Promise<void> {
-        
-        try {
-            const things = this.servient.getThings();
-            
-            for (const thing of Object.values(things)) {
-                console.log(`Thing ID: ${thing.id}, Title: ${thing.title}, tick: ${thing.constructor.name}`);
-                const actionName = 'tick';
-
-                if (thing instanceof ThingInterface) {
-                    
-                    try {
-                        console.log(`Invoking action '${actionName}' for Thing: ${thing.id}`);
-                        await thing.tick();
-                    } catch (error) {
-                        console.log(`Error invoking action '${actionName}' for Thing '${thing.id}':`, error);
-                    }
-                } 
-            }
-        } catch (error) {
-            console.log('Error during scheduling:', error);
-        }
-    
-        await this.wait(this.period);
-        
-        this.schedule();
-    }
-    
 }
