@@ -5,8 +5,8 @@ export class LampThing extends ThingInterface {
 
     private intensity: number = 0; 
 
-    constructor(servient: Servient, init: WoT.ExposedThingInit, ) {
-        super(servient, init, 3);
+    constructor(servient: Servient, init: WoT.ExposedThingInit, eventTickRate: number) {
+        super(servient, init, eventTickRate);
 
         this.getThing().setPropertyReadHandler("intensity", async () => {
             return this.intensity;
@@ -25,6 +25,6 @@ export class LampThing extends ThingInterface {
     public tickEvent(): void {
         this.intensity += 1;
         if (this.intensity > 100) this.intensity = 100; 
-        console.log(`Tick action invoked, intensity increased to: ${this.intensity}`);
+        console.log(`Tick action for ${this.getThing().title}, intensity increased to: ${this.intensity}`);
     }
 }

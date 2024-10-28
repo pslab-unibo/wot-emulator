@@ -1,6 +1,6 @@
 // src/scheduler.ts
 
-import { ExposedThing, DefaultContent, Thing } from "@node-wot/core";
+import { DefaultContent } from "@node-wot/core";
 import { Readable } from "stream";
 import { ThingInterface } from "../thing-model/ThingInterface";
 
@@ -9,7 +9,7 @@ export class Scheduler {
     private things: ThingInterface[];
 
     constructor(period: number) {
-        this.period = period; // Periodo in millisecondi
+        this.period = period; 
         this.things = [];
     }
 

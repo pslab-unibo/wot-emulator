@@ -1,0 +1,56 @@
+[
+    {
+        "id": "urn:dev:wot:smart-lamp",
+        "title": "Smart Lamp 1",
+        "description": "A lamp that can be controlled via Web of Things",
+        "type": "LampThing",
+        "eventTickRate": 2,
+        "properties": {
+            "intensity": {
+                "type": "number",
+                "description": "The brightness level of the lamp",
+                "observable": true,
+                "readOnly": false,
+                "writeOnly": false
+            }
+        },
+        "actions": {
+            "tick": {
+                "description": "Increases the lamp's intensity by 1"
+            }
+        },
+        "events": {
+            "overheated": {
+                "description": "Emits an event when the lamp overheats",
+                "data": { "type": "string" }
+            }
+        }
+    },
+    {
+        "id": "urn:dev:wot:smart-lamp2",
+        "title": "Smart Lamp 2",
+        "type": "LampThing",
+        "eventTickRate": 3,
+        "description": "A lamp that can be controlled via Web of Things",
+        "properties": {
+            "intensity": {
+                "type": "number",
+                "description": "The brightness level of the lamp",
+                "observable": true,
+                "readOnly": false,
+                "writeOnly": false
+            }
+        },
+        "actions": {
+            "tick": {
+                "description": "Increases the lamp's intensity by 1"
+            }
+        },
+        "events": {
+            "overheated": {
+                "description": "Emits an event when the lamp overheats",
+                "data": { "type": "string" }
+            }
+        }
+    }
+]
