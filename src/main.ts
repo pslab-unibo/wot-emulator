@@ -2,10 +2,9 @@ import { Servient } from "@node-wot/core";
 import { HttpServer } from "@node-wot/binding-http";
 import { Scheduler } from "./simulation/scheduler";
 import { LampThing } from "./thing-model/things/LampThing";
+import { commandEmitter } from "./command/CommandEmitter";
 import * as fs from 'fs';
-
-const servient = new Servient();
-servient.addServer(new HttpServer({ port: 8081 })); 
+import * as readline from 'readline';
 
 function createThingByType(type: string, eventTickRate: number, servient: Servient, init: WoT.ExposedThingInit) {
     switch (type) {
@@ -15,6 +14,21 @@ function createThingByType(type: string, eventTickRate: number, servient: Servie
             throw new Error(`Unsupported Thing type: ${type}`);
     }
 }
+
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+rl.on('line', (input) => {
+    const [thingId, action] = input.trim().split(' ');
+    commandEmitter.sendCommand(thingId, action);
+});
+
+console.log("Listening for commands. Type 'thingId action' (e.g., 'lamp1 turnOn').");
+
+const servient = new Servient();
+servient.addServer(new HttpServer({ port: 8081 })); 
 
 servient.start().then(async (WoT) => {
     const scheduler = new Scheduler(2000); 
