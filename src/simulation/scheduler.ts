@@ -1,9 +1,8 @@
-// src/scheduler.ts
-
 import { DefaultContent } from "@node-wot/core";
 import { Readable } from "stream";
 import { ThingInterface } from "../thing-model/ThingInterface";
 import { commandEmitter } from '../command/CommandEmitter';
+import { eventQueue } from '../simulation/eventQueue';
 
 export class Scheduler {
     private period: number;
@@ -26,6 +25,9 @@ export class Scheduler {
         console.log("Scheduler started");
 
         while (true) {
+            console.log('Processing the queue');
+            await eventQueue.processQueue();
+
             for (const thing of this.things) {
                 const th = thing[1].getThing();
                 const actionName = "tick"; 
