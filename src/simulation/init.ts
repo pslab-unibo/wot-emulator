@@ -1,7 +1,6 @@
 import { Servient } from "@node-wot/core";
-import { HttpServer } from "@node-wot/binding-http";
-import { Scheduler } from "./simulation/scheduler";
-import { LampThing } from "./thing-model/things/LampThing";
+import { Scheduler } from "./scheduler";
+import { LampThing } from "../thing-model/things/LampThing";
 import * as fs from 'fs';
 
 function createThingByType(type: string, eventTickRate: number, servient: Servient, init: WoT.ExposedThingInit) {

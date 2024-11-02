@@ -2,7 +2,7 @@ import { Servient } from "@node-wot/core";
 import { HttpServer } from "@node-wot/binding-http";
 import { Scheduler } from "./simulation/scheduler";
 import { startCommandListener } from "./command/commandListener";
-import { initializeThings } from "./init";
+import { initializeThings } from "./simulation/init";
 
 const servient = new Servient();
 servient.addServer(new HttpServer({ port: 8081 }));
