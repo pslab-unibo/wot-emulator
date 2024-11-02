@@ -1,5 +1,4 @@
 import * as readline from 'readline';
-import { commandEmitter } from './CommandEmitter';
 import { eventQueue } from '../simulation/eventQueue';
 
 export function startCommandListener() {
@@ -10,8 +9,9 @@ export function startCommandListener() {
 
     rl.on('line', (input) => {
         const [thingId, action] = input.trim().split(' ');
+        console.log("Event Enqueue");
         eventQueue.enqueueCommand(thingId, action);
     });
 
-    console.log("Listening for commands. Type 'thingId action' (e.g., 'lamp1 turnOn').");
+    console.log("Listening for commands. Type 'thingId action'.");
 }

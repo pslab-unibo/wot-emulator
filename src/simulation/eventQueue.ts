@@ -1,4 +1,4 @@
-import { commandEmitter } from '../command/CommandEmitter';
+import { Scheduler } from "./scheduler";
 
 enum EventType {
     COMMAND = 'COMMAND',
@@ -39,12 +39,12 @@ class EventQueue {
         });
     }
 
-    private async handleEvent(event: Event) {
+    private async handleEvent(event: Event, scheduler?:Scheduler) {
         switch (event.event_type) {
     
           case EventType.COMMAND:
-            if (event.thingId && event.event_name) {
-                commandEmitter.sendCommand(event.thingId, event.event_name);
+            if (event.thingId && event.event_name && scheduler) {
+                scheduler.handleCommand(event.thingId, event.event_name);
             }
             break;
     
@@ -54,19 +54,19 @@ class EventQueue {
         }
     }
 
-    public async processQueue() {
+    public async processQueue(scheduler?: Scheduler) {
         if (this.eventQueue.length === 0) {
           return;
         }
 
         try {
             const event = this.eventQueue.shift();
-            await this.handleEvent(event as Event);
+            await this.handleEvent(event as Event, scheduler);
         } catch (error) {
           console.error(`Error processing event: ${error}`);
         }
     
-        setImmediate(() => this.processQueue());
+        setImmediate(() => this.processQueue(scheduler));
       }
 
 }

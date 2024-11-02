@@ -3,9 +3,9 @@ import { Readable } from "stream";
 
 export class ThingInterface {
 
-    thing: ExposedThing;
-    period: number;
-    timeFromLastTick: number = 0;
+    protected thing: ExposedThing;
+    private period: number;
+    private timeFromLastTick: number = 0;
 
     constructor(servient: Servient, init: WoT.ExposedThingInit, period: number) {
         this.thing = new ExposedThing(servient, init);
@@ -18,7 +18,7 @@ export class ThingInterface {
                 
                     if (typeof basePeriod === "number") {
                         if (this.updateAndCheckTime(basePeriod)) {
-                            await this.tickEvent();
+                            this.tickEvent();
                             this.timeFromLastTick = 0;
                         }
                         return new DefaultContent(Readable.from([this.timeFromLastTick]));
@@ -38,26 +38,14 @@ export class ThingInterface {
         });
     }
 
-    tickEvent(): void {}
+    protected tickEvent(): void {}
 
-    getThing(): ExposedThing {
+    public getThing(): ExposedThing {
         return this.thing;
     }
 
-    private async readNumberFromStream(stream: Readable): Promise<number> {
-        for await (const num of stream) {
-          return num as number;
-        }
-        throw new Error('Stream was empty');
-    };
-
-    private updateAndCheckTime(basePeriod : any) : boolean {
-        if (typeof basePeriod == "number") {
-            this.timeFromLastTick += basePeriod;
-            if (this.period && this.timeFromLastTick >= this.period) {
-                return true;
-            } 
-        }
-        return false;
+    private updateAndCheckTime(basePeriod : number) : boolean {
+        this.timeFromLastTick += basePeriod;
+        return (this.timeFromLastTick >= this.period);
     }
 }

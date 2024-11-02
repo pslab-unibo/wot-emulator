@@ -1,7 +1,6 @@
 import { DefaultContent } from "@node-wot/core";
 import { Readable } from "stream";
 import { ThingInterface } from "../thing-model/ThingInterface";
-import { commandEmitter } from '../command/CommandEmitter';
 import { eventQueue } from '../simulation/eventQueue';
 
 export class Scheduler {
@@ -10,10 +9,6 @@ export class Scheduler {
 
     constructor(period: number) {
         this.period = period;
-
-        commandEmitter.on('command', ({ thingId, action }) => {
-            this.handleCommand(thingId, action);
-        });
     }
 
     public addThing(thing: ThingInterface): void {
@@ -25,8 +20,8 @@ export class Scheduler {
         console.log("Scheduler started");
 
         while (true) {
-            //console.log('Processing the queue');
-            await eventQueue.processQueue();
+            //console.log('Processing');
+            await eventQueue.processQueue(this);
 
             for (const thing of this.things) {
                 const th = thing[1].getThing();
@@ -54,14 +49,14 @@ export class Scheduler {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    private handleCommand(thingId: string, actionName: string) {
+    public handleCommand(thingId: string, actionName: string) {
         const thing = this.things.get(thingId);
-
+        
         if (!thing) {
             console.log(`Thing with ID ${thingId} not found.`);
             return;
         }
-
+        
         thing.getThing().handleInvokeAction(actionName, new DefaultContent(Readable.from([])), { formIndex: 0 });
     }
     
