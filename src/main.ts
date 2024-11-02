@@ -7,7 +7,7 @@ import { initializeThings } from "./init";
 const servient = new Servient();
 servient.addServer(new HttpServer({ port: 8081 }));
 
-const scheduler = new Scheduler(2000);
+const scheduler = new Scheduler(100);
 
 startCommandListener();
 

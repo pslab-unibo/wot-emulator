@@ -25,7 +25,7 @@ export class Scheduler {
         console.log("Scheduler started");
 
         while (true) {
-            console.log('Processing the queue');
+            //console.log('Processing the queue');
             await eventQueue.processQueue();
 
             for (const thing of this.things) {
@@ -35,7 +35,10 @@ export class Scheduler {
                 if (th.actions && actionName in th.actions) {
                     try {
                         //console.log(`Invoking tick action for ${th.title}`);
-                        await th.handleInvokeAction(actionName, new DefaultContent(Readable.from([])), { formIndex: 0 });
+                        await th.handleInvokeAction(
+                            actionName, 
+                            new DefaultContent(Readable.from([Buffer.from(this.period.toString())])), 
+                            { formIndex: 0 });
                     } catch (error) {
                         console.error(`Error invoking tick for ${th.title}:`, error);
                     }
