@@ -3,6 +3,7 @@ import { Readable } from "stream";
 import { ThingInterface } from "../thing-model/ThingInterface";
 import { eventQueue } from '../simulation/eventQueue';
 
+// Scheduler class to manage periodic actions on Things and process event commands
 export class Scheduler {
     private period: number;
     private things: Map<string, ThingInterface> = new Map();
@@ -20,15 +21,17 @@ export class Scheduler {
         console.log("Scheduler started");
 
         while (true) {
-            //console.log('Processing');
+            // Processes queued events asynchronously
             await eventQueue.processQueue(this);
 
+            // Iterates through each Thing to invoke the 'tick' action if it exists
             for (const thing of this.things) {
                 const th = thing[1].getThing();
                 const actionName = "tick"; 
 
                 if (th.actions && actionName in th.actions) {
                     try {
+                        // Invokes the 'tick' action with the scheduler base period as input
                         //console.log(`Invoking tick action for ${th.title}`);
                         await th.handleInvokeAction(
                             actionName, 
@@ -49,6 +52,7 @@ export class Scheduler {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
+    // Handles external commands for specific Things by invoking the specified action
     public handleCommand(thingId: string, actionName: string) {
         const thing = this.things.get(thingId);
         

@@ -1,9 +1,10 @@
 import { Scheduler } from "./scheduler";
 
+// Enum for different types of events
 enum EventType {
     COMMAND = 'COMMAND',
     INTERNAL_EVENT = 'INTERNAL_EVENT'
-  }
+}
 
 interface Event {
     event_type: EventType;
@@ -14,6 +15,7 @@ interface Event {
     timestamp: number;
 }  
 
+// Class managing a queue of events
 class EventQueue {
     private eventQueue: Event[] = [];  
 
@@ -43,6 +45,7 @@ class EventQueue {
         switch (event.event_type) {
     
           case EventType.COMMAND:
+            // Passes command events to the scheduler
             if (event.thingId && event.event_name && scheduler) {
                 scheduler.handleCommand(event.thingId, event.event_name);
             }
@@ -54,6 +57,7 @@ class EventQueue {
         }
     }
 
+    // Processes events in the queue recursively until empty
     public async processQueue(scheduler?: Scheduler) {
         if (this.eventQueue.length === 0) {
           return;
@@ -65,10 +69,10 @@ class EventQueue {
         } catch (error) {
           console.error(`Error processing event: ${error}`);
         }
-    
+        
+        // Schedule the next queue processing step immediately
         setImmediate(() => this.processQueue(scheduler));
       }
-
 }
 
 export const eventQueue = new EventQueue();
