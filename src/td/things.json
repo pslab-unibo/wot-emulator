@@ -4,7 +4,7 @@
         "title": "Smart Lamp 1",
         "description": "A lamp that can be controlled via Web of Things",
         "type": "LampThing",
-        "eventTickRate": 2000,
+        "period": 2000,
         "properties": {
             "intensity": {
                 "type": "number",
@@ -41,7 +41,7 @@
         "title": "Smart Lamp 2",
         "description": "A lamp that can be controlled via Web of Things",
         "type": "LampThing",
-        "eventTickRate": 3000,
+        "period": 3000,
         "properties": {
             "intensity": {
                 "type": "number",
