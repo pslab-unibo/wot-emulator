@@ -6,8 +6,43 @@ export class LampThing extends ThingInterface {
     private intensity: number = 0;  // Brightness level of the lamp
     private isOn: boolean = false;  // Power state of the lamp (on/off)
 
+    private static initBase = {
+        "description": "A lamp that can be controlled via Web of Things",
+        "properties": {
+            "intensity": {
+                "type": "number",
+                "description": "The brightness level of the lamp",
+                "observable": true,
+                "readOnly": false,
+                "writeOnly": false
+            },
+            "isOn": {
+                "type": "boolean",
+                "description": "The state of the lamp",
+                "observable": true,
+                "readOnly": false,
+                "writeOnly": false
+            }
+        },
+        "actions": {
+            "tick": {
+                "description": "Increases the lamp's intensity by 1"
+            },
+            "toggle": {
+                "description": "Change the state of the lamp"
+            }
+        },
+        "events": {
+            "overheated": {
+                "description": "Emits an event when the lamp overheats",
+                "data": { "type": "string" }
+            }
+        }
+    };
+
     constructor(servient: Servient, init: WoT.ExposedThingInit, eventTickRate: number) {
-        super(servient, init, eventTickRate);
+
+        super(servient, { ...init, ...LampThing.initBase } as WoT.ExposedThingInit, eventTickRate);
 
         // Define the read handler for the "intensity" property
         this.getThing().setPropertyReadHandler("intensity", async () => {

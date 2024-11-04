@@ -2,75 +2,13 @@
     {
         "id": "t1",
         "title": "Smart Lamp 1",
-        "description": "A lamp that can be controlled via Web of Things",
         "type": "LampThing",
-        "period": 2000,
-        "properties": {
-            "intensity": {
-                "type": "number",
-                "description": "The brightness level of the lamp",
-                "observable": true,
-                "readOnly": false,
-                "writeOnly": false
-            },
-            "isOn": {
-                "type": "boolean",
-                "description": "The state of the lamp",
-                "observable": true,
-                "readOnly": false,
-                "writeOnly": false
-            }
-        },
-        "actions": {
-            "tick": {
-                "description": "Increases the lamp's intensity by 1"
-            },
-            "toggle": {
-                "description": "Change the state of the lamp"
-            }
-        },
-        "events": {
-            "overheated": {
-                "description": "Emits an event when the lamp overheats",
-                "data": { "type": "string" }
-            }
-        }
+        "period": 2000
     },
     {
         "id": "t2",
         "title": "Smart Lamp 2",
-        "description": "A lamp that can be controlled via Web of Things",
         "type": "LampThing",
-        "period": 3000,
-        "properties": {
-            "intensity": {
-                "type": "number",
-                "description": "The brightness level of the lamp",
-                "observable": true,
-                "readOnly": false,
-                "writeOnly": false
-            },
-            "isOn": {
-                "type": "boolean",
-                "description": "The state of the lamp",
-                "observable": true,
-                "readOnly": false,
-                "writeOnly": false
-            }
-        },
-        "actions": {
-            "tick": {
-                "description": "Increases the lamp's intensity by 1"
-            },
-            "toggle": {
-                "description": "Change the state of the lamp"
-            }
-        },
-        "events": {
-            "overheated": {
-                "description": "Emits an event when the lamp overheats",
-                "data": { "type": "string" }
-            }
-        }
+        "period": 3000
     }
 ]
