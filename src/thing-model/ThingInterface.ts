@@ -1,4 +1,4 @@
-import { Content, DefaultContent, ExposedThing, Servient } from "@node-wot/core";
+import { DefaultContent, ExposedThing, Servient } from "@node-wot/core";
 import { Readable } from "stream";
 
 export class ThingInterface {
