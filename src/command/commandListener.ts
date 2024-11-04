@@ -3,6 +3,7 @@ import { eventQueue } from '../simulation/eventQueue';
 
 // Function to start listening for command line input
 export function startCommandListener() {
+    
     const rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout

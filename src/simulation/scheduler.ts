@@ -5,6 +5,7 @@ import { eventQueue } from '../simulation/eventQueue';
 
 // Scheduler class to manage periodic actions on Things and process event commands
 export class Scheduler {
+
     private period: number;
     private things: Map<string, ThingInterface> = new Map();
 
@@ -61,6 +62,7 @@ export class Scheduler {
             return;
         }
         
+        // To be implemented: ability to pass parameters in the 'action' function
         thing.getThing().handleInvokeAction(actionName, new DefaultContent(Readable.from([])), { formIndex: 0 });
     }
     

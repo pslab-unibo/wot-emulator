@@ -17,9 +17,10 @@ interface Event {
 
 // Class managing a queue of events
 class EventQueue {
+  
     private eventQueue: Event[] = [];  
 
-    enqueueEvent(event: Event) {
+    public enqueueEvent(event: Event) {
         this.eventQueue.push(event);
         
         this.eventQueue.sort((a, b) => {
@@ -30,7 +31,7 @@ class EventQueue {
           });
     }
 
-    enqueueCommand(thingId: string, command: string) {
+    public enqueueCommand(thingId: string, command: string) {
         this.enqueueEvent({
             event_type : EventType.COMMAND,
             thingId : thingId,
