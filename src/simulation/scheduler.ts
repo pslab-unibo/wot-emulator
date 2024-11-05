@@ -25,24 +25,24 @@ export class Scheduler {
             // Processes queued events asynchronously
             await eventQueue.processQueue(this);
 
-            // Iterates through each Thing to invoke the 'tick' action if it exists
+            // Iterates through each Thing to invoke the 'update' if it exists
             for (const thing of this.things) {
                 const th = thing[1].getThing();
-                const actionName = "tick"; 
+                const actionName = "update"; 
 
                 if (th.actions && actionName in th.actions) {
                     try {
-                        // Invokes the 'tick' action with the scheduler base period as input
-                        //console.log(`Invoking tick action for ${th.title}`);
+                        // Invokes the 'update' action with the scheduler base period as input
+                        //console.log(`Invoking update for ${th.title}`);
                         await th.handleInvokeAction(
                             actionName, 
                             new DefaultContent(Readable.from([Buffer.from(this.period.toString())])), 
                             { formIndex: 0 });
                     } catch (error) {
-                        console.error(`Error invoking tick for ${th.title}:`, error);
+                        console.error(`Error invoking update for ${th.title}:`, error);
                     }
                 } else {
-                    console.log(`No tick action found for ${th.title}`);
+                    console.log(`No update found for ${th.title}`);
                 }
             }
             await this.wait(this.period);

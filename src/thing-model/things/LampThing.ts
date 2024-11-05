@@ -25,7 +25,7 @@ export class LampThing extends ThingInterface {
             }
         },
         "actions": {
-            "tick": {
+            "update": {
                 "description": "Increases the lamp's intensity by 1"
             },
             "toggle": {
@@ -40,9 +40,9 @@ export class LampThing extends ThingInterface {
         }
     };
 
-    constructor(servient: Servient, init: WoT.ExposedThingInit, eventTickRate: number) {
+    constructor(servient: Servient, init: WoT.ExposedThingInit, period: number) {
 
-        super(servient, { ...init, ...LampThing.initBase } as WoT.ExposedThingInit, eventTickRate);
+        super(servient, { ...init, ...LampThing.initBase } as WoT.ExposedThingInit, period);
 
         // Define the read handler for the "intensity" property
         this.getThing().setPropertyReadHandler("intensity", async () => {
@@ -81,12 +81,12 @@ export class LampThing extends ThingInterface {
         });
     }
 
-    // Method to simulate periodic behavior (tick event)
-    public tickEvent(): void {
+    // Method to simulate periodic behavior (update)
+    public update(): void {
         if (this.isOn) {
             this.intensity += 1;
             if (this.intensity > 100) this.intensity = 100; 
-            console.log(`Tick action for ${this.getThing().title}, intensity increased to: ${this.intensity}`);
+            console.log(`Update for ${this.getThing().title}, intensity increased to: ${this.intensity}`);
         }
     }
 }
