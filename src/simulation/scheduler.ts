@@ -36,7 +36,7 @@ export class Scheduler {
                         //console.log(`Invoking update for ${th.title}`);
                         await th.handleInvokeAction(
                             actionName, 
-                            new DefaultContent(Readable.from([Buffer.from(this.period.toString())])), 
+                            new DefaultContent(Readable.from([])), 
                             { formIndex: 0 });
                     } catch (error) {
                         console.error(`Error invoking update for ${th.title}:`, error);

@@ -82,7 +82,7 @@ export class LampThing extends ThingInterface {
     }
 
     // Method to simulate periodic behavior (update)
-    public update(): void {
+    public update(deltaTime : number): void {
         if (this.isOn) {
             this.intensity += 1;
             if (this.intensity > 100) this.intensity = 100; 
