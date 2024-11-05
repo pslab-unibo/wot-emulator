@@ -12,7 +12,7 @@ servient.addServer(new HttpServer({ port: 8081 }));
 const scheduler = new Scheduler(100);
 
 // Start listening for external commands through the command listener
-startCommandListener();
+startCommandListener(scheduler);
 
 servient.start().then(async () => {
 

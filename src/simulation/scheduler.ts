@@ -23,7 +23,7 @@ export class Scheduler {
 
         while (true) {
             // Processes queued events asynchronously
-            await eventQueue.processQueue(this);
+            await eventQueue.processQueue();
 
             // Iterates through each Thing to invoke the 'update' if it exists
             for (const thing of this.things) {
