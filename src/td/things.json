@@ -9,6 +9,7 @@
         "id": "t2",
         "title": "Smart Lamp 2",
         "type": "LampThing",
-        "period": 3000
+        "period": 3000,
+        "servient": 1
     }
 ]
