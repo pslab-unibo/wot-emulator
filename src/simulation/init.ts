@@ -18,17 +18,22 @@ export async function initializeThings(scheduler: Scheduler) {
     // Reads configuration data for Things from a JSON file
     const thingsData = JSON.parse(fs.readFileSync('./src/td/things.json', 'utf8'));
 
+    // Creates an instance of ServientManager to manage multiple servients
+    // SINGLETON ??
     const servients : ServientManager = new ServientManager(thingsData);
 
     for (const thingConfig of thingsData) {
         try {
             const thingType = thingConfig.type;
             const period = thingConfig.period;
+            
+            // Retrieves the servient based on the Thing configuration; defaults to servient with ID 0 if undefined
             const servient = servients.getServient(thingConfig.servient) || servients.getServient(0);
             
             if (servient) {
+
+                // Creates the Thing based on its type and attaches it to the servient
                 const thing = createThingByType(thingType, period, servient, thingConfig);
-                console.log(servient);
 
                 // Exposes the Thing to make it available for interaction
                 await thing.getThing().expose();
