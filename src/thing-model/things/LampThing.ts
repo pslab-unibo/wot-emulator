@@ -8,10 +8,24 @@ export class LampThing extends ThingInterface {
 
     private static initBase = {
         "description": "A lamp that can be controlled via Web of Things",
+        forms: [
+            {
+                href: "things",  
+                op: ["readproperty", "writeproperty", "observeproperty"],
+                contentType: "application/json"
+            },
+        ],
         "properties": {
             "intensity": {
                 "type": "number",
                 "description": "The brightness level of the lamp",
+                forms: [
+                    {
+                        href: "intensity", 
+                        op: ["readproperty", "writeproperty", "observeproperty"],
+                        contentType: "application/json"
+                    },
+                ],
                 "observable": true,
                 "readOnly": false,
                 "writeOnly": false
@@ -21,28 +35,59 @@ export class LampThing extends ThingInterface {
                 "description": "The state of the lamp",
                 "observable": true,
                 "readOnly": false,
-                "writeOnly": false
+                "writeOnly": false,
+                forms: [
+                    {
+                        href: "isOn",  
+                        op: ["readproperty", "writeproperty", "observeproperty"],
+                        contentType: "application/json"
+                    },
+                ]
             }
         },
         "actions": {
             "update": {
-                "description": "Increases the lamp's intensity by 1"
+                "description": "Increases the lamp's intensity by 1",
+                forms: [
+                    {
+                        href: "update",  
+                        op: ["invokeaction"]
+                    }
+                ]
             },
             "toggle": {
-                "description": "Change the state of the lamp"
+                "description": "Change the state of the lamp",
+                forms: [
+                    {
+                        href: "toggle",  
+                        op: ["invokeaction"]
+                    }
+                ]
             }
         },
         "events": {
             "overheated": {
                 "description": "Emits an event when the lamp overheats",
-                "data": { "type": "string" }
+                "data": { "type": "string" },
+                forms: [
+                    {
+                        href: "overheated",  
+                        op: ["subscribeevent"]
+                    }
+                ]
             }
         }
     };
 
     constructor(servient: Servient, init: WoT.ExposedThingInit, period: number) {
-
-        super(servient, { ...init, ...LampThing.initBase } as WoT.ExposedThingInit, period);
+        const fullInit = {
+            ...init,
+            ...LampThing.initBase,
+            "@context": "https://www.w3.org/2019/wot/td/v1",
+            "@type": "Thing"
+        } as WoT.ExposedThingInit;
+    
+        super(servient, fullInit, period);
 
         // Define the read handler for the "intensity" property
         this.getThing().setPropertyReadHandler("intensity", async () => {

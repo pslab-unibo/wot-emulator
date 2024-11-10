@@ -1,11 +1,12 @@
-import { Servient } from "@node-wot/core";
+import { Servient, ThingInteraction } from "@node-wot/core";
 import { Scheduler } from "./scheduler";
 import { LampThing } from "../thing-model/things/LampThing";
 import * as fs from 'fs';
 import { ServientManager } from "./ServientManager";
+import { ThingInterface } from "../thing-model/ThingInterface";
 
 // Factory function to create a Thing instance based on its type
-function createThingByType(type: string, period: number, servient: Servient, init: WoT.ExposedThingInit) {
+function createThingByType(type: string, period: number, servient: Servient, init: WoT.ExposedThingInit) : ThingInterface {
     switch (type) {
         case "LampThing":
             return new LampThing(servient, init, period);
@@ -35,12 +36,14 @@ export async function initializeThings(scheduler: Scheduler) {
                 // Creates the Thing based on its type and attaches it to the servient
                 const thing = createThingByType(thingType, period, servient, thingConfig);
 
-                // Exposes the Thing to make it available for interaction
-                await thing.getThing().expose();
-
-                scheduler.addThing(thing);  // Adds the Thing to the scheduler
-
-                console.log(`Thing of type ${thingType} exposed and added to scheduler.`);
+                try {
+                    // Exposes the Thing to make it available for interaction
+                    await thing.getThing().expose();
+            
+                    scheduler.addThing(thing);
+                }catch(error) {
+                    console.log(error);
+                }
             } 
     
         } catch (error) {

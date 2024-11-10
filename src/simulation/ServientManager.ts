@@ -7,7 +7,7 @@ import { HttpServer } from '@node-wot/binding-http';
  */
 export class ServientManager {
     private servients: Map<number, Servient> = new Map();
-    private readonly basePort: number = 8081;
+    private readonly basePort: number = 8081; // PARAM ??
 
     constructor(thingsData: Object) {
         this.initializeServients(thingsData);
@@ -24,7 +24,9 @@ export class ServientManager {
             
             try {
                 // Add an HTTP server to each servient with a unique port
-                servient.addServer(new HttpServer({ port }));
+                const server = new HttpServer({ "port":  port, "baseUri": `http://localhost:${port}/`});
+                
+                servient.addServer(server);
                 this.servients.set(id, servient);
 
                 // Start the servient
