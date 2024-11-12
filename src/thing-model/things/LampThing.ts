@@ -1,8 +1,9 @@
 import { ExposedThing, Servient } from "@node-wot/core";
 import { ThingInterface } from "../ThingInterface";
 import { eventQueue } from "../../simulation/eventQueue";
+import { PeriodicThingInterface } from "../PeriodicThingInterface";
 
-export class LampThing extends ThingInterface {
+export class LampThing extends PeriodicThingInterface {
 
     private intensity: number = 0;  // Brightness level of the lamp
     private isOn: boolean = false;  // Power state of the lamp (on/off)
