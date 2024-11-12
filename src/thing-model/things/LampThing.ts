@@ -1,5 +1,6 @@
 import { ExposedThing, Servient } from "@node-wot/core";
 import { ThingInterface } from "../ThingInterface";
+import { eventQueue } from "../../simulation/eventQueue";
 
 export class LampThing extends ThingInterface {
 
@@ -121,7 +122,10 @@ export class LampThing extends ThingInterface {
 
         // Define the "toggle" action to switch the lamp's state
         this.thing.setActionHandler("toggle", async () => {
-            this.isOn = !this.isOn;  // Toggle the current state
+            eventQueue.enqueueEvent(async () => {
+                this.isOn = !this.isOn;
+                console.log(`Lamp state toggled to: ${this.isOn}`);
+            });
             return undefined;
         });
     }
