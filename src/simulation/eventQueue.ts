@@ -29,16 +29,6 @@ class EventQueue {
           });
     }
 
-    public enqueueCommand(thingId: string, command: string, scheduler?: Scheduler) {
-        this.enqueueEvent(
-          async () => {
-              if (scheduler) {
-                  scheduler.handleCommand(thingId, command);
-              }
-          }
-        );
-    }
-
     // Processes events in the queue recursively until empty
     public async processQueue() {
         if (this.eventQueue.length === 0) {

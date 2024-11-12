@@ -15,7 +15,7 @@ export function startCommandListener(scheduler? : Scheduler) {
         const [thingId, action] = input.trim().split(' ');
         console.log("Event Enqueue");
         if (scheduler) {
-            eventQueue.enqueueCommand(thingId, action, scheduler);
+            //eventQueue.enqueueCommand(thingId, action, scheduler);
         }
     });
 
