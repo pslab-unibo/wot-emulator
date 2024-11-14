@@ -1,7 +1,6 @@
-import { DefaultContent, ExposedThing, Servient } from "@node-wot/core";
-import { Readable } from "stream";
+import { ExposedThing, Servient } from "@node-wot/core";
 
-export class ThingInterface {
+export abstract class Thing {
 
     protected thing: ExposedThing;                  // ExposedThing instance representing the Thing              
     protected lastUpdateTime: number = Date.now();    // Tracks elapsed time since the last update
