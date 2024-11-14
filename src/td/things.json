@@ -11,5 +11,11 @@
         "type": "LampThing",
         "period": 3000,
         "servient": 1
+    },
+    {
+        "id": "t3",
+        "title": "radiator1",
+        "type": "Radiator",
+        "power": 20
     }
 ]
