@@ -1,9 +1,9 @@
-import { ExposedThing, Servient } from "@node-wot/core";
-import { ThingInterface } from "../ThingInterface";
+import { Servient } from "@node-wot/core";
 import { eventQueue } from "../../simulation/eventQueue";
-import { PeriodicThingInterface } from "../PeriodicThingInterface";
+import { PeriodicThing } from "../PeriodicThing";
+import { Thing } from "../Thing";
 
-export class LampThing extends PeriodicThingInterface {
+export class LampThing extends PeriodicThing {
 
     private intensity: number = 0;  // Brightness level of the lamp
     private isOn: boolean = false;  // Power state of the lamp (on/off)
@@ -48,15 +48,6 @@ export class LampThing extends PeriodicThingInterface {
             }
         },
         "actions": {
-            "update": {
-                "description": "Increases the lamp's intensity by 1",
-                forms: [
-                    {
-                        href: "update",  
-                        op: ["invokeaction"]
-                    }
-                ]
-            },
             "toggle": {
                 "description": "Change the state of the lamp",
                 forms: [
@@ -66,22 +57,10 @@ export class LampThing extends PeriodicThingInterface {
                     }
                 ]
             }
-        },
-        "events": {
-            "overheated": {
-                "description": "Emits an event when the lamp overheats",
-                "data": { "type": "string" },
-                forms: [
-                    {
-                        href: "overheated",  
-                        op: ["subscribeevent"]
-                    }
-                ]
-            }
         }
     };
 
-    constructor(servient: Servient, init: WoT.ExposedThingInit, period: number) {
+    constructor(servient: Servient, init: WoT.ExposedThingInit, environment : Thing, period: number) {
         const fullInit = {
             ...init,
             ...LampThing.initBase,
@@ -89,7 +68,7 @@ export class LampThing extends PeriodicThingInterface {
             "@type": "Thing"
         } as WoT.ExposedThingInit;
     
-        super(servient, fullInit, period);
+        super(servient, fullInit, environment, period);
 
         // Define the read handler for the "intensity" property
         this.getThing().setPropertyReadHandler("intensity", async () => {
@@ -127,7 +106,10 @@ export class LampThing extends PeriodicThingInterface {
                 this.isOn = !this.isOn;
                 console.log(`Lamp state toggled to: ${this.isOn}`);
             });
-            return undefined;
+            return {
+                statusCode: 202, 
+                message: "Lamp toggle action accepted" 
+            };
         });
     }
 
