@@ -2,15 +2,14 @@ import Servient from "@node-wot/core";
 import { Thing } from "../Thing";
 
 export class HeatingEnv extends Thing {
-    private temperature : number = 20;
-    private volume: number;
-    private ambientTemperature: number; 
-    private coolingConstant: number = 0.1;  
 
     private static readonly specificHeatCapacity = 1005; // J/kg°C (air capacity)
     private static readonly airDensity = 1.225; // kg/m³ (air density)
 
     private static initBase : WoT.ExposedThingInit = {
+        "@context": "https://www.w3.org/2019/wot/td/v1",
+        "@type": "Thing",
+        "description": "An environment that can be heated or cooled based on external influences",
         "forms": [
             {
                 "href": "environment",
@@ -95,35 +94,30 @@ export class HeatingEnv extends Thing {
         }
     };
 
-    constructor(servient: Servient, init: WoT.ExposedThingInit, volume : number, ambientTemperature: number, initialTemperature? : number, coolingConstant?: number) {
-        super(servient, init, HeatingEnv.initBase);
-        this.volume = volume;
-        this.ambientTemperature = ambientTemperature;
-        if(coolingConstant) {
-            this.coolingConstant = coolingConstant;
-        }
-        if(initialTemperature) {
-            this.temperature = initialTemperature;
-        }
+    constructor(servient: Servient, init: WoT.ExposedThingInit, map : Map<string, any> =new Map<string, any>()) {
+        super(servient, init, HeatingEnv.initBase, map);
 
         this.getThing().setPropertyReadHandler("currentTemperature", async () => {
-            return this.temperature;
+            return this.properties.get("temperature");
         });
     }
 
     public async increaseTemperature(energy : number) : Promise<void> {
-        const mass = HeatingEnv.airDensity * this.volume;
+        const mass = HeatingEnv.airDensity * this.properties.get("volume");
         const deltaTemperature = energy / (mass * HeatingEnv.specificHeatCapacity);
-        this.temperature += deltaTemperature;
-        console.log("updated temperature: ", this.temperature);
+        const temp : number = this.properties.get("temperature");
+        this.properties.set("temperature", temp+deltaTemperature);
+        console.log("updated temperature: ", this.properties.get("temperature"));
     } 
 
     protected update(deltaTime : number): void {
-        const temperatureDifference = this.temperature - this.ambientTemperature;
-        const coolingRate = this.coolingConstant * temperatureDifference;
+        const temperatureDifference = this.properties.get("temperature") - this.properties.get("ambientTemperature");
+        const coolingRate = this.properties.get("coolingConstant") * temperatureDifference;
 
         const temperatureDrop = coolingRate * (deltaTime / 1000);  
-        this.temperature -= temperatureDrop;
+       
+        const temp : number = this.properties.get("temperature");
+        this.properties.set("temperature", temp-temperatureDrop);
     }
 
 

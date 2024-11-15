@@ -1,7 +1,4 @@
 {
-        "@context": "https://www.w3.org/2019/wot/td/v1",
-        "@type": "Thing",
-        "description": "An environment that can be heated or cooled based on external influences",
         "id": "env",
         "title": "environment",
         "type": "environment",

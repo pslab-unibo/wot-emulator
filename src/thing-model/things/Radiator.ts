@@ -3,13 +3,13 @@ import { Thing } from "../Thing";
 import { SituatedThing } from "../SituatedThing";
 import { HeatingEnv } from "../environments/HeatingEnv";
 import { eventQueue } from "../../simulation/eventQueue";
-import { type } from "os";
 
 
 export class Radiator extends SituatedThing {
 
     private isOn : boolean = false;
-    private power : number;
+    private power : number = 0;
+    
     private static initBase : WoT.ExposedThingInit = {
         description: "A radiator that emits heat",
         forms: [
@@ -64,9 +64,8 @@ export class Radiator extends SituatedThing {
     
 
 
-    constructor(servient: Servient, init: WoT.ExposedThingInit, environment : Thing, power : number) {
-        super(servient, init, Radiator.initBase, environment);
-        this.power = power;
+    constructor(servient: Servient, init: WoT.ExposedThingInit, environment : Thing, map : Map<string, any> =new Map<string, any>()) {
+        super(servient, init, Radiator.initBase, environment, map);
 
         this.thing.setActionHandler("toggle", async () => {
             eventQueue.enqueueEvent(async () => {
@@ -83,6 +82,7 @@ export class Radiator extends SituatedThing {
         this.getThing().setPropertyReadHandler("isOn", async () => {
             return this.isOn;
         });
+
     }
 
     update(deltaTime : number) {
