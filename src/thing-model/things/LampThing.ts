@@ -8,7 +8,7 @@ export class LampThing extends PeriodicThing {
     private intensity: number = 0;  // Brightness level of the lamp
     private isOn: boolean = false;  // Power state of the lamp (on/off)
 
-    private static initBase = {
+    private static initBase : WoT.ExposedThingInit = {
         "description": "A lamp that can be controlled via Web of Things",
         forms: [
             {
@@ -61,14 +61,7 @@ export class LampThing extends PeriodicThing {
     };
 
     constructor(servient: Servient, init: WoT.ExposedThingInit, environment : Thing, period: number) {
-        const fullInit = {
-            ...init,
-            ...LampThing.initBase,
-            "@context": "https://www.w3.org/2019/wot/td/v1",
-            "@type": "Thing"
-        } as WoT.ExposedThingInit;
-    
-        super(servient, fullInit, environment, period);
+        super(servient, init, LampThing.initBase, environment, period);
 
         // Define the read handler for the "intensity" property
         this.getThing().setPropertyReadHandler("intensity", async () => {

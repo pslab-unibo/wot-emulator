@@ -10,7 +10,7 @@ export class Radiator extends SituatedThing {
 
     private isOn : boolean = false;
     private power : number;
-    private static initBase = {
+    private static initBase : WoT.ExposedThingInit = {
         description: "A radiator that emits heat",
         forms: [
             {
@@ -65,14 +65,7 @@ export class Radiator extends SituatedThing {
 
 
     constructor(servient: Servient, init: WoT.ExposedThingInit, environment : Thing, power : number) {
-        const fullInit = {
-            ...init,
-            ...Radiator.initBase,
-            "@context": "https://www.w3.org/2019/wot/td/v1",
-            "@type": "Thing"
-        } as WoT.ExposedThingInit;
-        
-        super(servient, fullInit, environment);
+        super(servient, init, Radiator.initBase, environment);
         this.power = power;
 
         this.thing.setActionHandler("toggle", async () => {

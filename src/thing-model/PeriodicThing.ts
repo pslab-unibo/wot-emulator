@@ -6,8 +6,8 @@ export abstract class PeriodicThing extends SituatedThing {
 
     protected period : number;                       // Only for periodic Things
 
-    constructor(servient: Servient, init: WoT.ExposedThingInit, environment : Thing, period : number) {
-        super(servient, init, environment);
+    constructor(servient: Servient, init: WoT.ExposedThingInit, initBase: WoT.ExposedThingInit = {}, environment : Thing,  period : number) {
+        super(servient, init, initBase, environment);
         this.period = period; 
     }
 
