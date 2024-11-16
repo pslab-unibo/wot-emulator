@@ -9,7 +9,7 @@ export abstract class Thing {
     constructor(servient: Servient, 
                 init: WoT.ExposedThingInit, 
                 initBase: WoT.ExposedThingInit = {}, 
-                map : Map<string, unknown> =new Map<string, any>()) {
+                map : Map<string, any> =new Map<string, any>()) {
 
         const fullInit = {
             "@context": "https://www.w3.org/2019/wot/td/v1",

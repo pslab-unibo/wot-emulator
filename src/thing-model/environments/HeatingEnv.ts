@@ -7,8 +7,8 @@ import { Thing } from "../Thing";
  */
 export class HeatingEnv extends Thing {
 
-    private static readonly specificHeatCapacity = 1005; // J/kg°C (air capacity)
-    private static readonly airDensity = 1.225; // kg/m³ (air density)
+    private static readonly specificHeatCapacity : number = 1005; // J/kg°C (air capacity)
+    private static readonly airDensity : number = 1.225; // kg/m³ (air density)
 
     private static initBase : WoT.ExposedThingInit = {
         "@context": "https://www.w3.org/2019/wot/td/v1",

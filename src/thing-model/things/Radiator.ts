@@ -64,7 +64,7 @@ class Radiator extends SituatedThing {
     constructor(servient: Servient, 
                 init: WoT.ExposedThingInit, 
                 environment : Thing, 
-                map : Map<string, any> =new Map<string, any>()) {
+                map : Map<string, any> =new Map<string, unknown>()) {
 
         super(servient, init, Radiator.initBase, environment, map);
 
@@ -91,7 +91,8 @@ class Radiator extends SituatedThing {
             try {
                 console.log("Emit increase event");
                 if(this.environment instanceof HeatingEnv) {
-                    eventQueue.enqueueEvent(() => (this.environment as HeatingEnv).increaseTemperature(this.properties.get('power')*deltaTime));
+                    eventQueue.enqueueEvent(() => (this.environment as HeatingEnv)
+                    .increaseTemperature(this.properties.get('power')*deltaTime));
                 }
             } catch (error) {
                 console.log(error);

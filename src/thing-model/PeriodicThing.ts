@@ -26,8 +26,5 @@ export abstract class PeriodicThing extends SituatedThing {
             this.lastUpdateTime = currentTime;
         } 
     }
-
-    public getThing(): ExposedThing {
-        return this.thing;
-    }
+    
 }
