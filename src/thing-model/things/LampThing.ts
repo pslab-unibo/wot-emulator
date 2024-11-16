@@ -60,7 +60,11 @@ class LampThing extends PeriodicThing {
         }
     };
 
-    constructor(servient: Servient, init: WoT.ExposedThingInit, environment : Thing, period: number) {
+    constructor(servient: Servient, 
+                init: WoT.ExposedThingInit, 
+                environment : Thing, 
+                period: number) {
+                    
         super(servient, init, LampThing.initBase, environment, period);
 
         // Define the read handler for the "intensity" property

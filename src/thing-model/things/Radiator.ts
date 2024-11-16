@@ -2,8 +2,7 @@ import Servient from "@node-wot/core";
 import { Thing } from "../Thing";
 import { SituatedThing } from "../SituatedThing";
 import { HeatingEnv } from "../environments/HeatingEnv";
-import { eventQueue } from "../../simulation/eventQueue";
-import util from 'util';
+import { eventQueue } from "../../simulation/eventQueue";;
 
 class Radiator extends SituatedThing {
 
@@ -61,7 +60,11 @@ class Radiator extends SituatedThing {
         }
     };
     
-    constructor(servient: Servient, init: WoT.ExposedThingInit, environment : Thing, map : Map<string, any> =new Map<string, any>()) {
+    constructor(servient: Servient, 
+                init: WoT.ExposedThingInit, 
+                environment : Thing, 
+                map : Map<string, any> =new Map<string, any>()) {
+
         super(servient, init, Radiator.initBase, environment, map);
 
         this.thing.setActionHandler("toggle", async () => {
@@ -72,9 +75,7 @@ class Radiator extends SituatedThing {
             return undefined;
         });
 
-        this.getThing().setPropertyReadHandler("power", async () => {
-            return this.properties.get('power');
-        });
+        this.setupPropertyHandler('power');
 
         this.getThing().setPropertyReadHandler("isOn", async () => {
             return this.isOn;
@@ -82,7 +83,7 @@ class Radiator extends SituatedThing {
 
     }
 
-    update(deltaTime : number) {
+    protected update(deltaTime : number) {
         if(this.isOn){
             try {
                 console.log("Emit increase event");

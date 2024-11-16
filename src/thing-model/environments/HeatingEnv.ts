@@ -18,7 +18,7 @@ export class HeatingEnv extends Thing {
             }
         ],
         "properties": {
-            "currentTemperature": {
+            "temperature": {
                 "type": "number",
                 "description": "The current temperature of the environment",
                 "observable": true,
@@ -94,12 +94,13 @@ export class HeatingEnv extends Thing {
         }
     };
 
-    constructor(servient: Servient, init: WoT.ExposedThingInit, map : Map<string, any> =new Map<string, any>()) {
+    constructor(servient: Servient, 
+                init: WoT.ExposedThingInit, 
+                map : Map<string, any> =new Map<string, any>()) {
+
         super(servient, init, HeatingEnv.initBase, map);
 
-        this.getThing().setPropertyReadHandler("currentTemperature", async () => {
-            return this.properties.get("temperature");
-        });
+        this.setupProperties();
     }
 
     public async increaseTemperature(energy : number) : Promise<void> {
@@ -124,7 +125,8 @@ export class HeatingEnv extends Thing {
 }
 
 export function create(servient: Servient, 
-    init: WoT.ExposedThingInit, 
-    map : Map<string, any>): HeatingEnv {
-return new HeatingEnv(servient, init, map);
+        init: WoT.ExposedThingInit, 
+        map : Map<string, any>): HeatingEnv {
+
+    return new HeatingEnv(servient, init, map);
 }
