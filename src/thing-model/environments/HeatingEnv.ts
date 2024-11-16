@@ -122,3 +122,9 @@ export class HeatingEnv extends Thing {
 
 
 }
+
+export function create(servient: Servient, 
+    init: WoT.ExposedThingInit, 
+    map : Map<string, any>): HeatingEnv {
+return new HeatingEnv(servient, init, map);
+}

@@ -3,7 +3,7 @@ import { eventQueue } from "../../simulation/eventQueue";
 import { PeriodicThing } from "../PeriodicThing";
 import { Thing } from "../Thing";
 
-export class LampThing extends PeriodicThing {
+class LampThing extends PeriodicThing {
 
     private intensity: number = 0;  // Brightness level of the lamp
     private isOn: boolean = false;  // Power state of the lamp (on/off)
@@ -115,3 +115,11 @@ export class LampThing extends PeriodicThing {
         }
     }
 }
+
+export function create(servient: Servient, 
+                        init: WoT.ExposedThingInit, 
+                        environment : Thing,   
+                        period: number, 
+                        map : Map<string, any>): LampThing {
+    return new LampThing(servient, init, environment, period);
+  }

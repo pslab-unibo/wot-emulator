@@ -3,13 +3,12 @@ import { Thing } from "../Thing";
 import { SituatedThing } from "../SituatedThing";
 import { HeatingEnv } from "../environments/HeatingEnv";
 import { eventQueue } from "../../simulation/eventQueue";
+import util from 'util';
 
-
-export class Radiator extends SituatedThing {
+class Radiator extends SituatedThing {
 
     private isOn : boolean = false;
-    private power : number = 0;
-    
+
     private static initBase : WoT.ExposedThingInit = {
         description: "A radiator that emits heat",
         forms: [
@@ -62,8 +61,6 @@ export class Radiator extends SituatedThing {
         }
     };
     
-
-
     constructor(servient: Servient, init: WoT.ExposedThingInit, environment : Thing, map : Map<string, any> =new Map<string, any>()) {
         super(servient, init, Radiator.initBase, environment, map);
 
@@ -76,7 +73,7 @@ export class Radiator extends SituatedThing {
         });
 
         this.getThing().setPropertyReadHandler("power", async () => {
-            return this.power;
+            return this.properties.get('power');
         });
 
         this.getThing().setPropertyReadHandler("isOn", async () => {
@@ -90,7 +87,7 @@ export class Radiator extends SituatedThing {
             try {
                 console.log("Emit increase event");
                 if(this.environment instanceof HeatingEnv) {
-                    eventQueue.enqueueEvent(() => (this.environment as HeatingEnv).increaseTemperature(this.power*deltaTime));
+                    eventQueue.enqueueEvent(() => (this.environment as HeatingEnv).increaseTemperature(this.properties.get('power')*deltaTime));
                 }
             } catch (error) {
                 console.log(error);
@@ -99,4 +96,12 @@ export class Radiator extends SituatedThing {
         }
     }
 
+}
+
+export function create(servient: Servient, 
+    init: any, 
+    environment : Thing,   
+    period: number, 
+    map : Map<string, any>): Radiator {
+        return new Radiator(servient, init, environment, map);
 }
