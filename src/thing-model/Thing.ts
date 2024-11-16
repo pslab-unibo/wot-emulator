@@ -22,6 +22,7 @@ export abstract class Thing {
         this.properties = map;
     }
 
+    //Updates the Thing by calling the `update` method and calculating elapsed time.
     public tick() : void {
         const currentTime : number = Date.now();
         const deltaTime = (currentTime - this.lastUpdateTime);
@@ -35,20 +36,25 @@ export abstract class Thing {
     
     }
 
+    /**
+     * Abstract method to be implemented by subclasses.
+     * Defines the specific behavior of the Thing during updates.
+     */
     protected abstract update(deltaTime: number): void;
 
     public getThing(): ExposedThing {
         return this.thing;
     }
 
+    //Sets up a read handler for a specific property.
     protected setupPropertyHandler(propertyName : string) {
         this.getThing().setPropertyReadHandler(propertyName, async () => {
             return this.properties.get(propertyName);
         });
     }
 
+    // Setup default handlers for all properties
     protected setupProperties(): void {
-        // Setup default handlers for all properties
         this.properties.forEach((_, propertyName) => {
             this.setupPropertyHandler(propertyName);
         });

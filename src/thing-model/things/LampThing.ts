@@ -64,7 +64,7 @@ class LampThing extends PeriodicThing {
                 init: WoT.ExposedThingInit, 
                 environment : Thing, 
                 period: number) {
-                    
+
         super(servient, init, LampThing.initBase, environment, period);
 
         // Define the read handler for the "intensity" property
@@ -120,6 +120,7 @@ class LampThing extends PeriodicThing {
     }
 }
 
+//Factory function to create a new LampThing instance.
 export function create(servient: Servient, 
                         init: WoT.ExposedThingInit, 
                         environment : Thing,   

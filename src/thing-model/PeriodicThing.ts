@@ -4,7 +4,7 @@ import { Thing } from "./Thing";
 
 export abstract class PeriodicThing extends SituatedThing {
 
-    protected period : number;                       // Only for periodic Things
+    protected period : number;        
 
     constructor(servient: Servient, 
                 init: WoT.ExposedThingInit, 
@@ -20,7 +20,7 @@ export abstract class PeriodicThing extends SituatedThing {
         const currentTime : number = Date.now();
         const deltaTime = (currentTime - this.lastUpdateTime);
 
-        // If the Thing is not periodic or deltaTime is greater then period
+        // If deltaTime is greater then period
         if (deltaTime >= this.period) { 
             this.update(deltaTime);
             this.lastUpdateTime = currentTime;

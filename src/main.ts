@@ -4,7 +4,10 @@ import { initialize } from "./simulation/init";
 // Instantiate the Scheduler
 const scheduler = new Scheduler(100);
 
-// Initialize Things by reading configuration and exposing them via the specified Servient
+/**
+ * Initialize Things, Environment and Servients by reading  
+ * configuration and exposing them via the specified Servient
+ **/
 initialize(scheduler);
 
 // Start the Scheduler to process events and periodic actions

@@ -1,6 +1,10 @@
 import Servient from "@node-wot/core";
 import { Thing } from "../Thing";
 
+/**
+ * The `HeatingEnv` class represents a simulated environment that can be heated or cooled
+ * based on external factors. It extends the base `Thing` class.
+ */
 export class HeatingEnv extends Thing {
 
     private static readonly specificHeatCapacity = 1005; // J/kg°C (air capacity)
@@ -103,6 +107,7 @@ export class HeatingEnv extends Thing {
         this.setupPropertyHandler('temperature');
     }
 
+    //Increases the environment's temperature based on the input energy.
     public async increaseTemperature(energy : number) : Promise<void> {
         const mass = HeatingEnv.airDensity * this.properties.get("volume");
         const deltaTemperature = energy / (mass * HeatingEnv.specificHeatCapacity);
@@ -111,6 +116,7 @@ export class HeatingEnv extends Thing {
         console.log("updated temperature: ", this.properties.get("temperature"));
     } 
 
+    //Updates the environment's temperature over time, simulating natural cooling.
     protected update(deltaTime : number): void {
         const temperatureDifference = this.properties.get("temperature") - this.properties.get("ambientTemperature");
         const coolingRate = this.properties.get("coolingConstant") * temperatureDifference;
@@ -124,6 +130,7 @@ export class HeatingEnv extends Thing {
 
 }
 
+//Factory function to create a new HeatingEnv instance.
 export function create(servient: Servient, 
         init: WoT.ExposedThingInit, 
         map : Map<string, any>): HeatingEnv {

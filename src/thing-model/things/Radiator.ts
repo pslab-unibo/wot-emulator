@@ -4,6 +4,7 @@ import { SituatedThing } from "../SituatedThing";
 import { HeatingEnv } from "../environments/HeatingEnv";
 import { eventQueue } from "../../simulation/eventQueue";;
 
+//* Represents a radiator that emits heat to an environment when turned on.
 class Radiator extends SituatedThing {
 
     private isOn : boolean = false;
@@ -83,6 +84,8 @@ class Radiator extends SituatedThing {
 
     }
 
+    /* Updates the state of the radiator based on the elapsed time.
+     Emits heat to the environment if the radiator is turned on.*/
     protected update(deltaTime : number) {
         if(this.isOn){
             try {
@@ -99,6 +102,7 @@ class Radiator extends SituatedThing {
 
 }
 
+//Factory function to create a new Radiator instance.
 export function create(servient: Servient, 
     init: any, 
     environment : Thing,   

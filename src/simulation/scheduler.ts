@@ -1,10 +1,10 @@
 import { Thing } from "../thing-model/Thing";
 import { eventQueue } from '../simulation/eventQueue';
 
-// Scheduler class to manage periodic actions on Things and process event commands
+// Scheduler class to manage update on Things and process event commands
 export class Scheduler {
 
-    private period: number;
+    private period: number;         // The interval (in milliseconds) for periodic updates
     private environment? : Thing;
     private things: Thing[] = [];
 
@@ -22,6 +22,10 @@ export class Scheduler {
         this.environment = env;
     }
 
+    /**
+     * Starts the Scheduler, performing periodic updates on all Things
+     * and processing queued events in an infinite loop.
+     */
     public async start(): Promise<void> {
         console.log("Scheduler started");
 
@@ -37,6 +41,7 @@ export class Scheduler {
             for (const thing of this.things) {
                 thing.tick();
             }
+            
             await this.wait(this.period);
         }
     }
