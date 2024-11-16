@@ -54,7 +54,7 @@ export class ServientManager {
 
     // Retrieves a servient by its ID.
     public getServient(id: any): Servient | undefined {
-        return this.servients.get(id);
+        return this.servients.get(id) || Array.from(this.getAllServients().values())[0];;
     }
 
     // Retrieves all servients.

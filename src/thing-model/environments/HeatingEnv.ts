@@ -8,7 +8,7 @@ export class HeatingEnv extends Thing {
 
     private static initBase : WoT.ExposedThingInit = {
         "@context": "https://www.w3.org/2019/wot/td/v1",
-        "@type": "Thing",
+        "@type": "Environment",
         "description": "An environment that can be heated or cooled based on external influences",
         "forms": [
             {
