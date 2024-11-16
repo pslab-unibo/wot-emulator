@@ -100,7 +100,7 @@ export class HeatingEnv extends Thing {
 
         super(servient, init, HeatingEnv.initBase, map);
 
-        this.setupProperties();
+        this.setupPropertyHandler('temperature');
     }
 
     public async increaseTemperature(energy : number) : Promise<void> {
