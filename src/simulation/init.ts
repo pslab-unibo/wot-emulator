@@ -2,17 +2,17 @@ import { Scheduler } from "./scheduler";
 import * as fs from 'fs';
 import { ServientManager } from "./ServientManager";
 import { Thing } from "../thing-model/Thing";
-import { HeatingEnv } from "../thing-model/environments/HeatingEnv";
 
 export async function initializeThings(scheduler: Scheduler) {
+
     // Reads configuration data for Things from a JSON file
     const configData = JSON.parse(fs.readFileSync('./src/td/config.json', 'utf8'));
     const envConfig = configData.environment;
 
     // Creates an instance of ServientManager to manage multiple servients
-    const servients : ServientManager = new ServientManager(configData.things);
+    const servients : ServientManager = new ServientManager(configData.servients);
 
-    const serv = servients.getServient(0)
+    const serv = servients.getServient(0);
     var env = undefined;
     
     if(serv) {
@@ -34,7 +34,7 @@ export async function initializeThings(scheduler: Scheduler) {
                 
                 const thingModule = await import(`../thing-model/things/${thingType}`);
                 const thing = thingModule.create(servient, thingConfig, env as Thing, period, new Map(Object.entries(thingConfig)))
-                console.log(thing);
+
                 // Exposes the Thing to make it available for interaction
                 await thing.getThing().expose();
         

@@ -1,9 +1,0 @@
-{
-        "id": "env",
-        "title": "environment",
-        "type": "environment",
-        "volume": 30,
-        "ambientTemperature": 18,
-        "temperature": 20,
-        "coolingConstant": 0.1       
-}
