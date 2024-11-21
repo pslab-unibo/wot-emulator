@@ -7,6 +7,11 @@ import { Thing } from "../Thing";
  */
 export class HeatingEnv extends Thing {
 
+    private volume : number = 30;
+    private ambientTemperature : number = 18;
+    private temperature : number = 20;
+    private coolingConstant : number = 0.1;
+
     private static readonly specificHeatCapacity : number = 1005; // J/kg°C (air capacity)
     private static readonly airDensity : number = 1.225; // kg/m³ (air density)
 
@@ -100,31 +105,32 @@ export class HeatingEnv extends Thing {
 
     constructor(servient: Servient, 
                 init: WoT.ExposedThingInit, 
-                map : Map<string, any> =new Map<string, any>()) {
+                configData : Object = {}) {
 
-        super(servient, init, HeatingEnv.initBase, map);
-
-        this.setupPropertyHandler('temperature');
+        super(servient, init, HeatingEnv.initBase, configData);
+        
+        this.volume = (configData as any).volume;
+        this.temperature = (configData as any).temperature;
+        this.ambientTemperature = (configData as any).ambientTemperature;
+        this.coolingConstant = (configData as any).coolingConstant;
     }
 
     //Increases the environment's temperature based on the input energy.
     public async increaseTemperature(energy : number) : Promise<void> {
-        const mass = HeatingEnv.airDensity * this.properties.get("volume");
+        const mass = HeatingEnv.airDensity * this.volume;
         const deltaTemperature = energy / (mass * HeatingEnv.specificHeatCapacity);
-        const temp : number = this.properties.get("temperature");
-        this.properties.set("temperature", temp+deltaTemperature);
-        console.log("updated temperature: ", this.properties.get("temperature"));
+        this.temperature += deltaTemperature;
+        console.log("updated temperature: ", this.temperature);
     } 
 
     //Updates the environment's temperature over time, simulating natural cooling.
     protected update(deltaTime : number): void {
-        const temperatureDifference = this.properties.get("temperature") - this.properties.get("ambientTemperature");
-        const coolingRate = this.properties.get("coolingConstant") * temperatureDifference;
+        const temperatureDifference = this.temperature - this.ambientTemperature;
+        const coolingRate = this.coolingConstant * temperatureDifference;
 
         const temperatureDrop = coolingRate * (deltaTime / 1000);  
        
-        const temp : number = this.properties.get("temperature");
-        this.properties.set("temperature", temp-temperatureDrop);
+        this.temperature -= temperatureDrop;
     }
 
 

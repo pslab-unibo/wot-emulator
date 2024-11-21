@@ -34,7 +34,7 @@ async function initializeEnvironment(scheduler: Scheduler, servients: ServientMa
         const envModule = await import(`../thing-model/environments/${envConfig[0].type}`);
         
         // Create the environment using the imported module
-        const environment = envModule.create(servient, envConfig, new Map(Object.entries(envConfig[0])));
+        const environment = envModule.create(servient, envConfig, envConfig[0]);
         
         scheduler.setEnvironment(environment);
 
@@ -66,7 +66,7 @@ async function initializeThings(scheduler: Scheduler, servients : ServientManage
                 const thingModule = await import(`../thing-model/things/${thingType}`);
                 
                 // Create the Thing using the imported module and configuration data
-                const thing = thingModule.create(servient, thingConfig, environment, period, new Map(Object.entries(thingConfig)))
+                const thing = thingModule.create(servient, thingConfig, environment, period, thingConfig);
 
                 // Exposes the Thing to make it available for interaction
                 await thing.getThing().expose();

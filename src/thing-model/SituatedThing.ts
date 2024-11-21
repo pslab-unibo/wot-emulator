@@ -8,9 +8,9 @@ export abstract class SituatedThing extends Thing{
     constructor(servient: Servient, init: WoT.ExposedThingInit, 
                 initBase: WoT.ExposedThingInit = {}, 
                 environment : Thing, 
-                map : Map<string, any> =new Map<string, any>()) {
+                configData : Object = {}) {
                     
-        super(servient, init, initBase, map);
+        super(servient, init, initBase, configData);
         this.environment = environment;
     }
 

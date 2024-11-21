@@ -8,6 +8,7 @@ import { eventQueue } from "../../simulation/eventQueue";;
 class Radiator extends SituatedThing {
 
     private isOn : boolean = false;
+    private power : number;
 
     private static initBase : WoT.ExposedThingInit = {
         description: "A radiator that emits heat",
@@ -64,9 +65,9 @@ class Radiator extends SituatedThing {
     constructor(servient: Servient, 
                 init: WoT.ExposedThingInit, 
                 environment : Thing, 
-                map : Map<string, any> =new Map<string, unknown>()) {
+                configData : Object) {
 
-        super(servient, init, Radiator.initBase, environment, map);
+        super(servient, init, Radiator.initBase, environment, configData);
 
         this.thing.setActionHandler("toggle", async () => {
             eventQueue.enqueueEvent(async () => {
@@ -76,11 +77,11 @@ class Radiator extends SituatedThing {
             return undefined;
         });
 
-        this.setupPropertyHandler('power');
-
         this.getThing().setPropertyReadHandler("isOn", async () => {
             return this.isOn;
         });
+
+        this.power = (configData as any).power;
 
     }
 
@@ -92,7 +93,7 @@ class Radiator extends SituatedThing {
                 console.log("Emit increase event");
                 if(this.environment instanceof HeatingEnv) {
                     eventQueue.enqueueEvent(() => (this.environment as HeatingEnv)
-                    .increaseTemperature(this.properties.get('power')*deltaTime));
+                    .increaseTemperature(this.power*deltaTime));
                 }
             } catch (error) {
                 console.log(error);

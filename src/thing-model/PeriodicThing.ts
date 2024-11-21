@@ -10,9 +10,9 @@ export abstract class PeriodicThing extends SituatedThing {
                 init: WoT.ExposedThingInit, 
                 initBase: WoT.ExposedThingInit = {}, 
                 environment : Thing,  period : number, 
-                map : Map<string, any> =new Map<string, any>()) {
+                configData : Object = {}) {
 
-        super(servient, init, initBase, environment, map);
+        super(servient, init, initBase, environment, configData);
         this.period = period; 
     }
 
