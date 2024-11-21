@@ -2,6 +2,7 @@ import { Scheduler } from "./scheduler";
 import * as fs from 'fs';
 import { ServientManager } from "./ServientManager";
 import { Thing } from "../thing-model/Thing";
+import { json } from "stream/consumers";
 
 //Initializes the simulation by setting up the environment and Things.
 export async function initialize(scheduler: Scheduler) {
@@ -34,7 +35,7 @@ async function initializeEnvironment(scheduler: Scheduler, servients: ServientMa
         const envModule = await import(`../thing-model/environments/${envConfig[0].type}`);
         
         // Create the environment using the imported module
-        const environment = envModule.create(servient, envConfig, envConfig[0]);
+        const environment = envModule.create(servient, envConfig[0]);
         
         scheduler.setEnvironment(environment);
 
@@ -54,19 +55,17 @@ async function initializeThings(scheduler: Scheduler, servients : ServientManage
     const configData = JSON.parse(fs.readFileSync('./src/td/config.json', 'utf8')).things;
     
     for (const thingConfig of configData) {
-        try {
-            const thingType = thingConfig.type;
-            const period = thingConfig.period;
-            
+        try { 
+               
             // Retrieves the servient based on the Thing configuration; defaults to servient with ID 0 if undefined
             const servient = servients.getServient(thingConfig.servient);
             
             if (servient) {
                 
-                const thingModule = await import(`../thing-model/things/${thingType}`);
+                const thingModule = await import(`../thing-model/things/${thingConfig.type}`);
                 
                 // Create the Thing using the imported module and configuration data
-                const thing = thingModule.create(servient, thingConfig, environment, period, thingConfig);
+                const thing = thingModule.create(servient, thingConfig, environment, thingConfig.period);
 
                 // Exposes the Thing to make it available for interaction
                 await thing.getThing().expose();

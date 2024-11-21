@@ -10,7 +10,7 @@ export abstract class SituatedThing extends Thing{
                 environment : Thing, 
                 configData : Object = {}) {
                     
-        super(servient, init, initBase, configData);
+        super(servient, init, initBase);
         this.environment = environment;
     }
 

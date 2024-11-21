@@ -104,15 +104,16 @@ export class HeatingEnv extends Thing {
     };
 
     constructor(servient: Servient, 
-                init: WoT.ExposedThingInit, 
-                configData : Object = {}) {
+                init: WoT.ExposedThingInit) {
 
-        super(servient, init, HeatingEnv.initBase, configData);
+        super(servient, init, HeatingEnv.initBase);
         
-        this.volume = (configData as any).volume;
-        this.temperature = (configData as any).temperature;
-        this.ambientTemperature = (configData as any).ambientTemperature;
-        this.coolingConstant = (configData as any).coolingConstant;
+        this.volume = init.volume as number;
+        this.temperature = init.temperature as number;
+        this.ambientTemperature = init.ambientTemperature as number;
+        this.coolingConstant = init.coolingConstant as number;
+
+        console.log(init);
     }
 
     //Increases the environment's temperature based on the input energy.
@@ -138,8 +139,7 @@ export class HeatingEnv extends Thing {
 
 //Factory function to create a new HeatingEnv instance.
 export function create(servient: Servient, 
-        init: WoT.ExposedThingInit, 
-        map : Map<string, any>): HeatingEnv {
+        init: WoT.ExposedThingInit): HeatingEnv {
 
-    return new HeatingEnv(servient, init, map);
+    return new HeatingEnv(servient, init);
 }

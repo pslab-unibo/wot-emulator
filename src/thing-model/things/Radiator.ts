@@ -64,10 +64,9 @@ class Radiator extends SituatedThing {
     
     constructor(servient: Servient, 
                 init: WoT.ExposedThingInit, 
-                environment : Thing, 
-                configData : Object) {
+                environment : Thing) {
 
-        super(servient, init, Radiator.initBase, environment, configData);
+        super(servient, init, Radiator.initBase, environment);
 
         this.thing.setActionHandler("toggle", async () => {
             eventQueue.enqueueEvent(async () => {
@@ -81,7 +80,7 @@ class Radiator extends SituatedThing {
             return this.isOn;
         });
 
-        this.power = (configData as any).power;
+        this.power = init.power as number;
 
     }
 
@@ -108,7 +107,6 @@ class Radiator extends SituatedThing {
 export function create(servient: Servient, 
     init: any, 
     environment : Thing,   
-    period: number, 
-    map : Map<string, any>): Radiator {
-        return new Radiator(servient, init, environment, map);
+    period: number): Radiator {
+        return new Radiator(servient, init, environment);
 }

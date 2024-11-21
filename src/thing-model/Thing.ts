@@ -7,8 +7,7 @@ export abstract class Thing {
 
     constructor(servient: Servient, 
                 init: WoT.ExposedThingInit, 
-                initBase: WoT.ExposedThingInit = {}, 
-                configData : Object = {}) {
+                initBase: WoT.ExposedThingInit = {}) {
 
         const fullInit = {
             "@context": "https://www.w3.org/2019/wot/td/v1",

@@ -9,10 +9,9 @@ export abstract class PeriodicThing extends SituatedThing {
     constructor(servient: Servient, 
                 init: WoT.ExposedThingInit, 
                 initBase: WoT.ExposedThingInit = {}, 
-                environment : Thing,  period : number, 
-                configData : Object = {}) {
+                environment : Thing,  period : number) {
 
-        super(servient, init, initBase, environment, configData);
+        super(servient, init, initBase, environment);
         this.period = period; 
     }
 
