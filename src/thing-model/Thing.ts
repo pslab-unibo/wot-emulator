@@ -3,7 +3,7 @@ import { ExposedThing, Servient } from "@node-wot/core";
 export abstract class Thing {
 
     protected thing: ExposedThing;                  // ExposedThing instance representing the Thing              
-    protected lastUpdateTime: number = Date.now();    // Tracks elapsed time since the last update
+    private lastUpdateTime: number = Date.now();    // Tracks elapsed time since the last update
 
     constructor(servient: Servient, 
                 init: WoT.ExposedThingInit, 
@@ -19,25 +19,19 @@ export abstract class Thing {
         this.thing = new ExposedThing(servient, fullInit);
     }
 
-    //Updates the Thing by calling the `update` method and calculating elapsed time.
-    public tick() : void {
-        const currentTime : number = Date.now();
-        const deltaTime = (currentTime - this.lastUpdateTime);
+    public getLastUpdateTime() : number{
+        return this.lastUpdateTime;
+    }
 
-        try {
-            this.update(deltaTime);
-            this.lastUpdateTime = currentTime;
-        } catch(error) {
-            console.error(`Error during update for ${this.thing.title}:`, error);
-        }
-    
+    public setLastUpdateTime(newTime : number) : void{
+        this.lastUpdateTime = newTime;
     }
 
     /**
      * Abstract method to be implemented by subclasses.
      * Defines the specific behavior of the Thing during updates.
      */
-    protected abstract update(deltaTime: number): void;
+    public abstract update(deltaTime: number): void;
 
     public getThing(): ExposedThing {
         return this.thing;

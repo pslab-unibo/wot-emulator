@@ -86,7 +86,7 @@ class Radiator extends SituatedThing {
 
     /* Updates the state of the radiator based on the elapsed time.
      Emits heat to the environment if the radiator is turned on.*/
-    protected update(deltaTime : number) {
+    public update(deltaTime : number) {
         if(this.isOn){
             try {
                 console.log("Emit increase event");

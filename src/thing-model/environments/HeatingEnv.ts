@@ -112,8 +112,6 @@ export class HeatingEnv extends Thing {
         this.temperature = init.temperature as number;
         this.ambientTemperature = init.ambientTemperature as number;
         this.coolingConstant = init.coolingConstant as number;
-
-        console.log(init);
     }
 
     //Increases the environment's temperature based on the input energy.
@@ -121,16 +119,13 @@ export class HeatingEnv extends Thing {
         const mass = HeatingEnv.airDensity * this.volume;
         const deltaTemperature = energy / (mass * HeatingEnv.specificHeatCapacity);
         this.temperature += deltaTemperature;
-        console.log("updated temperature: ", this.temperature);
     } 
 
     //Updates the environment's temperature over time, simulating natural cooling.
-    protected update(deltaTime : number): void {
+    public update(deltaTime : number): void {
         const temperatureDifference = this.temperature - this.ambientTemperature;
         const coolingRate = this.coolingConstant * temperatureDifference;
-
         const temperatureDrop = coolingRate * (deltaTime / 1000);  
-       
         this.temperature -= temperatureDrop;
     }
 

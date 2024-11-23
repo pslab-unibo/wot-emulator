@@ -15,15 +15,8 @@ export abstract class PeriodicThing extends SituatedThing {
         this.period = period; 
     }
 
-    public tick(): void {
-        const currentTime : number = Date.now();
-        const deltaTime = (currentTime - this.lastUpdateTime);
-
-        // If deltaTime is greater then period
-        if (deltaTime >= this.period) { 
-            this.update(deltaTime);
-            this.lastUpdateTime = currentTime;
-        } 
+    public getPeriod() : number {
+        return this.period;
     }
     
 }
