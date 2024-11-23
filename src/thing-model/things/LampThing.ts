@@ -2,6 +2,7 @@ import { Servient } from "@node-wot/core";
 import { eventQueue } from "../../simulation/eventQueue";
 import { PeriodicThing } from "../PeriodicThing";
 import { Thing } from "../Thing";
+import { ok } from "../../simulation/action-result"
 
 class LampThing extends PeriodicThing {
 
@@ -103,10 +104,7 @@ class LampThing extends PeriodicThing {
                 this.isOn = !this.isOn;
                 console.log(`Lamp state toggled to: ${this.isOn}`);
             });
-            return {
-                statusCode: 202, 
-                message: "Lamp toggle action accepted" 
-            };
+            return ok();
         });
     }
 

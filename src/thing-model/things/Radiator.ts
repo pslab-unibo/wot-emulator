@@ -2,7 +2,8 @@ import Servient from "@node-wot/core";
 import { Thing } from "../Thing";
 import { SituatedThing } from "../SituatedThing";
 import { HeatingEnv } from "../environments/HeatingEnv";
-import { eventQueue } from "../../simulation/eventQueue";;
+import { eventQueue } from "../../simulation/eventQueue";
+import { ok } from "../../simulation/action-result"
 
 //* Represents a radiator that emits heat to an environment when turned on.
 class Radiator extends SituatedThing {
@@ -68,12 +69,12 @@ class Radiator extends SituatedThing {
 
         super(servient, init, Radiator.initBase, environment);
 
-        this.thing.setActionHandler("toggle", async () => {
+        this.thing.setActionHandler("toggle", async() => {
             eventQueue.enqueueEvent(async () => {
                 this.isOn = !this.isOn;
                 console.log(`Radiator state toggled to: ${this.isOn}`);
             });
-            return undefined;
+            return ok();
         });
 
         this.getThing().setPropertyReadHandler("isOn", async () => {
@@ -87,6 +88,7 @@ class Radiator extends SituatedThing {
     /* Updates the state of the radiator based on the elapsed time.
      Emits heat to the environment if the radiator is turned on.*/
     public update(deltaTime : number) {
+
         if(this.isOn){
             try {
                 console.log("Emit increase event");
