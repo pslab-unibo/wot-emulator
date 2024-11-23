@@ -36,28 +36,29 @@ export class Scheduler {
             await eventQueue.processQueue();
 
             if(this.environment) {
-                const currentTime : number = Date.now();
-                const deltaTime = (currentTime - this.environment.getLastUpdateTime());
-                this.environment.update(deltaTime);
-                this.environment.setLastUpdateTime(currentTime);
+                this.updateEntity(this.environment);
             }
 
             // Iterates through each Thing to invoke the 'update' if it exists
             for (const thing of this.things) {
-                const currentTime : number = Date.now();
-                const deltaTime = (currentTime - thing.getLastUpdateTime());
-
-                try {
-                    if (!(thing instanceof PeriodicThing) || deltaTime >= thing.getPeriod()) {
-                        thing.update(deltaTime);
-                        thing.setLastUpdateTime(currentTime);
-                    }
-                } catch(error) {
-                    console.error(`Error during update for ${thing.getThing().title}:`, error);
-                }
+                this.updateEntity(thing);
             }
             
             await this.wait(this.period);
+        }
+    }
+
+    private updateEntity(entity : Thing) {
+        const currentTime : number = Date.now();
+        const deltaTime = (currentTime - entity.getLastUpdateTime());
+
+        try {
+            if (!(entity instanceof PeriodicThing) || deltaTime >= entity.getPeriod()) {
+                entity.update(deltaTime);
+                entity.setLastUpdateTime(currentTime);
+            }
+        } catch(error) {
+            console.error(`Error during update for ${entity.getThing().title}:`, error);
         }
     }
 

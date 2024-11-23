@@ -119,6 +119,7 @@ export class HeatingEnv extends Thing {
         const mass = HeatingEnv.airDensity * this.volume;
         const deltaTemperature = energy / (mass * HeatingEnv.specificHeatCapacity);
         this.temperature += deltaTemperature;
+        console.log("Updated temperature: ", this.temperature);
     } 
 
     //Updates the environment's temperature over time, simulating natural cooling.
