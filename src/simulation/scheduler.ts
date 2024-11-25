@@ -48,6 +48,8 @@ export class Scheduler {
         }
     }
 
+    /**Calculates the deltaTime since the last update and calls the update function of the Thing.
+    * If the Thing is periodic, it is updated only if the defined period has passed. */
     private updateEntity(entity : Thing) {
         const currentTime : number = Date.now();
         const deltaTime = (currentTime - entity.getLastUpdateTime());

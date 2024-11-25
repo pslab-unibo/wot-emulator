@@ -1,5 +1,3 @@
-import { Scheduler } from "./scheduler";
-
 type EventHandler = () => Promise<void>; 
 
 // Class managing a queue of events

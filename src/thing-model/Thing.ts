@@ -1,5 +1,6 @@
 import { ExposedThing, Servient } from "@node-wot/core";
 
+// Abstract class representing a Thing in the Web of Things (WoT)
 export abstract class Thing {
 
     protected thing: ExposedThing;                  // ExposedThing instance representing the Thing              
@@ -37,6 +38,8 @@ export abstract class Thing {
         return this.thing;
     }
 
+    /** Configures the properties of the Thing based on the provided initialization.
+     * It will check for type consistency and assign the values to the properties of this Thing.*/
     protected configureProperties(init: WoT.ExposedThingInit): void {
         Object.entries(init).forEach(([key, value]) => {
             if (key in this) {
@@ -52,12 +55,14 @@ export abstract class Thing {
         });
     }
     
+    //Sets the default read handler for a property, allowing its value to be read.
     protected setDefaultHandler(propertyName: string): void {
         if (!(propertyName in this)) {
             console.warn(`Cannot set handler for '${propertyName}': Property does not exist.`);
             return;
         }
-    
+        
+        // Set the read handler to return the property value
         this.getThing().setPropertyReadHandler(propertyName as string, async () => {
             try {
                 return (this as any)[propertyName];
@@ -68,6 +73,7 @@ export abstract class Thing {
         });
     }
     
+    // Sets default read handlers for all properties defined in the initialization object.
     protected setPropertiesHandler(init: WoT.ExposedThingInit): void {
         Object.keys(init).forEach(propertyName => {
             if (propertyName in this) {

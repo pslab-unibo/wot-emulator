@@ -41,6 +41,7 @@ async function initializeEnvironment(scheduler: Scheduler, servients: ServientMa
 
         // Expose the environment Thing
         await environment.getThing().expose();
+        
         return environment;
 
     } catch (error) {
