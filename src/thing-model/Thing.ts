@@ -38,15 +38,42 @@ export abstract class Thing {
     }
 
     protected configureProperties(init: WoT.ExposedThingInit): void {
-        try {
-            Object.keys(init).forEach(key => {
-                if (key in this) {
-                    (this as any)[key] = init[key];
+        Object.entries(init).forEach(([key, value]) => {
+            if (key in this) {
+                const typedKey = key as keyof this;
+                if (typedKey in this) {
+                    if (typeof value === typeof this[typedKey]) {
+                        (this as any)[typedKey] = value;
+                    } else {
+                        console.warn(`Type mismatch for property '${key}'.`);
+                    }
                 }
-            });
-        } catch (error) {
-            console.log(error);
+            }
+        });
+    }
+    
+    protected setDefaultHandler(propertyName: string): void {
+        if (!(propertyName in this)) {
+            console.warn(`Cannot set handler for '${propertyName}': Property does not exist.`);
+            return;
         }
+    
+        this.getThing().setPropertyReadHandler(propertyName as string, async () => {
+            try {
+                return (this as any)[propertyName];
+            } catch (error) {
+                console.error(`Error reading property '${propertyName}':`, error);
+                throw error;
+            }
+        });
+    }
+    
+    protected setPropertiesHandler(init: WoT.ExposedThingInit): void {
+        Object.keys(init).forEach(propertyName => {
+            if (propertyName in this) {
+                this.setDefaultHandler(propertyName);
+            } 
+        });
     }
     
     

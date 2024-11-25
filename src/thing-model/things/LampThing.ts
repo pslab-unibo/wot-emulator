@@ -84,19 +84,8 @@ class LampThing extends PeriodicThing {
         });
 
         // Define the read handler for the "isOn" property
-        this.getThing().setPropertyReadHandler("isOn", async () => {
-            return this.isOn;
-        });
-        
-        // Define the write handler for the "isOn" property with validation
-        this.getThing().setPropertyWriteHandler("isOn", async (newValue) => {
-            if (typeof newValue === "boolean") {
-                this.isOn = newValue;
-                console.log(`Change state in: ${this.isOn}`);
-            } else {
-                throw new Error("Invalid state value. Must be a boolean");
-            }
-        });
+        this.setDefaultHandler('isOn');
+    
 
         // Define the "toggle" action to switch the lamp's state
         this.thing.setActionHandler("toggle", async () => {

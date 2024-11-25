@@ -77,11 +77,10 @@ class Radiator extends SituatedThing {
             return ok();
         });
 
-        this.getThing().setPropertyReadHandler("isOn", async () => {
-            return this.isOn;
-        });
+        this.setPropertiesHandler(init);
 
         this.configureProperties(init);
+        this.setDefaultHandler('isOn');
 
     }
 

@@ -7,9 +7,9 @@ import { Thing } from "../Thing";
  */
 export class HeatingEnv extends Thing {
 
-    private volume : number = 30;
+    private volume : number = 0;
     private ambientTemperature : number = 18;
-    private temperature : number = 0;
+    private temperature : number = this.ambientTemperature;
     private coolingConstant : number = 0.1;
 
     private static readonly specificHeatCapacity : number = 1005; // J/kg°C (air capacity)
@@ -109,6 +109,25 @@ export class HeatingEnv extends Thing {
         super(servient, init, HeatingEnv.initBase);
 
         this.configureProperties(init);
+
+        /** this.getThing().setPropertyReadHandler("temperature", async () => {
+            return this.temperature;
+        });
+
+        this.getThing().setPropertyReadHandler("ambientTemperature", async () => {
+            return this.ambientTemperature;
+        });
+
+        this.getThing().setPropertyReadHandler("coolingConstant", async () => {
+            return this.coolingConstant;
+        });
+
+        this.getThing().setPropertyReadHandler("volume", async () => {
+            return this.volume;
+        }); **/
+
+        this.setPropertiesHandler(init);
+
     }
 
     //Increases the environment's temperature based on the input energy.
