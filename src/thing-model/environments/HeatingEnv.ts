@@ -9,7 +9,7 @@ export class HeatingEnv extends Thing {
 
     private volume : number = 30;
     private ambientTemperature : number = 18;
-    private temperature : number = 20;
+    private temperature : number = 0;
     private coolingConstant : number = 0.1;
 
     private static readonly specificHeatCapacity : number = 1005; // J/kg°C (air capacity)
@@ -107,11 +107,8 @@ export class HeatingEnv extends Thing {
                 init: WoT.ExposedThingInit) {
 
         super(servient, init, HeatingEnv.initBase);
-        
-        this.volume = init.volume as number;
-        this.temperature = init.temperature as number;
-        this.ambientTemperature = init.ambientTemperature as number;
-        this.coolingConstant = init.coolingConstant as number;
+
+        this.configureProperties(init);
     }
 
     //Increases the environment's temperature based on the input energy.

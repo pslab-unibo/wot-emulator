@@ -37,4 +37,18 @@ export abstract class Thing {
         return this.thing;
     }
 
+    protected configureProperties(init: WoT.ExposedThingInit): void {
+        try {
+            Object.keys(init).forEach(key => {
+                if (key in this) {
+                    (this as any)[key] = init[key];
+                }
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    
+    
+
 }

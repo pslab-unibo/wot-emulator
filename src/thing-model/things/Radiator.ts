@@ -9,7 +9,7 @@ import { ok } from "../../simulation/action-result"
 class Radiator extends SituatedThing {
 
     private isOn : boolean = false;
-    private power : number;
+    private power : number = 0;
 
     private static initBase : WoT.ExposedThingInit = {
         description: "A radiator that emits heat",
@@ -81,7 +81,7 @@ class Radiator extends SituatedThing {
             return this.isOn;
         });
 
-        this.power = init.power as number;
+        this.configureProperties(init);
 
     }
 
