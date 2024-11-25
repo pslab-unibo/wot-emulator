@@ -1,5 +1,7 @@
 import { Servient, ProtocolServer } from '@node-wot/core';
 import { HttpServer } from '@node-wot/binding-http';
+import { WebSocketServer } from '@node-wot/binding-websockets';
+import { MqttBrokerServer } from '@node-wot/binding-mqtt';
 
 /**
  * ServientManager handles the initialization and management of multiple servients.
@@ -25,6 +27,9 @@ export class ServientManager {
                         // Add an HTTP server to each servient with a unique port
                         servient.addServer(new HttpServer(servConfig));
                         break;
+                    case 'mqtt':
+                        servient.addServer(new MqttBrokerServer(servConfig));
+                        break;
 
                 } 
                 
@@ -32,6 +37,7 @@ export class ServientManager {
 
                 // Start the servient
                 servient.start();
+                
                 console.log(`Initialized servient ${servConfig.id} on port ${servConfig.port}`);
             } catch (error) {
                 console.error(`Failed to initialize servient ${servConfig.id}:`, error);
