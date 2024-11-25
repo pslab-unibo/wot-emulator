@@ -3,6 +3,7 @@
       {
         "id": "env1",
         "type": "HeatingEnv",
+        "title": "HeatingEnv",
         "volume": 30,
         "ambientTemperature": 18,
         "temperature": 20,
@@ -42,6 +43,12 @@
         "title": "Radiator1",
         "type": "Radiator",
         "power": 20
+      },
+      {
+        "id": "t4",
+        "title": "Radiator2",
+        "type": "Radiator",
+        "power": 7
       }
     ]
 }
