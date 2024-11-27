@@ -8,9 +8,9 @@ import { Thing } from "../Thing";
 export class HeatingEnv extends Thing {
 
     private volume : number = 0;
-    private ambientTemperature : number = 18;
-    private temperature : number = this.ambientTemperature;
-    private coolingConstant : number = 0.1;
+    private ambientTemperature ?: number;
+    private temperature ?: number;
+    private coolingConstant : number = 0;
 
     private static readonly specificHeatCapacity : number = 1005; // J/kg°C (air capacity)
     private static readonly airDensity : number = 1.225; // kg/m³ (air density)
@@ -110,40 +110,28 @@ export class HeatingEnv extends Thing {
 
         this.configureProperties(init);
 
-        /** this.getThing().setPropertyReadHandler("temperature", async () => {
-            return this.temperature;
-        });
-
-        this.getThing().setPropertyReadHandler("ambientTemperature", async () => {
-            return this.ambientTemperature;
-        });
-
-        this.getThing().setPropertyReadHandler("coolingConstant", async () => {
-            return this.coolingConstant;
-        });
-
-        this.getThing().setPropertyReadHandler("volume", async () => {
-            return this.volume;
-        }); **/
-
         this.setPropertiesHandler(init);
 
     }
 
     //Increases the environment's temperature based on the input energy.
     public async increaseTemperature(energy : number) : Promise<void> {
-        const mass = HeatingEnv.airDensity * this.volume;
-        const deltaTemperature = energy / (mass * HeatingEnv.specificHeatCapacity);
-        this.temperature += deltaTemperature;
-        console.log("Updated temperature: ", this.temperature);
+        if (this.temperature) {
+            const mass = HeatingEnv.airDensity * this.volume;
+            const deltaTemperature = energy / (mass * HeatingEnv.specificHeatCapacity);
+            this.temperature += deltaTemperature;
+            console.log("Updated temperature: ", this.temperature);
+        }
     } 
 
     //Updates the environment's temperature over time, simulating natural cooling.
     public update(deltaTime : number): void {
-        const temperatureDifference = this.temperature - this.ambientTemperature;
-        const coolingRate = this.coolingConstant * temperatureDifference;
-        const temperatureDrop = coolingRate * (deltaTime / 1000);  
-        this.temperature -= temperatureDrop;
+        if (this.ambientTemperature && this.temperature) {
+            const temperatureDifference = this.temperature - this.ambientTemperature;
+            const coolingRate = this.coolingConstant * temperatureDifference;
+            const temperatureDrop = coolingRate * (deltaTime / 1000);  
+            this.temperature -= temperatureDrop;
+        }
     }
 
 
