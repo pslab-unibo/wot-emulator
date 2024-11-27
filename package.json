@@ -19,6 +19,7 @@
     "@node-wot/binding-http": "^0.8.16",
     "@node-wot/binding-mqtt": "^0.8.16",
     "@node-wot/binding-websockets": "^0.8.16",
-    "@node-wot/core": "^0.8.16"
+    "@node-wot/core": "^0.8.16",
+    "debug": "^4.3.7"
   }
 }
