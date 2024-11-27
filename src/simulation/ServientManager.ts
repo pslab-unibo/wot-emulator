@@ -1,6 +1,5 @@
-import { Servient, ProtocolServer } from '@node-wot/core';
+import { Servient} from '@node-wot/core';
 import { HttpServer } from '@node-wot/binding-http';
-import { WebSocketServer } from '@node-wot/binding-websockets';
 import { MqttBrokerServer } from '@node-wot/binding-mqtt';
 
 /**
@@ -28,33 +27,19 @@ export class ServientManager {
                         servient.addServer(new HttpServer(servConfig));
                         break;
                     case 'mqtt':
+                        // Add an MQTT server to each servient
                         servient.addServer(new MqttBrokerServer(servConfig));
                         break;
 
                 } 
                 
                 this.servients.set(servConfig.id, servient);
-
-                // Start the servient
-                servient.start();
                 
                 console.log(`Initialized servient ${servConfig.id} on port ${servConfig.port}`);
             } catch (error) {
                 console.error(`Failed to initialize servient ${servConfig.id}:`, error);
                 throw error;
             }
-        }
-    }
-
-    // Starts all servients in the servients map.
-    //NOT USED
-    public async start(): Promise<void> {
-        try {
-            this.getAllServients().forEach((servient, key) => {
-                servient.start();
-            });
-        } catch(error) {
-            throw error;
         }
     }
 
@@ -67,4 +52,10 @@ export class ServientManager {
     public getAllServients(): Map<number, Servient> {
         return this.servients;
     }
+
+    public async start(): Promise<void> {
+        const servientStatus = Array.from(this.getAllServients().values()).map(servient => servient.start());
+        await Promise.all(servientStatus);
+    }
+
 }
