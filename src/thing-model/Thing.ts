@@ -45,10 +45,21 @@ export abstract class Thing {
             if (key in this) {
                 const typedKey = key as keyof this;
                 if (typedKey in this) {
+                    
+                    if (value === undefined) {
+                        (this as any)[typedKey] = value;
+                        return;
+                    }
+    
+                    if (this[typedKey] === undefined) {
+                        (this as any)[typedKey] = value;
+                        return;
+                    }
+    
                     if (typeof value === typeof this[typedKey]) {
                         (this as any)[typedKey] = value;
                     } else {
-                        console.warn(`Type mismatch for property '${key}'.`);
+                        console.warn(`Type mismatch for property '${key}'. Expected ${typeof this[typedKey]}, got ${typeof value}`);
                     }
                 }
             }
