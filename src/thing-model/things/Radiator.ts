@@ -90,7 +90,6 @@ class Radiator extends SituatedThing {
 
         if(this.isOn){
             try {
-                console.log("Emit increase event");
                 if(this.environment instanceof HeatingEnv) {
                     eventQueue.enqueueEvent(() => (this.environment as HeatingEnv)
                     .increaseTemperature(this.power*deltaTime));
