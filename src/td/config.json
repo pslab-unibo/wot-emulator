@@ -21,7 +21,7 @@
         "id": 1,
         "type": "http",
         "host": "localhost",
-        "port": 8082
+        "port": 8081
       }
     ],
     "things": [

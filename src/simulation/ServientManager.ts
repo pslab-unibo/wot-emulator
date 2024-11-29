@@ -35,7 +35,7 @@ export class ServientManager {
                 
                 this.servients.set(servConfig.id, servient);
                 
-                console.log(`Initialized servient ${servConfig.id} on port ${servConfig.port}`);
+                console.log(`Initialized ${servConfig.type} servient ${servConfig.id}`);
             } catch (error) {
                 console.error(`Failed to initialize servient ${servConfig.id}:`, error);
                 throw error;

@@ -1,6 +1,5 @@
 import { Scheduler } from "./simulation/scheduler";
 import { initialize } from "./simulation/init";
-import mqtt from 'mqtt';
 
 // Instantiate the Scheduler
 const scheduler = new Scheduler(100);
