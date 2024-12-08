@@ -7,21 +7,21 @@
         "volume": 30,
         "ambientTemperature": 18,
         "temperature": 20,
-        "coolingConstant": 0.1,
-        "servient": 1
+        "coolingConstant": 0.1
       }
     ],
     "servients": [
       {
         "id": 0,
-        "type": "mqtt",
-        "uri": "mqtt://test.mosquitto.org:1883"
+        "type": "http",
+        "host": "localhost",
+        "port": 8081
       },
       {
         "id": 1,
         "type": "http",
         "host": "localhost",
-        "port": 8081
+        "port": 8082
       }
     ],
     "things": [
@@ -29,27 +29,27 @@
         "id": "t1",
         "title": "SmartLamp1",
         "type": "LampThing",
-        "period": 2000,
-        "servient": 1
+        "period": 2000
       },
       {
         "id": "t2",
         "title": "SmartLamp2",
         "type": "LampThing",
-        "period": 3000
+        "period": 3000,
+        "servient": 1
       },
       {
         "id": "t3",
         "title": "Radiator1",
         "type": "Radiator",
-        "power": 20,
-        "servient": 1
+        "power": 20
       },
       {
         "id": "t4",
         "title": "Radiator2",
         "type": "Radiator",
-        "power": 7
+        "power": 7,
+        "servient": 1
       }
     ]
 }
