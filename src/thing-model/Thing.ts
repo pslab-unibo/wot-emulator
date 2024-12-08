@@ -119,4 +119,22 @@ export abstract class Thing {
         }
     }
 
+    public toString(): string {
+        const excludeFields = ['environment', 'initBase', 'thing', 'lastUpdateTime'];
+    
+        return JSON.stringify(
+            Object.getOwnPropertyNames(this)
+                .filter(field => 
+                    typeof (this as any)[field] !== 'function' && !excludeFields.includes(field)
+                )
+                .reduce((obj: { [field: string]: any }, field) => { 
+                    obj[field] = (this as any)[field];
+                    return obj;
+                }, {}),
+                null,
+                2
+        );
+    }
+    
+    
 }
