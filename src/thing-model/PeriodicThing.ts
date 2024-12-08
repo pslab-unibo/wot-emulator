@@ -14,7 +14,7 @@ export abstract class PeriodicThing<EnvType extends Thing> extends SituatedThing
         super(servient, init, initBase, environment);
         this.period = period; 
     }
-
+    
     public getPeriod() : number {
         return this.period;
     }

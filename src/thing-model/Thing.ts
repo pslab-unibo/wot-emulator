@@ -10,6 +10,7 @@ export abstract class Thing {
                 init: WoT.ExposedThingInit, 
                 initBase: WoT.ExposedThingInit = {}) {
 
+        // Combine base initialization properties with specific initialization properties
         const fullInit = {
             "@context": "https://www.w3.org/2019/wot/td/v1",
             "@type": "Thing",
@@ -20,18 +21,22 @@ export abstract class Thing {
         this.thing = new ExposedThing(servient, fullInit);
     }
 
+    // Returns the title of the Thing
     public getTitle() {
         return this.thing.title;
     }
 
+    // Gets the last update time of the Thing
     public getLastUpdateTime() : number{
         return this.lastUpdateTime;
     }
 
+    // Sets a new update time
     public setLastUpdateTime(newTime : number) : void{
         this.lastUpdateTime = newTime;
     }
 
+    // Exposes the Thing to the network
     public expose() {
         this.thing.expose();
     }
@@ -42,20 +47,25 @@ export abstract class Thing {
      */
     public abstract update(deltaTime: number): void;
 
-    /** Configures the properties of the Thing based on the provided initialization.
-     * It will check for type consistency and assign the values to the properties of this Thing.*/
+    /** 
+     * Configures the properties of the Thing based on the provided initialization.
+     * It will check for type consistency and assign the values to the properties of this Thing.
+     */
     protected configureProperties(init: WoT.ExposedThingInit): void {
         Object.entries(init).forEach(([key, value]) => {
             this.setProperty(key, value);
         });
     }
     
-    //Sets the default read handler for a property, allowing its value to be read.
+    /**
+     * Sets the default read handler for a property.
+     * This allows reading the property value directly or using a custom handler.
+     */
     protected setReadHandler(propertyName: string, handler?: WoT.PropertyReadHandler): void {
         if (handler) {
             this.thing.setPropertyReadHandler(propertyName, handler);
         } else {
-            // Set the read handler to return the property value
+            // Default handler to read the property value from the object
             this.thing.setPropertyReadHandler(propertyName, async () => {
                 try {
                     return (this as any)[propertyName];
@@ -67,12 +77,15 @@ export abstract class Thing {
         }
     }
 
-    //Sets the default write handler for a property, allowing its value to be read.
+    /**
+     * Sets the default write handler for a property.
+     * This allows modifying the property value directly or using a custom handler.
+     */
     protected setWriteHandler(propertyName: string, handler?: WoT.PropertyWriteHandler): void {
         if(handler) {
             this.thing.setPropertyWriteHandler(propertyName, handler);
         } else {
-            // Set the write handler to return the property value
+            // Default handler to update the property value
             this.thing.setPropertyWriteHandler(propertyName, async (newValue) => {
                 try {
                     this.setProperty(propertyName, newValue);
@@ -93,10 +106,12 @@ export abstract class Thing {
         });
     }
 
+    // Sets an action handler for a specific action.
     protected setActionHandler(actionName: string, handler: WoT.ActionHandler) {
         this.thing.setActionHandler(actionName, handler);
     }
     
+    // Sets the value of a property while ensuring type consistency.
     private setProperty(name: string, newValue: any) {
         if (name in this) {
             const typedName = name as keyof this;
@@ -119,6 +134,7 @@ export abstract class Thing {
         }
     }
 
+    // Returns a JSON representation of the Thing.
     public toString(): string {
         const excludeFields = ['environment', 'initBase', 'thing', 'lastUpdateTime'];
     
@@ -135,6 +151,5 @@ export abstract class Thing {
                 2
         );
     }
-    
     
 }

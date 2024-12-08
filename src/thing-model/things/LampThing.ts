@@ -1,7 +1,6 @@
 import { Servient } from "@node-wot/core";
 import { eventQueue } from "../../simulation/eventQueue";
 import { PeriodicThing } from "../PeriodicThing";
-import { Thing } from "../Thing";
 import { ok } from "../../simulation/action-result";
 import { HeatingEnv } from "../environments/HeatingEnv";
 
@@ -71,9 +70,8 @@ class LampThing extends PeriodicThing<HeatingEnv> {
 
         super(servient, init, LampThing.initBase, environment, period);
 
-        // Define the read handler for the "isOn" property
         this.setReadHandler('isOn');
-    
+        this.setReadHandler('intensity');
 
         // Define the "toggle" action to switch the lamp's state
         this.setActionHandler("toggle", async () => {

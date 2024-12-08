@@ -53,6 +53,7 @@ export class ServientManager {
         return this.servients;
     }
 
+    // Retrieves all Servients, starts them and waits for all of them to complete their startup processes.
     public async start(): Promise<void> {
         const servientStatus = Array.from(this.getAllServients().values()).map(servient => servient.start());
         await Promise.all(servientStatus);
