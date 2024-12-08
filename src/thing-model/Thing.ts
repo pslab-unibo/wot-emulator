@@ -22,7 +22,7 @@ export abstract class Thing {
     }
 
     // Returns the title of the Thing
-    public getTitle() {
+    public getTitle() : string{
         return this.thing.title;
     }
 
@@ -37,7 +37,7 @@ export abstract class Thing {
     }
 
     // Exposes the Thing to the network
-    public expose() {
+    public expose() : void{
         this.thing.expose();
     }
 
