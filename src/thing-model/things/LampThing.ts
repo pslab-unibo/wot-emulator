@@ -68,27 +68,12 @@ class LampThing extends PeriodicThing {
 
         super(servient, init, LampThing.initBase, environment, period);
 
-        // Define the read handler for the "intensity" property
-        this.getThing().setPropertyReadHandler("intensity", async () => {
-            return this.intensity;
-        });
-        
-        // Define the write handler for the "intensity" property with validation
-        this.getThing().setPropertyWriteHandler("intensity", async (newValue) => {
-            if (typeof newValue === "number" && newValue >= 0 && newValue <= 100) {
-                this.intensity = newValue;
-                console.log(`Intensity updated to: ${this.intensity}`);
-            } else {
-                throw new Error("Invalid intensity value. Must be between 0 and 100.");
-            }
-        });
-
         // Define the read handler for the "isOn" property
-        this.setDefaultHandler('isOn');
+        this.setReadHandler('isOn');
     
 
         // Define the "toggle" action to switch the lamp's state
-        this.thing.setActionHandler("toggle", async () => {
+        this.setActionHandler("toggle", async () => {
             eventQueue.enqueueEvent(async () => {
                 this.isOn = !this.isOn;
                 console.log(`Lamp state toggled to: ${this.isOn}`);
@@ -102,7 +87,7 @@ class LampThing extends PeriodicThing {
         if (this.isOn) {
             this.intensity += 1;
             if (this.intensity > 100) this.intensity = 100; 
-            console.log(`Update for ${this.getThing().title}, intensity increased to: ${this.intensity}`);
+            console.log(`Update for ${this.getTitle()}, intensity increased to: ${this.intensity}`);
         }
     }
 }

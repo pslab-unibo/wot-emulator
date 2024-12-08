@@ -110,8 +110,7 @@ export class HeatingEnv extends Thing {
 
         this.configureProperties(init);
 
-        this.setPropertiesHandler(init);
-
+        this.setPropertiesDefaultHandler(init);
     }
 
     //Increases the environment's temperature based on the input energy.

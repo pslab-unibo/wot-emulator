@@ -15,7 +15,7 @@ export class Scheduler {
 
     public addThing(thing: Thing): void {
         this.things.push(thing);
-        console.log(`Thing added: ${thing.getThing().title}`);
+        console.log(`Thing added: ${thing.getTitle()}`);
     }
 
     public setEnvironment(env : Thing) {
@@ -60,7 +60,7 @@ export class Scheduler {
                 entity.setLastUpdateTime(currentTime);
             }
         } catch(error) {
-            console.error(`Error during update for ${entity.getThing().title}:`, error);
+            console.error(`Error during update for ${entity.getTitle()}:`, error);
         }
     }
 

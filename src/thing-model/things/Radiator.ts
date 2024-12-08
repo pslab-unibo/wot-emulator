@@ -69,7 +69,7 @@ class Radiator extends SituatedThing {
 
         super(servient, init, Radiator.initBase, environment);
 
-        this.thing.setActionHandler("toggle", async() => {
+        this.setActionHandler("toggle", async() => {
             eventQueue.enqueueEvent(async () => {
                 this.isOn = !this.isOn;
                 console.log(`Radiator state toggled to: ${this.isOn}`);
@@ -77,10 +77,10 @@ class Radiator extends SituatedThing {
             return ok();
         });
 
-        this.setPropertiesHandler(init);
+        this.setPropertiesDefaultHandler(init);
 
         this.configureProperties(init);
-        this.setDefaultHandler('isOn');
+        this.setReadHandler('isOn');
 
     }
 

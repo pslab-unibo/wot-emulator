@@ -35,7 +35,7 @@ async function initializeEnvironment(scheduler: Scheduler, servients: ServientMa
         scheduler.setEnvironment(environment);
 
         // Expose the environment Thing
-        await environment.getThing().expose();
+        await environment.expose();
 
         return environment;
 
@@ -57,7 +57,7 @@ async function initializeThings(scheduler: Scheduler, servients: ServientManager
             if (servient) {
                 const thingModule = await import(`../thing-model/things/${thingConfig.type}`);
                 const thing = thingModule.create(servient, thingConfig, environment, thingConfig.period);
-                exposeStatus.push(thing.getThing().expose());
+                exposeStatus.push(thing.expose());
                 scheduler.addThing(thing);
             } 
         }
