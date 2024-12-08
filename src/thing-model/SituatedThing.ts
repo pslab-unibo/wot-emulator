@@ -1,13 +1,13 @@
 import Servient from "@node-wot/core";
 import { Thing } from "./Thing";
 
-export abstract class SituatedThing extends Thing{
+export abstract class SituatedThing<EnvType extends Thing> extends Thing{
     
-    protected environment : Thing;
+    protected environment : EnvType;
 
     constructor(servient: Servient, init: WoT.ExposedThingInit, 
                 initBase: WoT.ExposedThingInit = {}, 
-                environment : Thing, 
+                environment : EnvType, 
                 configData : Object = {}) {
                     
         super(servient, init, initBase);

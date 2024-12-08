@@ -88,7 +88,6 @@ export abstract class Thing {
     protected setPropertiesDefaultHandler(init: WoT.ExposedThingInit): void {
         Object.keys(init).forEach(propertyName => {
             if (propertyName in this) {
-                console.log(propertyName);
                 this.setReadHandler(propertyName);
             } 
         });

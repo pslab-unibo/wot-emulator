@@ -2,9 +2,10 @@ import { Servient } from "@node-wot/core";
 import { eventQueue } from "../../simulation/eventQueue";
 import { PeriodicThing } from "../PeriodicThing";
 import { Thing } from "../Thing";
-import { ok } from "../../simulation/action-result"
+import { ok } from "../../simulation/action-result";
+import { HeatingEnv } from "../environments/HeatingEnv";
 
-class LampThing extends PeriodicThing {
+class LampThing extends PeriodicThing<HeatingEnv> {
 
     private intensity: number = 0;  // Brightness level of the lamp
     private isOn: boolean = false;  // Power state of the lamp (on/off)
@@ -31,7 +32,9 @@ class LampThing extends PeriodicThing {
                 ],
                 "observable": true,
                 "readOnly": false,
-                "writeOnly": false
+                "writeOnly": false,
+                "minimum": 0,
+                "maximum": 100
             },
             "isOn": {
                 "type": "boolean",
@@ -63,7 +66,7 @@ class LampThing extends PeriodicThing {
 
     constructor(servient: Servient, 
                 init: WoT.ExposedThingInit, 
-                environment : Thing, 
+                environment : HeatingEnv, 
                 period: number) {
 
         super(servient, init, LampThing.initBase, environment, period);
@@ -95,8 +98,7 @@ class LampThing extends PeriodicThing {
 //Factory function to create a new LampThing instance.
 export function create(servient: Servient, 
                         init: WoT.ExposedThingInit, 
-                        environment : Thing,   
-                        period: number, 
-                        map : Map<string, any>): LampThing {
+                        environment : HeatingEnv,   
+                        period: number): LampThing {
     return new LampThing(servient, init, environment, period);
   }

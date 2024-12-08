@@ -1,12 +1,11 @@
 import Servient from "@node-wot/core";
-import { Thing } from "../Thing";
 import { SituatedThing } from "../SituatedThing";
 import { HeatingEnv } from "../environments/HeatingEnv";
 import { eventQueue } from "../../simulation/eventQueue";
 import { ok } from "../../simulation/action-result"
 
 //* Represents a radiator that emits heat to an environment when turned on.
-class Radiator extends SituatedThing {
+class Radiator extends SituatedThing<HeatingEnv> {
 
     private isOn : boolean = false;
     private power : number = 0;
@@ -65,7 +64,7 @@ class Radiator extends SituatedThing {
     
     constructor(servient: Servient, 
                 init: WoT.ExposedThingInit, 
-                environment : Thing) {
+                environment : HeatingEnv) {
 
         super(servient, init, Radiator.initBase, environment);
 
@@ -87,17 +86,9 @@ class Radiator extends SituatedThing {
     /* Updates the state of the radiator based on the elapsed time.
      Emits heat to the environment if the radiator is turned on.*/
     public update(deltaTime : number) {
-
         if(this.isOn){
-            try {
-                if(this.environment instanceof HeatingEnv) {
-                    eventQueue.enqueueEvent(() => (this.environment as HeatingEnv)
-                    .increaseTemperature(this.power*deltaTime));
-                }
-            } catch (error) {
-                console.log(error);
-            }
-            
+            eventQueue.enqueueEvent(() => (this.environment as HeatingEnv)
+                .increaseTemperature(this.power*deltaTime));
         }
     }
 
@@ -106,7 +97,7 @@ class Radiator extends SituatedThing {
 //Factory function to create a new Radiator instance.
 export function create(servient: Servient, 
     init: any, 
-    environment : Thing,   
+    environment : HeatingEnv,   
     period: number): Radiator {
         return new Radiator(servient, init, environment);
 }
