@@ -1,6 +1,10 @@
 import { Scheduler } from "./simulation/scheduler";
 import { initialize } from "./simulation/init";
 
+export const CONFIG = "./src/td/config.json";
+export const THING_MODEL = "../thing-model/things/";
+export const ENV_MODEL = "../thing-model/environments/";
+
 // Instantiate the Scheduler
 const scheduler = new Scheduler(100);
 
