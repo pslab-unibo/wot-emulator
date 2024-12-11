@@ -139,16 +139,18 @@ export abstract class Thing {
         const excludeFields = ['environment', 'initBase', 'thing', 'lastUpdateTime'];
     
         return JSON.stringify(
-            Object.getOwnPropertyNames(this)
-                .filter(field => 
-                    typeof (this as any)[field] !== 'function' && !excludeFields.includes(field)
-                )
-                .reduce((obj: { [field: string]: any }, field) => { 
-                    obj[field] = (this as any)[field];
-                    return obj;
-                }, {}),
-                null,
-                2
+            {
+                title: this.getTitle(), 
+                type: this.constructor.name, 
+                ...Object.getOwnPropertyNames(this)
+                    .filter(field => 
+                        typeof (this as any)[field] !== 'function' && !excludeFields.includes(field)
+                    )
+                    .reduce((obj: { [field: string]: any }, field) => { 
+                        obj[field] = (this as any)[field];
+                        return obj;
+                    }, {})
+            }
         );
     }
     

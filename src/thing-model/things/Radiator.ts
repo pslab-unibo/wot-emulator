@@ -87,7 +87,7 @@ class Radiator extends SituatedThing<HeatingEnv> {
      Emits heat to the environment if the radiator is turned on.*/
     public update(deltaTime : number) {
         if(this.isOn){
-            eventQueue.enqueueEvent(() => (this.environment as HeatingEnv)
+            eventQueue.enqueueEvent(() => this.environment
                 .increaseTemperature(this.power*deltaTime));
         }
     }
