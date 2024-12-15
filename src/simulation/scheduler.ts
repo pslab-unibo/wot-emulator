@@ -29,10 +29,9 @@ export class Scheduler {
      */
     public async start(): Promise<void> {
         console.log("Scheduler started");
+        console.log(this.generateJson(this.things, this.environment));
 
         while (true) {
-
-            //const json1 = this.generateJson(this.things, this.environment);
 
             // Processes queued events asynchronously
             await eventQueue.processQueue();
@@ -45,9 +44,6 @@ export class Scheduler {
             for (const thing of this.things) {
                 this.updateEntity(thing);
             }
-
-            //const json2 = this.generateJson(this.things, this.environment);
-            //console.log(this.generatePatch(json1, json2));
             
             await this.wait(this.period);
         }
@@ -73,6 +69,10 @@ export class Scheduler {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
+    public getJson() {
+        return this.generateJson(this.things, this.environment);
+    }
+
     private generateJson(things: Thing[], environment?: Thing) {
         if (environment) {
             things = [environment, ...things];
@@ -81,8 +81,7 @@ export class Scheduler {
         return thingsJson;
     }
     
-
-    private generatePatch(json1: any, json2: any) {
+    public generatePatch(json1: any, json2: any) {
         const patch: any[] = [];
 
         for (let i = 0; i < json1.length; i++) {
