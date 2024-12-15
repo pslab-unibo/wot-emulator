@@ -1,5 +1,6 @@
 import { Scheduler } from "./simulation/scheduler";
 import { initialize } from "./simulation/init";
+import { inizializeServer } from "./simulation/server";
 
 // Path to the main configuration file for the simulator, defining the setup for servients, environments, and things.
 export const CONFIG = "./src/td/config.json";
@@ -13,6 +14,7 @@ export const ENV_MODEL = "../thing-model/environments/";
 
 // Instantiate the Scheduler
 const scheduler = new Scheduler(100);
+inizializeServer(scheduler);
 
 /**
  * Initialize Things, Environment and Servients by reading  
