@@ -14,7 +14,6 @@ export const ENV_MODEL = "../thing-model/environments/";
 
 // Instantiate the Scheduler
 const scheduler = new Scheduler(100);
-inizializeServer(scheduler);
 
 /**
  * Initialize Things, Environment and Servients by reading  
@@ -23,6 +22,7 @@ inizializeServer(scheduler);
 initialize(scheduler).then(() => {
     // Start the Scheduler to process events and periodic actions
     scheduler.start();
+    inizializeServer(scheduler);
 });
 
         
