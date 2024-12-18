@@ -6,14 +6,10 @@ import { MqttBrokerServer } from '@node-wot/binding-mqtt';
  * ServientManager handles the initialization and management of multiple servients.
  * Each servient is configured with an HTTP server on a unique port based on an incremental ID.
  */
-export class ServientManager {
+class ServientManager {
     private servients: Map<any, Servient> = new Map();
 
-    constructor(servientsData: any) {
-        this.initializeServients(servientsData);
-    }
-
-    private async initializeServients(servientsData: any): Promise<void> {
+    public async initializeServients(servientsData: any): Promise<void> {
 
         for (const servConfig of servientsData) {
             
@@ -59,4 +55,12 @@ export class ServientManager {
         await Promise.all(servientStatus);
     }
 
+    public async shutdown(): Promise<void> {
+        const servientStatus = Array.from(this.getAllServients().values()).map(servient => servient.shutdown());
+        await Promise.all(servientStatus);
+        this.servients = new Map();
+    }
+
 }
+
+export const servientManager = new ServientManager();

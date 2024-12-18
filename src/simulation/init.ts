@@ -1,26 +1,26 @@
 import { Scheduler } from "./scheduler";
 import * as fs from 'fs';
-import { ServientManager } from "./ServientManager";
+import { servientManager } from "./ServientManager";
 import { Thing } from "../thing-model/Thing";
 import { CONFIG, THING_MODEL, ENV_MODEL } from "../main";
 
 //Initializes the simulation by setting up the environment and Things.
 export async function initialize(scheduler: Scheduler): Promise<void> {
     const servientConfig = JSON.parse(fs.readFileSync(CONFIG, 'utf8')).servients;
-    const servients: ServientManager = new ServientManager(servientConfig);
+    servientManager.initializeServients(servientConfig);
 
-    await servients.start();
-    const environment = await initializeEnvironment(scheduler, servients);
-    await initializeThings(scheduler, servients, environment);
+    await servientManager.start();
+    const environment = await initializeEnvironment(scheduler);
+    await initializeThings(scheduler, environment);
 }
 
 //Initializes the environment by creating it as a Thing and exposing it.
-async function initializeEnvironment(scheduler: Scheduler, servients: ServientManager): Promise<Thing> {
+async function initializeEnvironment(scheduler: Scheduler): Promise<Thing> {
     // Load configuration data for the environment from the JSON file
     const configData = JSON.parse(fs.readFileSync(CONFIG, 'utf8'));
     const envConfig = configData.environment;
 
-    const servient = servients.getServient(envConfig.servient);
+    const servient = servientManager.getServient(envConfig.servient);
 
     if (!servient) {
         throw new Error("No servient found for the environment configuration.");
@@ -47,13 +47,13 @@ async function initializeEnvironment(scheduler: Scheduler, servients: ServientMa
 }
 
 //Initializes all the Things specified in the configuration file.
-async function initializeThings(scheduler: Scheduler, servients: ServientManager, environment: Thing) {
+async function initializeThings(scheduler: Scheduler, environment: Thing) {
     const configData = JSON.parse(fs.readFileSync(CONFIG, 'utf8')).things;
     const exposeStatus : Array<Promise<void>> = [];
 
     try { 
         for (const thingConfig of configData) {
-            const servient = servients.getServient(thingConfig.servient);
+            const servient = servientManager.getServient(thingConfig.servient);
 
             if (servient) {
                 const thingModule = await import(THING_MODEL+`${thingConfig.type}`);
