@@ -16,7 +16,7 @@ class EventQueue {
     public enqueueEvent(
         handler: EventHandler, 
         priority: number = 1
-    ) {
+    ) : void{
       // Add the new event to the queue
       this.eventQueue.push({
           handler,
@@ -54,6 +54,11 @@ class EventQueue {
         // Schedule the next queue processing step immediately
         setImmediate(() => this.processQueue());
       }
+
+      public clearQueue(): void {
+        console.log("Clearing event queue...");
+        this.eventQueue = []; 
+    }
 }
 
 export const eventQueue = new EventQueue();
