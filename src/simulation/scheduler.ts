@@ -1,6 +1,15 @@
 import { Thing } from "../thing-model/Thing";
 import { eventQueue } from '../simulation/eventQueue';
 import { PeriodicThing } from "../thing-model/PeriodicThing";
+import { servientManager } from "./ServientManager";
+import { generateJson, generatePatch } from "../utils/jsonUtils";
+
+// Define scheduler states as an enum for better type safety
+enum SchedulerState {
+    STOPPED = 'stopped',
+    RUNNING = 'running',
+    PAUSED = 'paused'
+}
 
 // Scheduler class to manage update on Things and process event commands
 export class Scheduler {
@@ -9,18 +18,39 @@ export class Scheduler {
     private environment? : Thing;
     private things: Thing[] = [];
 
+    private json : any[] = [];
+
+    private state: SchedulerState = SchedulerState.STOPPED;
+
+    private pauseStartTime: number = 0;
+    private totalPauseTime: number = 0;
+
     constructor(period: number) {
         this.period = period;
     }
 
     public addThing(thing: Thing): void {
+        if (!thing) {
+            throw new Error('Cannot add undefined or null thing');
+        }
         this.things.push(thing);
         console.log(`Thing added: ${thing.getTitle()}`);
     }
 
     public setEnvironment(env : Thing) {
+        if (!env) {
+            throw new Error('Cannot set undefined or null environment');
+        }
         console.log("Set environment");
         this.environment = env;
+    }
+
+    public isRunning(): boolean {
+        return this.state === SchedulerState.RUNNING;
+    }
+
+    private isPaused(): boolean {
+        return this.state === SchedulerState.PAUSED;
     }
 
     /**
@@ -28,32 +58,96 @@ export class Scheduler {
      * and processing queued events in an infinite loop.
      */
     public async start(): Promise<void> {
+        
+        if (this.isRunning()) {
+            console.warn('Scheduler is already running');
+            return;
+        }
+
         console.log("Scheduler started");
-        console.log(this.generateJson(this.things, this.environment));
+        this.json = generateJson(this.things, this.environment);
+        this.state = SchedulerState.RUNNING;
 
-        while (true) {
+        while (this.isRunning()) {
+                // Processes queued events asynchronously
+                await eventQueue.processQueue();
 
-            // Processes queued events asynchronously
-            await eventQueue.processQueue();
+                if(this.environment) {
+                    this.updateEntity(this.environment);
+                }
 
-            if(this.environment) {
-                this.updateEntity(this.environment);
-            }
+                // Iterates through each Thing to invoke the 'update' if it exists
+                for (const thing of this.things) {
+                    this.updateEntity(thing);
+                }
 
-            // Iterates through each Thing to invoke the 'update' if it exists
-            for (const thing of this.things) {
-                this.updateEntity(thing);
-            }
-            
+                if (this.totalPauseTime > 0){
+                    this.totalPauseTime = 0;
+                }
+
             await this.wait(this.period);
         }
+    }
+
+    //Pauses the scheduler execution without stopping it completely
+    public pause(): void {
+        if (!this.isRunning() || this.isPaused()) {
+            console.warn('Cannot pause: scheduler is not running or already paused');
+            return;
+        }
+    
+        console.log("Scheduler paused");
+        this.state = SchedulerState.PAUSED;
+        this.pauseStartTime = Date.now();
+    }
+
+    public async resume(): Promise<void> {
+        if (this.isRunning() || !this.isPaused()) {
+            console.warn('Cannot resume: scheduler is running or not paused');
+            return;
+        }
+
+        console.log("Scheduler resumed");
+        
+        if (this.pauseStartTime > 0) {
+            this.totalPauseTime = Date.now() - this.pauseStartTime;
+            this.pauseStartTime = 0;
+        }
+
+        await this.start();
+    }
+
+    // Stops the scheduler completely
+    public stop(): void {
+        if (this.state === SchedulerState.STOPPED) {
+            console.warn('Scheduler is already stopped');
+            return;
+        }
+
+        console.log("Scheduler stopped");
+        this.state = SchedulerState.STOPPED;
+        this.cleanup();
+    }
+
+    private cleanup(): void {
+        servientManager.shutdown();
+        eventQueue.clearQueue();
+        this.environment = undefined;
+        this.things = [];
+        this.pauseStartTime = 0;
+        this.totalPauseTime = 0;
     }
 
     /**Calculates the deltaTime since the last update and calls the update function of the Thing.
     * If the Thing is periodic, it is updated only if the defined period has passed. */
     private updateEntity(entity : Thing) {
-        const currentTime : number = Date.now();
-        const deltaTime = (currentTime - entity.getLastUpdateTime());
+        const currentTime: number = Date.now();
+        let deltaTime = currentTime - entity.getLastUpdateTime();
+
+        // Subtract the total pause time from delta
+        if (this.totalPauseTime > 0) {
+            deltaTime -= this.totalPauseTime;
+        }
 
         try {
             if (!(entity instanceof PeriodicThing) || deltaTime >= entity.getPeriod()) {
@@ -69,43 +163,14 @@ export class Scheduler {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    public getJson() {
-        return this.generateJson(this.things, this.environment);
+    public getJson() : any[] {
+        return generateJson(this.things, this.environment);
     }
 
-    private generateJson(things: Thing[], environment?: Thing) {
-        if (environment) {
-            things = [environment, ...things];
-        }
-        const thingsJson = things.map(thing => JSON.parse(thing.toString()));
-        return thingsJson;
+    public getChanges() : any[] {
+        const changes = generatePatch(this.json, this.getJson());
+        this.json = this.getJson();
+        return changes;
     }
-    
-    public generatePatch(json1: any, json2: any) {
-        const patch: any[] = [];
 
-        for (let i = 0; i < json1.length; i++) {
-            const thing1 = json1[i];
-            const thing2 = json2[i];
-
-            if (thing1.title !== thing2.title) {
-                throw new Error(`Titles do not match for index ${i}: "${thing1.title}" vs "${thing2.title}"`);
-            }
-    
-            const changes: any = { "title": thing1.title };
-
-            Object.keys(thing1).forEach(key => {
-                if (key !== "title" && thing1[key] !== thing2[key]) {
-                    changes[key] = thing2[key]; 
-                }
-            });
-    
-            if (Object.keys(changes).length > 1) {
-                patch.push(changes);
-            }
-        }
-    
-        return patch;
-    }
-    
 }
