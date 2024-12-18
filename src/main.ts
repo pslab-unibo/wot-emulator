@@ -14,15 +14,6 @@ export const ENV_MODEL = "../thing-model/environments/";
 
 // Instantiate the Scheduler
 const scheduler = new Scheduler(100);
-
-/**
- * Initialize Things, Environment and Servients by reading  
- * configuration and exposing them via the specified Servient
- **/
-initialize(scheduler).then(() => {
-    // Start the Scheduler to process events and periodic actions
-    scheduler.start();
-    inizializeServer(scheduler);
-});
+inizializeServer(scheduler);
 
         

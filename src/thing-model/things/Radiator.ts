@@ -2,7 +2,7 @@ import Servient from "@node-wot/core";
 import { SituatedThing } from "../SituatedThing";
 import { HeatingEnv } from "../environments/HeatingEnv";
 import { eventQueue } from "../../simulation/eventQueue";
-import { ok } from "../../simulation/action-result"
+import { ok } from "../../utils/action-result"
 
 //* Represents a radiator that emits heat to an environment when turned on.
 class Radiator extends SituatedThing<HeatingEnv> {

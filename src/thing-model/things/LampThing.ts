@@ -1,7 +1,7 @@
 import { Servient } from "@node-wot/core";
 import { eventQueue } from "../../simulation/eventQueue";
 import { PeriodicThing } from "../PeriodicThing";
-import { ok } from "../../simulation/action-result";
+import { ok } from "../../utils/action-result";
 import { HeatingEnv } from "../environments/HeatingEnv";
 
 class LampThing extends PeriodicThing<HeatingEnv> {
