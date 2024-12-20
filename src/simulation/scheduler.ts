@@ -15,7 +15,7 @@ enum SchedulerState {
 export class Scheduler {
 
     private period: number;         // The interval (in milliseconds) for periodic updates
-    private environment? : Thing;
+    private environments : Thing[] = [];
     private things: Thing[] = [];
 
     private json : any[] = [];
@@ -37,12 +37,12 @@ export class Scheduler {
         console.log(`Thing added: ${thing.getTitle()}`);
     }
 
-    public setEnvironment(env : Thing) {
+    public addEnvironment(env : Thing) {
         if (!env) {
             throw new Error('Cannot set undefined or null environment');
         }
-        console.log("Set environment");
-        this.environment = env;
+        console.log("Set environment ", env.getTitle());
+        this.environments.push(env);
     }
 
     public isRunning(): boolean {
@@ -65,15 +65,16 @@ export class Scheduler {
         }
 
         console.log("Scheduler started");
-        this.json = generateJson(this.things, this.environment);
+        this.json = generateJson(this.things, this.environments);
         this.state = SchedulerState.RUNNING;
 
         while (this.isRunning()) {
                 // Processes queued events asynchronously
                 await eventQueue.processQueue();
 
-                if(this.environment) {
-                    this.updateEntity(this.environment);
+                // Iterates through each Thing to invoke the 'update' if it exists
+                for (const env of this.environments) {
+                    this.updateEntity(env);
                 }
 
                 // Iterates through each Thing to invoke the 'update' if it exists
@@ -132,7 +133,7 @@ export class Scheduler {
     private cleanup(): void {
         servientManager.shutdown();
         eventQueue.clearQueue();
-        this.environment = undefined;
+        this.environments = [];
         this.things = [];
         this.pauseStartTime = 0;
         this.totalPauseTime = 0;
@@ -164,7 +165,7 @@ export class Scheduler {
     }
 
     public getJson() : any[] {
-        return generateJson(this.things, this.environment);
+        return generateJson(this.things, this.environments);
     }
 
     public getChanges() : any[] {

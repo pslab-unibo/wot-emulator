@@ -1,9 +1,7 @@
 import { Thing } from "../thing-model/Thing";
 
-export function generateJson(things: Thing[], environment?: Thing) {
-    if (environment) {
-        things = [environment, ...things];
-    }
+export function generateJson(things: Thing[], environments: Thing[]) {
+    things = [...environments, ...things];
     const thingsJson = things.map(thing => JSON.parse(thing.toString()));
     return thingsJson;
 }

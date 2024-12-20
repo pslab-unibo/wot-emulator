@@ -100,7 +100,7 @@ export abstract class Thing {
     // Sets default read handlers for all properties defined in the initialization object.
     protected setPropertiesDefaultHandler(init: WoT.ExposedThingInit): void {
         Object.keys(init).forEach(propertyName => {
-            if (propertyName in this) {
+            if (propertyName in this && propertyName !== 'environment') {
                 this.setReadHandler(propertyName);
             } 
         });

@@ -10,44 +10,46 @@ export async function initialize(scheduler: Scheduler): Promise<void> {
     servientManager.initializeServients(servientConfig);
 
     await servientManager.start();
-    const environment = await initializeEnvironment(scheduler);
-    await initializeThings(scheduler, environment);
+    const environments = await initializeEnvironments(scheduler);
+    await initializeThings(scheduler, environments);
 }
 
-//Initializes the environment by creating it as a Thing and exposing it.
-async function initializeEnvironment(scheduler: Scheduler): Promise<Thing> {
+// Initializes the environment by creating it as a Thing and exposing it.
+async function initializeEnvironments(scheduler: Scheduler): Promise<Map<string, any>> {
     // Load configuration data for the environment from the JSON file
-    const configData = JSON.parse(fs.readFileSync(CONFIG, 'utf8'));
-    const envConfig = configData.environment;
-
-    const servient = servientManager.getServient(envConfig.servient);
-
-    if (!servient) {
-        throw new Error("No servient found for the environment configuration.");
-    }
+    const configData = JSON.parse(fs.readFileSync(CONFIG, 'utf8')).environments;
+    const exposeStatus: Array<Promise<void>> = [];
+    const environmentMap: Map<string, any> = new Map();
 
     try {
+        for (const envConfig of configData) {
+            const servient = servientManager.getServient(envConfig.servient);
 
-        const envModule = await import(ENV_MODEL+`${envConfig[0].type}`);
-        
-        // Create the environment using the imported module
-        const environment = envModule.create(servient, envConfig[0]);
-        
-        scheduler.setEnvironment(environment);
+            if (servient) {
+                const envModule = await import(ENV_MODEL + `${envConfig.type}`);
+                const environment = envModule.create(servient, envConfig);
+                
+                exposeStatus.push(environment.expose());
+                scheduler.addEnvironment(environment);
 
-        // Expose the environment Thing
-        await environment.expose();
+                // Add the environment to the map with its ID as the key
+                environmentMap.set(envConfig.id, environment);
+            }
+        }
 
-        return environment;
-
+        // Wait for all exposures to complete
+        await Promise.all(exposeStatus);
     } catch (error) {
-        console.error("Failed to initialize environment:", error);
-        throw error; 
+        console.error(`Failed to add thing: ${error}`);
+        throw error;
     }
+
+    return environmentMap;
 }
 
+
 //Initializes all the Things specified in the configuration file.
-async function initializeThings(scheduler: Scheduler, environment: Thing) {
+async function initializeThings(scheduler: Scheduler, environments: Map<string, any>) {
     const configData = JSON.parse(fs.readFileSync(CONFIG, 'utf8')).things;
     const exposeStatus : Array<Promise<void>> = [];
 
@@ -57,7 +59,8 @@ async function initializeThings(scheduler: Scheduler, environment: Thing) {
 
             if (servient) {
                 const thingModule = await import(THING_MODEL+`${thingConfig.type}`);
-                const thing = thingModule.create(servient, thingConfig, environment, thingConfig.period);
+                console.log(environments.get(thingConfig.environment));
+                const thing = thingModule.create(servient, thingConfig, environments.get(thingConfig.environment), thingConfig.period);
                 exposeStatus.push(thing.expose());
                 scheduler.addThing(thing);
             } 

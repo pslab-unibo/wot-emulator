@@ -1,11 +1,20 @@
 {
-    "environment": [
+    "environments": [
       {
         "id": "env1",
         "type": "HeatingEnv",
-        "title": "HeatingEnv",
+        "title": "HeatingEnv1",
         "volume": 30,
         "ambientTemperature": 18,
+        "temperature": 20,
+        "coolingConstant": 0.1
+      },
+      {
+        "id": "env2",
+        "type": "HeatingEnv",
+        "title": "HeatingEnv2",
+        "volume": 30,
+        "ambientTemperature": 10,
         "temperature": 20,
         "coolingConstant": 0.1
       }
@@ -29,27 +38,31 @@
         "id": "t1",
         "title": "SmartLamp1",
         "type": "LampThing",
-        "period": 2000
+        "period": 2000,
+        "environment": "env1"
       },
       {
         "id": "t2",
         "title": "SmartLamp2",
         "type": "LampThing",
         "period": 3000,
-        "servient": 1
+        "servient": 1,
+        "environment": "env2"
       },
       {
         "id": "t3",
         "title": "Radiator1",
         "type": "Radiator",
-        "power": 20
+        "power": 20,
+        "environment": "env1"
       },
       {
         "id": "t4",
         "title": "Radiator2",
         "type": "Radiator",
-        "power": 7,
-        "servient": 1
+        "power": 21,
+        "servient": 1,
+        "environment": "env2"
       }
     ]
 }
