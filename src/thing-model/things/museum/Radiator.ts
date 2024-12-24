@@ -5,7 +5,7 @@ import { eventQueue } from "../../../simulation/eventQueue";
 import { ok } from "../../../utils/action-result";
 
 //* Represents a radiator that emits heat to an environment when turned on.
-export class Radiator extends SituatedThing<Room> {
+class Radiator extends SituatedThing<Room> {
     public id: number = 1;
     public isOn : boolean = false;
     private power : number = 0;
@@ -86,7 +86,7 @@ export class Radiator extends SituatedThing<Room> {
     public update(deltaTime : number) {
         if(this.isOn){
             eventQueue.enqueueEvent(() => this.environment
-                .increaseTemperature(this.power*deltaTime));
+                .increaseTemperature(this.power*deltaTime))
         }
     }
 
@@ -95,7 +95,6 @@ export class Radiator extends SituatedThing<Room> {
 //Factory function to create a new Radiator instance.
 export function create(servient: Servient, 
     init: any, 
-    environment : Room,   
-    period: number): Radiator {
+    environment : Room): Radiator {
         return new Radiator(servient, init, environment);
 }

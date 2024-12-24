@@ -16,6 +16,8 @@ export class Room extends Thing {
     private static readonly airDensity: number = 1.225; // kg/m³ (air density)
     private static readonly humidityIncreasePerPerson: number = 0.05; // Percentage increase per person per second
 
+    private totalEnergyConsumption: number = 0;  // kW
+
     private static initBase: WoT.ExposedThingInit = {
         "@context": "https://www.w3.org/2019/wot/td/v1",
         "@type": "Environment",
@@ -111,6 +113,20 @@ export class Room extends Thing {
                         "contentType": "application/json"
                     }
                 ]
+            },
+            "totalEnergyConsumption": {
+                "type": "number",
+                "description": "The number of energy consuption in the environment",
+                "observable": true,
+                "readOnly": false,
+                "writeOnly": false,
+                "forms": [
+                    {
+                        "href": "people",
+                        "op": ["readproperty", "writeproperty", "observeproperty"],
+                        "contentType": "application/json"
+                    }
+                ]
             }
         }
     };
@@ -137,6 +153,7 @@ export class Room extends Thing {
             const mass = Room.airDensity * this.volume;
             const deltaTemperature = energy / (mass * Room.specificHeatCapacity);
             this.temperature += deltaTemperature;
+            this.updateEnergyConsumption(energy);
             //console.log("Updated temperature: ", this.temperature);
         }
     }
@@ -153,6 +170,7 @@ export class Room extends Thing {
     public async decreaseHumidity(amount: number): Promise<void> {
         if (this.humidity !== undefined) {
             this.humidity = Math.max(0, this.humidity - amount); // Cap at 0%
+            this.updateEnergyConsumption(amount);
             //console.log("Updated humidity: ", this.humidity);
         }
     }
@@ -170,6 +188,10 @@ export class Room extends Thing {
             this.humidity = Math.max(0, this.humidity - humidityDrop);
             this.adjustHumidityFromPeople(deltaTime);
         }
+    }
+
+    public async updateEnergyConsumption(energy: number): Promise<void> {
+        this.totalEnergyConsumption += energy/1000;
     }
 }
 

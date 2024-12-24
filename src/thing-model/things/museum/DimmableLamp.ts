@@ -99,13 +99,27 @@ class DimmableLamp extends SituatedThing<Room> {
         });
     }
 
-    public update(deltaTime: number): void {}
+    private calculatePower(): number {
+        switch (this.intensity) {
+            case "low": return 20; 
+            case "medium": return 50; 
+            case "high": return 100; 
+            default: return 50;
+        }
+    }
+
+    public update(deltaTime: number): void {
+        if (this.isOn) {
+            eventQueue.enqueueEvent(() => this.environment
+                .updateEnergyConsumption(this.calculatePower()*(deltaTime)));
+        }
+        
+    }
 }
 
 //Factory function to create a new LampThing instance.
 export function create(servient: Servient, 
     init: WoT.ExposedThingInit, 
-    environment : Room,   
-    period: number): DimmableLamp {
+    environment : Room): DimmableLamp {
 return new DimmableLamp(servient, init, environment);
 }

@@ -87,7 +87,7 @@ class Humidifier extends SituatedThing<Room> {
     public update(deltaTime: number) {
         if (this.isOn) {
             eventQueue.enqueueEvent(() => this.environment
-                .increaseHumidity(this.power * deltaTime));
+                .decreaseHumidity(this.power * deltaTime));
         }
     }
 }
@@ -95,7 +95,6 @@ class Humidifier extends SituatedThing<Room> {
 // Factory function to create a new Humidifier instance.
 export function create(servient: Servient,
                        init: any,
-                       environment: Room,
-                       period: number): Humidifier {
+                       environment: Room): Humidifier {
     return new Humidifier(servient, init, environment);
 }
