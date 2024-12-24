@@ -5,9 +5,10 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import { initialize } from "./init";
 
-export function inizializeServer(scheduler : Scheduler): void{
+export function inizializeServer(): void{
     const app = express();
     const httpServer = createServer(app);
+    let scheduler : Scheduler  = new Scheduler(500);
     const io = new Server(httpServer, { 
         cors: {
             origin: 'http://localhost:5173'
@@ -17,25 +18,27 @@ export function inizializeServer(scheduler : Scheduler): void{
     io.on("connect", (socket) => {
         console.log('Connected ...', socket.id);
 
-        const intervalId = setInterval(() => {
-            if (scheduler.isRunning()) {
-                io.emit("update", scheduler.getChanges());
-            }
-        }, 1000);
+        let intervalId: NodeJS.Timeout | null = null;
 
         socket.on('schedulerCommand', (data) => {
             const { command } = data;
-            //console.log(`Received command: ${command}`);
     
             switch (command) {
                 case 'start':
-                    if (scheduler.isRunning()) {
+                    if (scheduler && scheduler.isRunning()) {
                         console.warn('Scheduler is already running');
                         break;
                     }
+                    //scheduler = new Scheduler(500);
                     initialize(scheduler).then(() => {
                         scheduler.start();
+                        io.emit("serverStarted");
                         io.emit("setup", scheduler.getJson());
+
+                        intervalId = setInterval(() => {
+                            const changes = scheduler.getChanges();
+                            io.emit("update", changes);
+                        }, 1000);
                     });
                     break;
                 case 'pause':
@@ -45,7 +48,14 @@ export function inizializeServer(scheduler : Scheduler): void{
                     scheduler.resume();
                     break;
                 case 'stop':
-                    scheduler.stop();
+                    scheduler.stop().then(() => {
+                        io.emit("serverStopped");
+
+                        if (intervalId) {
+                            clearInterval(intervalId);
+                            intervalId = null;
+                        }
+                    });
                     break;
                 default:
                     console.log('Unknown command:', command);
@@ -54,7 +64,6 @@ export function inizializeServer(scheduler : Scheduler): void{
     
         io.on("disconnect", (socket) => {
             console.log(`Disconnected: ${socket.id}`);
-            clearInterval(intervalId);
         });
 
     });

@@ -29,19 +29,23 @@ export class Scheduler {
         this.period = period;
     }
 
+    public getThings() {
+        return this.things;
+    }
+
     public addThing(thing: Thing): void {
         if (!thing) {
             throw new Error('Cannot add undefined or null thing');
         }
         this.things.push(thing);
-        console.log(`Thing added: ${thing.getTitle()}`);
+        //console.log(`Thing added: ${thing.getTitle()}`);
     }
 
     public addEnvironment(env : Thing) {
         if (!env) {
             throw new Error('Cannot set undefined or null environment');
         }
-        console.log("Set environment ", env.getTitle());
+        //console.log("Set environment ", env.getTitle());
         this.environments.push(env);
     }
 
@@ -119,7 +123,7 @@ export class Scheduler {
     }
 
     // Stops the scheduler completely
-    public stop(): void {
+    public async stop(): Promise<void> {
         if (this.state === SchedulerState.STOPPED) {
             console.warn('Scheduler is already stopped');
             return;
@@ -127,17 +131,18 @@ export class Scheduler {
 
         console.log("Scheduler stopped");
         this.state = SchedulerState.STOPPED;
-        this.cleanup();
+        await this.cleanup();
     }
 
-    private cleanup(): void {
-        servientManager.shutdown();
+    private async cleanup(): Promise<void> {
         eventQueue.clearQueue();
         this.environments = [];
         this.things = [];
         this.pauseStartTime = 0;
         this.totalPauseTime = 0;
+        await servientManager.shutdown();
     }
+    
 
     /**Calculates the deltaTime since the last update and calls the update function of the Thing.
     * If the Thing is periodic, it is updated only if the defined period has passed. */
@@ -169,6 +174,7 @@ export class Scheduler {
     }
 
     public getChanges() : any[] {
+        //console.log("Radiator id: " + (this.things[1] as Radiator).id)
         const changes = generatePatch(this.json, this.getJson());
         this.json = this.getJson();
         return changes;

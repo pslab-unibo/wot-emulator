@@ -7,8 +7,7 @@ export abstract class SituatedThing<EnvType extends Thing> extends Thing{
 
     constructor(servient: Servient, init: WoT.ExposedThingInit, 
                 initBase: WoT.ExposedThingInit = {}, 
-                environment : EnvType, 
-                configData : Object = {}) {
+                environment : EnvType) {
                     
         super(servient, init, initBase);
         this.environment = environment;
