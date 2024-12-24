@@ -26,6 +26,16 @@ export abstract class Thing {
         return this.thing.title;
     }
 
+    // Returns the title of the Thing
+    public getId() : string{
+        return this.thing.id;
+    }
+
+    // Returns the title of the Thing
+    public getServient() : string{
+        return this.thing.servient;
+    }
+
     // Gets the last update time of the Thing
     public getLastUpdateTime() : number{
         return this.lastUpdateTime;
@@ -37,8 +47,10 @@ export abstract class Thing {
     }
 
     // Exposes the Thing to the network
-    public expose() : void{
-        this.thing.expose();
+    public async expose(servient : Servient) : Promise<void>{
+        if (servient.addThing(this.thing)){
+            return this.thing.expose();
+        }
     }
 
     /**
@@ -100,7 +112,8 @@ export abstract class Thing {
     // Sets default read handlers for all properties defined in the initialization object.
     protected setPropertiesDefaultHandler(init: WoT.ExposedThingInit): void {
         Object.keys(init).forEach(propertyName => {
-            if (propertyName in this && propertyName !== 'environment') {
+            const td = this.thing.getThingDescription().properties;
+            if (td && propertyName in td) {
                 this.setReadHandler(propertyName);
             } 
         });
@@ -113,7 +126,8 @@ export abstract class Thing {
     
     // Sets the value of a property while ensuring type consistency.
     private setProperty(name: string, newValue: any) {
-        if (name in this) {
+        const td = this.thing.getThingDescription().properties;
+        if (td && name in td) {
             const typedName = name as keyof this;
             if (typedName in this) {
                 if (newValue === undefined) {

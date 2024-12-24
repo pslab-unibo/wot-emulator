@@ -1,13 +1,13 @@
 import { Scheduler } from "./scheduler";
 import * as fs from 'fs';
 import { servientManager } from "./ServientManager";
-import { Thing } from "../thing-model/Thing";
 import { CONFIG, THING_MODEL, ENV_MODEL } from "../main";
+import { Thing } from "../thing-model/Thing";
 
 //Initializes the simulation by setting up the environment and Things.
 export async function initialize(scheduler: Scheduler): Promise<void> {
     const servientConfig = JSON.parse(fs.readFileSync(CONFIG, 'utf8')).servients;
-    servientManager.initializeServients(servientConfig);
+    await servientManager.initializeServients(servientConfig);
 
     await servientManager.start();
     const environments = await initializeEnvironments(scheduler);
@@ -29,7 +29,7 @@ async function initializeEnvironments(scheduler: Scheduler): Promise<Map<string,
                 const envModule = await import(ENV_MODEL + `${envConfig.type}`);
                 const environment = envModule.create(servient, envConfig);
                 
-                exposeStatus.push(environment.expose());
+                exposeStatus.push(environment.expose(servient));
                 scheduler.addEnvironment(environment);
 
                 // Add the environment to the map with its ID as the key
@@ -59,9 +59,8 @@ async function initializeThings(scheduler: Scheduler, environments: Map<string, 
 
             if (servient) {
                 const thingModule = await import(THING_MODEL+`${thingConfig.type}`);
-                console.log(environments.get(thingConfig.environment));
                 const thing = thingModule.create(servient, thingConfig, environments.get(thingConfig.environment), thingConfig.period);
-                exposeStatus.push(thing.expose());
+                exposeStatus.push(thing.expose(servient));
                 scheduler.addThing(thing);
             } 
         }
