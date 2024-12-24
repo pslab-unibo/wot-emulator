@@ -1,0 +1,47 @@
+{
+    "environments": [
+      {
+        "id": "Room2",
+        "type": "Room",
+        "title": "Room2",
+        "volume": 30,
+        "humidity": 50,
+        "temperature": 20,
+        "ambientTemperature": 18,
+        "coolingConstant": 0.1,
+        "people": 2
+      }
+    ],
+    "servients": [
+      {
+        "id": 0,
+        "type": "http",
+        "host": "localhost",
+        "port": 8081
+      }
+    ],
+    "things": [
+      {
+        "id": "t1",
+        "title": "DimmableLamp1",
+        "type": "DimmableLamp",
+        "environment": "Room2"
+      },
+      {
+        "id": "t2",
+        "title": "Radiator1",
+        "type": "Radiator",
+        "power": 20,
+        "isOn": false,
+        "environment": "Room2"
+      },{
+        "id": "t3",
+        "title": "Humidifier1",
+        "type": "Humidifier",
+        "isOn": false,
+        "power": 20,
+        "environment": "Room2"
+      }
+    ]
+}
+  
