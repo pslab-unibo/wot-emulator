@@ -3,8 +3,9 @@ import { SituatedThing } from "../../SituatedThing";
 import { Room } from "../../environments/museum/Room";
 import { eventQueue } from "../../../simulation/eventQueue";
 import { ok } from "../../../utils/action-result";
+import { MuseumThing } from "./MuseumThing";
 
-class DimmableLamp extends SituatedThing<Room> {
+class DimmableLamp extends MuseumThing {
 
     private intensity: string = "medium";  // Brightness level of the lamp
     private isOn: boolean = false;  // Power state of the lamp (on/off)

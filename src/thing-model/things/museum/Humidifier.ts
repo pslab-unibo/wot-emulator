@@ -3,9 +3,10 @@ import { SituatedThing } from "../../SituatedThing";
 import { Room } from "../../environments/museum/Room";
 import { eventQueue } from "../../../simulation/eventQueue";
 import { ok } from "../../../utils/action-result";
+import { MuseumThing } from "./MuseumThing";
 
 //* Represents a humidifier that emits moisture to an environment when turned on.
-class Humidifier extends SituatedThing<Room> {
+class Humidifier extends MuseumThing {
 
     private isOn: boolean = false;
     private power: number = 0;
