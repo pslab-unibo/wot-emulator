@@ -1,4 +1,4 @@
-import Servient from "@node-wot/core";
+import Servient, { Helpers } from "@node-wot/core";
 import { SituatedThing } from "../../SituatedThing";
 import { Room } from "../../environments/museum/Room";
 import { eventQueue } from "../../../simulation/eventQueue";
@@ -60,11 +60,38 @@ class DimmableLamp extends MuseumThing {
                     }
                 ]
             },
-            "setIntensity": {
-                "description": "Set a new intensity level",
+            "setLow": {
+                "description": "Set a low intensity level",
+                input: { type: 'string' },
                 forms: [
                     {
-                        href: "setIntensity",  
+                        href: "setLow", 
+                        response: { contentType: "application/json" },
+                        mediaType: "application/json", 
+                        op: ["invokeaction"]
+                    }
+                ]
+            },
+            "setHigh": {
+                "description": "Set a high intensity level",
+                input: { type: 'string' },
+                forms: [
+                    {
+                        href: "setHigh", 
+                        response: { contentType: "application/json" },
+                        mediaType: "application/json", 
+                        op: ["invokeaction"]
+                    }
+                ]
+            },
+            "setMedium": {
+                "description": "Set a medium intensity level",
+                input: { type: 'string' },
+                forms: [
+                    {
+                        href: "setMedium", 
+                        response: { contentType: "application/json" },
+                        mediaType: "application/json", 
                         op: ["invokeaction"]
                     }
                 ]
@@ -80,6 +107,7 @@ class DimmableLamp extends MuseumThing {
 
         this.setReadHandler('isOn');
         this.setReadHandler('intensity');
+        this.setWriteHandler("intensity");
 
         // Define the "toggle" action to switch the lamp's state
         this.setActionHandler("toggle", async () => {
@@ -90,16 +118,31 @@ class DimmableLamp extends MuseumThing {
             return ok();
         });
 
-        // Define the "toggle" action to switch the lamp's state
-        this.setActionHandler("setIntensity", async (level) => {
+        // Define the "setLow" action to switch the lamp's state
+        this.setActionHandler("setLow", async () => {
             eventQueue.enqueueEvent(async () => {
-                this.intensity = await level.value() as string;
-                console.log(`Lamp intensity changed to: ${this.intensity}`);
+                this.intensity = "low";
             });
             return ok();
         });
-    }
 
+        // Define the "setHigh" action to switch the lamp's state
+        this.setActionHandler("setHigh", async () => {
+            eventQueue.enqueueEvent(async () => {
+                this.intensity = "high";
+            });
+            return ok();
+        });
+        
+        // Define the "setMedium" action to switch the lamp's state
+        this.setActionHandler("setMedium", async () => {
+            eventQueue.enqueueEvent(async () => {
+                this.intensity = "medium";
+            });
+            return ok();
+        });
+        
+    }
     private calculatePower(): number {
         switch (this.intensity) {
             case "low": return 20; 
