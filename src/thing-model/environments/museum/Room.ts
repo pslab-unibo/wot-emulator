@@ -1,9 +1,9 @@
 import Servient from "@node-wot/core";
-import { SituatedThing } from "../../SituatedThing";
-import { Museum } from "./Museum";
 import { Thing } from "../../Thing";
 
 export class Room extends Thing {
+
+    private title : string = '';
     private volume: number = 0;
     private ambientTemperature ?: number;
     private temperature?: number;
@@ -116,14 +116,52 @@ export class Room extends Thing {
             },
             "totalEnergyConsumption": {
                 "type": "number",
-                "description": "The number of energy consuption in the environment",
+                "description": "The total energy consumption in the environment",
                 "observable": true,
                 "readOnly": false,
                 "writeOnly": false,
                 "forms": [
                     {
-                        "href": "people",
+                        "href": "totalEnergyConsumption",
                         "op": ["readproperty", "writeproperty", "observeproperty"],
+                        "contentType": "application/json"
+                    }
+                ]
+            }
+        },
+        "actions": {
+            "addPerson": {
+                "description": "Add a person entering the room",
+                "forms": [
+                    {
+                        "href": "addPerson",
+                        "op": ["invokeaction"],
+                        "contentType": "application/json"
+                    }
+                ]
+            },
+            "removePerson": {
+                "description": "Remove a person leaving the room",
+                "forms": [
+                    {
+                        "href": "removePerson",
+                        "op": ["invokeaction"],
+                        "contentType": "application/json"
+                    }
+                ]
+            }
+        },
+        "events": {
+            "peopleChanged": {
+                "description": "Emitted when the number of people in the room changes",
+                "data": {
+                    "type": "number",
+                    "description": "The updated number of people in the room"
+                },
+                "forms": [
+                    {
+                        "href": "peopleChanged",
+                        "op": ["subscribeevent"],
                         "contentType": "application/json"
                     }
                 ]
@@ -136,6 +174,23 @@ export class Room extends Thing {
 
         this.configureProperties(init);
         this.setPropertiesDefaultHandler(init);
+
+        this.setActionHandler("addPerson", async () => {
+            this.emitEvent('peopleChanged', this.people+1);
+            return this.people++; 
+        });
+
+        this.setActionHandler("removePerson", async () => {
+            if (this.people > 0) {
+                this.people--;
+            };
+            this.emitEvent('peopleChanged', this.people);
+            return this.people;
+        });
+    }
+
+    public getTitle() : string {
+        return this.title;
     }
 
     // Adjusts the humidity based on the number of people in the room.
