@@ -1,15 +1,34 @@
 {
     "environments": [
       {
-        "id": "Room2",
+        "id": "room1",
         "type": "Room",
-        "title": "Room2",
-        "volume": 30,
+        "title": "room1",
+        "volume": 160,
         "humidity": 50,
         "temperature": 20,
-        "ambientTemperature": 18,
-        "coolingConstant": 0.1,
-        "people": 2
+        "ambientTemperature": 16,
+        "coolingConstant": 0.1
+      },
+      {
+        "id": "room2",
+        "type": "Room",
+        "title": "room2",
+        "volume": 300,
+        "humidity": 50,
+        "temperature": 20,
+        "ambientTemperature": 16,
+        "coolingConstant": 0.1
+      },
+      {
+        "id": "room3",
+        "type": "Room",
+        "title": "room3",
+        "volume": 60,
+        "humidity": 50,
+        "temperature": 20,
+        "ambientTemperature": 16,
+        "coolingConstant": 0.1
       }
     ],
     "servients": [
@@ -22,25 +41,85 @@
     ],
     "things": [
       {
-        "id": "t1",
+        "id": "t1.1",
         "title": "DimmableLamp1",
         "type": "DimmableLamp",
-        "environment": "Room2"
+        "environment": "room1"
       },
       {
-        "id": "t2",
+        "id": "t1.2",
+        "title": "DimmableLamp1",
+        "type": "DimmableLamp",
+        "environment": "room1"
+      },
+      {
+        "id": "t1.3",
         "title": "Radiator1",
         "type": "Radiator",
-        "power": 20,
+        "power": 2,
         "isOn": false,
-        "environment": "Room2"
+        "environment": "room1"
       },{
-        "id": "t3",
+        "id": "t1.4",
         "title": "Humidifier1",
         "type": "Humidifier",
         "isOn": false,
-        "power": 20,
-        "environment": "Room2"
+        "power": 7,
+        "environment": "room1"
+      },
+      {
+        "id": "t2.1",
+        "title": "DimmableLamp2",
+        "type": "DimmableLamp",
+        "environment": "room2"
+      },
+      {
+        "id": "t2.2",
+        "title": "DimmableLamp2",
+        "type": "DimmableLamp",
+        "environment": "room2"
+      },
+      {
+        "id": "t2.3",
+        "title": "Radiator2",
+        "type": "Radiator",
+        "power": 2,
+        "isOn": false,
+        "environment": "room2"
+      },{
+        "id": "t2.4",
+        "title": "Humidifier2",
+        "type": "Humidifier",
+        "isOn": false,
+        "power": 7,
+        "environment": "room2"
+      },
+      {
+        "id": "t3.1",
+        "title": "DimmableLamp3",
+        "type": "DimmableLamp",
+        "environment": "room3"
+      },
+      {
+        "id": "t3.2",
+        "title": "DimmableLamp3",
+        "type": "DimmableLamp",
+        "environment": "room3"
+      },
+      {
+        "id": "t3.3",
+        "title": "Radiator3",
+        "type": "Radiator",
+        "power": 2,
+        "isOn": false,
+        "environment": "room3"
+      },{
+        "id": "t3.4",
+        "title": "Humidifier3",
+        "type": "Humidifier",
+        "isOn": false,
+        "power": 7,
+        "environment": "room3"
       }
     ]
 }
