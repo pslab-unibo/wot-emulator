@@ -123,30 +123,36 @@ export abstract class Thing {
     protected setActionHandler(actionName: string, handler: WoT.ActionHandler) {
         this.thing.setActionHandler(actionName, handler);
     }
+
+    protected emitEvent(name : string, data: WoT.InteractionInput) {
+        this.thing.emitEvent(name, data);
+    }
     
     // Sets the value of a property while ensuring type consistency.
     private setProperty(name: string, newValue: any) {
-        const td = this.thing.getThingDescription().properties;
-        if (td && name in td) {
+        // Check if the property exists in the Thing Description
+        const td = this.thing.getThingDescription()?.properties;
+        const isInTD = td && name in td;
+
+        // Check if the property exists in the class
+        const isInClass = name in this;
+
+        if (isInTD || isInClass) {
             const typedName = name as keyof this;
-            if (typedName in this) {
-                if (newValue === undefined) {
-                    (this as any)[typedName] = newValue;
-                    return;
-                }
-                if (this[typedName] === undefined) {
-                    (this as any)[typedName] = newValue;
-                    return;
-                }
-                if (typeof newValue === typeof this[typedName]) {
-                    (this as any)[typedName] = newValue;
-                } else {
-                    console.warn(`Type mismatch for property '${name}'. 
-                        Expected ${typeof this[typedName]}, got ${typeof newValue}`);
-                }
+            if (newValue === undefined) {
+                (this as any)[typedName] = newValue;
+                return;
             }
-        }
+            if (this[typedName] === undefined) {
+                (this as any)[typedName] = newValue;
+                return;
+            }
+            if (typeof newValue === typeof this[typedName]) {
+                (this as any)[typedName] = newValue;
+            } 
+        } 
     }
+
 
     // Returns a JSON representation of the Thing.
     public toString(): string {
