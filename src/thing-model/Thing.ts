@@ -124,6 +124,7 @@ export abstract class Thing {
         this.thing.setActionHandler(actionName, handler);
     }
 
+    // Emit the specified event
     protected emitEvent(name : string, data: WoT.InteractionInput) {
         this.thing.emitEvent(name, data);
     }
