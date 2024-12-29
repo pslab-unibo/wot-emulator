@@ -5,21 +5,26 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import { initialize } from "./init";
 
+// Initializes the server and sets up WebSocket communication with clients.
 export function inizializeServer(): void{
     const app = express();
     const httpServer = createServer(app);
     let scheduler : Scheduler  = new Scheduler(500);
+
+    // Set up a Socket.IO server with CORS configuration
     const io = new Server(httpServer, { 
         cors: {
             origin: 'http://localhost:5173'
         }
      });
 
+    // Handle new WebSocket connections
     io.on("connect", (socket) => {
         console.log('Connected ...', socket.id);
 
         let intervalId: NodeJS.Timeout | null = null;
 
+        
         socket.on('schedulerCommand', (data) => {
             const { command } = data;
     
@@ -29,12 +34,14 @@ export function inizializeServer(): void{
                         console.warn('Scheduler is already running');
                         break;
                     }
-                    //scheduler = new Scheduler(500);
+                    
+                    // Initialize and start the scheduler, then notify the client
                     initialize(scheduler).then(() => {
                         scheduler.start();
                         io.emit("serverStarted");
-                        io.emit("setup", scheduler.getJson());
+                        io.emit("setup", scheduler.getThingState());
 
+                        // Set up an interval to periodically send updates to the client
                         intervalId = setInterval(() => {
                             const changes = scheduler.getChanges();
                             io.emit("update", changes);
@@ -48,6 +55,7 @@ export function inizializeServer(): void{
                     scheduler.resume();
                     break;
                 case 'stop':
+                    // Stop the scheduler and clean up resources
                     scheduler.stop().then(() => {
                         io.emit("serverStopped");
 
@@ -61,13 +69,15 @@ export function inizializeServer(): void{
                     console.log('Unknown command:', command);
             }
         });
-    
+        
+        // Handle client disconnection
         io.on("disconnect", (socket) => {
             console.log(`Disconnected: ${socket.id}`);
         });
 
     });
 
+    // Start the HTTP server on port 3000
     httpServer.listen(3000, () => {
         console.log('Server is connected');
     });

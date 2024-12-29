@@ -15,44 +15,47 @@ enum SchedulerState {
 export class Scheduler {
 
     private period: number;         // The interval (in milliseconds) for periodic updates
-    private environments : Thing[] = [];
-    private things: Thing[] = [];
+    private environments : Thing[] = [];    // Array of environment entities to be updated
+    private things: Thing[] = [];   // Array of Things managed by the scheduler
 
-    private json : any[] = [];
+    private currentThingState : any[] = [];      
 
-    private state: SchedulerState = SchedulerState.STOPPED;
+    private state: SchedulerState = SchedulerState.STOPPED; // Current state of the scheduler
 
-    private pauseStartTime: number = 0;
-    private totalPauseTime: number = 0;
+    private pauseStartTime: number = 0;     // Timestamp when the scheduler was paused
+    private totalPauseTime: number = 0;     // Accumulated pause duration
 
     constructor(period: number) {
         this.period = period;
     }
 
+    // Returns the list of Things managed by the scheduler.
     public getThings() {
         return this.things;
     }
 
+    // Adds a Thing to the scheduler.
     public addThing(thing: Thing): void {
         if (!thing) {
             throw new Error('Cannot add undefined or null thing');
         }
         this.things.push(thing);
-        //console.log(`Thing added: ${thing.getTitle()}`);
     }
 
+    // Adds an environment to the scheduler.
     public addEnvironment(env : Thing) {
         if (!env) {
             throw new Error('Cannot set undefined or null environment');
         }
-        //console.log("Set environment ", env.getTitle());
         this.environments.push(env);
     }
 
+    // Checks if the scheduler is currently running.
     public isRunning(): boolean {
         return this.state === SchedulerState.RUNNING;
     }
 
+    // Checks if the scheduler is currently paused.
     private isPaused(): boolean {
         return this.state === SchedulerState.PAUSED;
     }
@@ -69,23 +72,24 @@ export class Scheduler {
         }
 
         console.log("Scheduler started");
-        this.json = generateJson(this.things, this.environments);
+        this.currentThingState = generateJson(this.things, this.environments);
         this.state = SchedulerState.RUNNING;
 
         while (this.isRunning()) {
                 // Processes queued events asynchronously
                 await eventQueue.processQueue();
 
-                // Iterates through each Thing to invoke the 'update' if it exists
+                // Update environments
                 for (const env of this.environments) {
                     this.updateEntity(env);
                 }
 
-                // Iterates through each Thing to invoke the 'update' if it exists
+                // Update Things
                 for (const thing of this.things) {
                     this.updateEntity(thing);
                 }
 
+                // Reset pause time if no longer paused
                 if (this.totalPauseTime > 0){
                     this.totalPauseTime = 0;
                 }
@@ -106,6 +110,7 @@ export class Scheduler {
         this.pauseStartTime = Date.now();
     }
 
+    // Resumes the scheduler from the paused state.
     public async resume(): Promise<void> {
         if (this.isRunning() || !this.isPaused()) {
             console.warn('Cannot resume: scheduler is running or not paused');
@@ -122,7 +127,7 @@ export class Scheduler {
         await this.start();
     }
 
-    // Stops the scheduler completely
+    // Stops the scheduler completely and performs cleanup.
     public async stop(): Promise<void> {
         if (this.state === SchedulerState.STOPPED) {
             console.warn('Scheduler is already stopped');
@@ -134,6 +139,7 @@ export class Scheduler {
         await this.cleanup();
     }
 
+    // Cleans up resources used by the scheduler.
     private async cleanup(): Promise<void> {
         eventQueue.clearQueue();
         this.environments = [];
@@ -169,14 +175,15 @@ export class Scheduler {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    public getJson() : any[] {
+    // Returns the current state of Things and environments as JSON.
+    public getThingState() : any[] {
         return generateJson(this.things, this.environments);
     }
 
+    // Compares the previous state with the current state and returns the changes.
     public getChanges() : any[] {
-        //console.log("Radiator id: " + (this.things[1] as Radiator).id)
-        const changes = generatePatch(this.json, this.getJson());
-        this.json = this.getJson();
+        const changes = generatePatch(this.currentThingState, this.getThingState());
+        this.currentThingState = this.getThingState();
         return changes;
     }
 

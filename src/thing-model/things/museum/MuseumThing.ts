@@ -14,8 +14,6 @@ export abstract class MuseumThing extends SituatedThing<Room> {
         this.roomId = this.environment.getTitle();
     }
 
-    public update(deltaTime: number): void {
-        throw new Error("Method not implemented.");
-    }
+    public abstract update(deltaTime: number): void;
 
 }

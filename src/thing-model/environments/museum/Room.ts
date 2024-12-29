@@ -3,20 +3,20 @@ import { Thing } from "../../Thing";
 
 export class Room extends Thing {
 
-    private title : string = '';
-    private volume: number = 0;
-    private ambientTemperature ?: number;
-    private temperature?: number;
-    private humidity?: number;
-    private coolingConstant: number = 0;
+    private title : string = '';    //identifier of the room.
+    private volume: number = 0;     // The volume of the room in cubic meters (m³)
+    private ambientTemperature ?: number;   // The external or surrounding temperature affecting the room, in degrees Celsius.
+    private temperature?: number;   // The current internal temperature of the room, in degrees Celsius.
+    private humidity?: number;      // The current humidity level of the room as a percentage (0-100).
+    private coolingConstant: number = 0;    // A constant that represents the room's cooling characteristics
     private humidityDecreaseRate: number = 0.01; // Rate at which humidity naturally decreases
     private people: number = 0; // Number of people in the room
 
-    private static readonly specificHeatCapacity: number = 1005; // J/kg°C (air capacity)
-    private static readonly airDensity: number = 1.225; // kg/m³ (air density)
+    private static readonly specificHeatCapacity: number = 1005; // The specific heat capacity of air in Joules per kilogram per degree Celsius (J/kg°C).
+    private static readonly airDensity: number = 1.225; // The density of air in kilograms per cubic meter (kg/m³), used for thermal calculations.
     private static readonly humidityIncreasePerPerson: number = 0.05; // Percentage increase per person per second
 
-    private totalEnergyConsumption: number = 0;  // kW
+    private totalEnergyConsumption: number = 0;  // // The total energy consumption of devices and systems in the room, in kilowatts (kW).
 
     private static initBase: WoT.ExposedThingInit = {
         "@context": "https://www.w3.org/2019/wot/td/v1",
@@ -165,6 +165,36 @@ export class Room extends Thing {
                         "contentType": "application/json"
                     }
                 ]
+            },
+            "maxTemperature": {
+                "description": "Emitted when the temperature is >30",
+                "forms": [
+                    {
+                        "href": "maxTemperature",
+                        "op": ["subscribeevent"],
+                        "contentType": "application/json"
+                    }
+                ]
+            },
+            "minTemperature": {
+                "description": "Emitted when the temperature is <=18",
+                "forms": [
+                    {
+                        "href": "minTemperature",
+                        "op": ["subscribeevent"],
+                        "contentType": "application/json"
+                    }
+                ]
+            },
+            "maxHumidity": {
+                "description": "Emitted when the humidity is >55%",
+                "forms": [
+                    {
+                        "href": "maxHumidity",
+                        "op": ["subscribeevent"],
+                        "contentType": "application/json"
+                    }
+                ]
             }
         }
     };
@@ -197,8 +227,7 @@ export class Room extends Thing {
     private adjustHumidityFromPeople(deltaTime: number): void {
         if (this.humidity !== undefined) {
             const humidityIncrease = Room.humidityIncreasePerPerson * this.people * (deltaTime / 1000);
-            this.humidity = Math.min(100, this.humidity + humidityIncrease); // Cap at 100%
-            //console.log("Humidity adjusted due to people: ", this.humidity);
+            this.humidity = Math.min(100, this.humidity + humidityIncrease); 
         }
     }
 
@@ -209,15 +238,13 @@ export class Room extends Thing {
             const deltaTemperature = energy / (mass * Room.specificHeatCapacity);
             this.temperature += deltaTemperature;
             this.updateEnergyConsumption(energy);
-            //console.log("Updated temperature: ", this.temperature);
         }
     }
 
     // Increases the humidity by a given percentage.
     public async increaseHumidity(amount: number): Promise<void> {
         if (this.humidity !== undefined) {
-            this.humidity = Math.min(100, this.humidity + amount); // Cap at 100%
-            //console.log("Updated humidity: ", this.humidity);
+            this.humidity = Math.min(100, this.humidity + amount); 
         }
     }
 
@@ -226,25 +253,36 @@ export class Room extends Thing {
         if (this.humidity !== undefined) {
             this.humidity = Math.max(0, this.humidity - amount); // Cap at 0%
             this.updateEnergyConsumption(amount);
-            //console.log("Updated humidity: ", this.humidity);
         }
     }
 
     public update(deltaTime: number): void {
+
+        // Update the room's temperature based on the ambient temperature and cooling rate
         if (this.ambientTemperature && this.temperature) {
             const temperatureDifference = this.temperature - this.ambientTemperature;
             const coolingRate = this.coolingConstant * temperatureDifference;
             const temperatureDrop = coolingRate * (deltaTime / 1000);  
             this.temperature -= temperatureDrop;
+            if (this.temperature > 30) {
+                this.emitEvent('maxTemperature', null);
+            } else if (this.temperature <= 18) {
+                this.emitEvent('minTemperature', null);
+            }
         }
 
+        // Update the room's humidity based on natural decrease and other factors
         if (this.humidity !== undefined) {
             const humidityDrop = this.humidityDecreaseRate * (deltaTime / 1000);
             this.humidity = Math.max(0, this.humidity - humidityDrop);
             this.adjustHumidityFromPeople(deltaTime);
+            if (this.humidity > 55) {
+                this.emitEvent('maxHumidity', null);
+            }
         }
     }
 
+    // Updates the total energy consumption of the room.
     public async updateEnergyConsumption(energy: number): Promise<void> {
         this.totalEnergyConsumption += energy/1000;
     }

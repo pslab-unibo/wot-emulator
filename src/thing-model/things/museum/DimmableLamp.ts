@@ -143,6 +143,8 @@ class DimmableLamp extends MuseumThing {
         });
         
     }
+
+    // Calculate the power consumption based on the lamp's intensity.
     private calculatePower(): number {
         switch (this.intensity) {
             case "low": return 20; 
@@ -152,6 +154,7 @@ class DimmableLamp extends MuseumThing {
         }
     }
 
+    // Update the lamp's energy consumption in the environment.
     public update(deltaTime: number): void {
         if (this.isOn) {
             eventQueue.enqueueEvent(() => this.environment

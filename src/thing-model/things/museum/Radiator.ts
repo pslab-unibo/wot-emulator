@@ -4,7 +4,7 @@ import { MuseumThing } from "./MuseumThing";
 import { eventQueue } from "../../../simulation/eventQueue";
 import { ok } from "../../../utils/action-result";
 
-//* Represents a radiator that emits heat to an environment when turned on.
+// Represents a radiator that emits heat to an environment when turned on.
 class Radiator extends MuseumThing {
     public id: number = 1;
     public isOn : boolean = false;

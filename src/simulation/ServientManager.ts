@@ -65,7 +65,7 @@ class ServientManager {
         }
     }
     
-
+    // Shutdown all the servients
     public async shutdown(): Promise<void> {
         Array.from(this.getAllServients().values()).map(async (servient) => {
             try {
