@@ -72,7 +72,6 @@ class Humidifier extends MuseumThing {
         this.setActionHandler("toggle", async () => {
             eventQueue.enqueueEvent(async () => {
                 this.isOn = !this.isOn;
-                console.log(`Humidifier state toggled to: ${this.isOn}`);
             });
             return ok();
         });
@@ -88,7 +87,7 @@ class Humidifier extends MuseumThing {
     public update(deltaTime: number) {
         if (this.isOn) {
             eventQueue.enqueueEvent(() => this.environment
-                .decreaseHumidity(this.power * deltaTime));
+                .decreaseHumidity(this.power * (deltaTime / 100)));
         }
     }
 }

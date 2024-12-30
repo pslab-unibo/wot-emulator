@@ -113,7 +113,6 @@ class DimmableLamp extends MuseumThing {
         this.setActionHandler("toggle", async () => {
             eventQueue.enqueueEvent(async () => {
                 this.isOn = !this.isOn;
-                console.log(`Lamp state toggled to: ${this.isOn}`);
             });
             return ok();
         });
