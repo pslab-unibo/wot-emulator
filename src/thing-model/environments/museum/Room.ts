@@ -36,6 +36,7 @@ export class Room extends Thing {
                 "observable": true,
                 "readOnly": true,
                 "writeOnly": false,
+                "minimum": 0,
                 "forms": [
                     {
                         "href": "currentTemperature",
@@ -50,6 +51,7 @@ export class Room extends Thing {
                 "observable": true,
                 "readOnly": false,
                 "writeOnly": false,
+                "minimum": 0,
                 "forms": [
                     {
                         "href": "ambientTemperature",
@@ -64,6 +66,8 @@ export class Room extends Thing {
                 "observable": true,
                 "readOnly": true,
                 "writeOnly": false,
+                "minimum": 0,
+                "maximum": 100,
                 "forms": [
                     {
                         "href": "currentHumidity",
@@ -106,6 +110,7 @@ export class Room extends Thing {
                 "observable": true,
                 "readOnly": false,
                 "writeOnly": false,
+                "minimum": 0,
                 "forms": [
                     {
                         "href": "people",
@@ -195,6 +200,16 @@ export class Room extends Thing {
                         "contentType": "application/json"
                     }
                 ]
+            },
+            "minHumidity": {
+                "description": "Emitted when the humidity is <15%",
+                "forms": [
+                    {
+                        "href": "minHumidity",
+                        "op": ["subscribeevent"],
+                        "contentType": "application/json"
+                    }
+                ]
             }
         }
     };
@@ -241,18 +256,11 @@ export class Room extends Thing {
         }
     }
 
-    // Increases the humidity by a given percentage.
-    public async increaseHumidity(amount: number): Promise<void> {
-        if (this.humidity !== undefined) {
-            this.humidity = Math.min(100, this.humidity + amount); 
-        }
-    }
-
     // Decreases the humidity by a given percentage.
-    public async decreaseHumidity(amount: number): Promise<void> {
-        if (this.humidity !== undefined) {
-            this.humidity = Math.max(0, this.humidity - amount); // Cap at 0%
-            this.updateEnergyConsumption(amount);
+    public async decreaseHumidity(energy: number): Promise<void> {
+        if (this.humidity) {
+            this.humidity = Math.max(0, this.humidity - (energy * this.humidityDecreaseRate)); // Cap at 0%
+            this.updateEnergyConsumption(energy);
         }
     }
 
@@ -278,6 +286,8 @@ export class Room extends Thing {
             this.adjustHumidityFromPeople(deltaTime);
             if (this.humidity > 55) {
                 this.emitEvent('maxHumidity', null);
+            } else if (this.humidity < 15) {
+                this.emitEvent('minHumidity', null);
             }
         }
     }
