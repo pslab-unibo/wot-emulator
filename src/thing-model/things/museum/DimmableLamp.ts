@@ -4,6 +4,7 @@ import { Room } from "../../environments/museum/Room";
 import { eventQueue } from "../../../simulation/eventQueue";
 import { ok } from "../../../utils/action-result";
 import { MuseumThing } from "./MuseumThing";
+import { Museum } from "../../environments/museum/Museum";
 
 class DimmableLamp extends MuseumThing {
 
@@ -101,7 +102,7 @@ class DimmableLamp extends MuseumThing {
 
     constructor(servient: Servient, 
         init: WoT.ExposedThingInit, 
-        environment : Room) {
+        environment : Museum) {
 
         super(servient, init, DimmableLamp.initBase, environment);
 
@@ -157,7 +158,7 @@ class DimmableLamp extends MuseumThing {
     public update(deltaTime: number): void {
         if (this.isOn) {
             eventQueue.enqueueEvent(() => this.environment
-                .updateEnergyConsumption(this.calculatePower()*(deltaTime)));
+                .updateEnergyConsumption(this.roomId, this.calculatePower()*(deltaTime)));
         }
         
     }
@@ -166,6 +167,6 @@ class DimmableLamp extends MuseumThing {
 //Factory function to create a new LampThing instance.
 export function create(servient: Servient, 
     init: WoT.ExposedThingInit, 
-    environment : Room): DimmableLamp {
+    environment : Museum): DimmableLamp {
 return new DimmableLamp(servient, init, environment);
 }

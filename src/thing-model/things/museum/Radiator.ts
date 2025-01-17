@@ -3,6 +3,7 @@ import { Room } from "../../environments/museum/Room";
 import { MuseumThing } from "./MuseumThing";
 import { eventQueue } from "../../../simulation/eventQueue";
 import { ok } from "../../../utils/action-result";
+import { Museum } from "../../environments/museum/Museum";
 
 // Represents a radiator that emits heat to an environment when turned on.
 class Radiator extends MuseumThing {
@@ -64,7 +65,7 @@ class Radiator extends MuseumThing {
     
     constructor(servient: Servient, 
                 init: WoT.ExposedThingInit, 
-                environment : Room) {
+                environment : Museum) {
 
         super(servient, init, Radiator.initBase, environment);
 
@@ -86,7 +87,7 @@ class Radiator extends MuseumThing {
     public update(deltaTime : number) {
         if(this.isOn){
             eventQueue.enqueueEvent(() => this.environment
-                .increaseTemperature(this.power*deltaTime))
+                .increaseTemperature(this.roomId, this.power*deltaTime))
         }
     }
 
@@ -95,6 +96,6 @@ class Radiator extends MuseumThing {
 //Factory function to create a new Radiator instance.
 export function create(servient: Servient, 
     init: any, 
-    environment : Room): Radiator {
+    environment : Museum): Radiator {
         return new Radiator(servient, init, environment);
 }

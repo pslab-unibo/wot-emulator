@@ -4,6 +4,7 @@ import { Room } from "../../environments/museum/Room";
 import { eventQueue } from "../../../simulation/eventQueue";
 import { ok } from "../../../utils/action-result";
 import { MuseumThing } from "./MuseumThing";
+import { Museum } from "../../environments/museum/Museum";
 
 //* Represents a humidifier that emits moisture to an environment when turned on.
 class Humidifier extends MuseumThing {
@@ -65,7 +66,7 @@ class Humidifier extends MuseumThing {
 
     constructor(servient: Servient,
                 init: WoT.ExposedThingInit,
-                environment: Room) {
+                environment: Museum) {
 
         super(servient, init, Humidifier.initBase, environment);
 
@@ -87,7 +88,7 @@ class Humidifier extends MuseumThing {
     public update(deltaTime: number) {
         if (this.isOn) {
             eventQueue.enqueueEvent(() => this.environment
-                .decreaseHumidity(this.power * (deltaTime / 100)));
+                .decreaseHumidity(this.roomId, this.power * (deltaTime / 100)));
         }
     }
 }
@@ -95,6 +96,6 @@ class Humidifier extends MuseumThing {
 // Factory function to create a new Humidifier instance.
 export function create(servient: Servient,
                        init: any,
-                       environment: Room): Humidifier {
+                       environment: Museum): Humidifier {
     return new Humidifier(servient, init, environment);
 }

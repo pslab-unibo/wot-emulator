@@ -1,14 +1,14 @@
 import Servient from "@node-wot/core";
-import { Room } from "../../environments/museum/Room";
+import { Museum } from "../../environments/museum/Museum";
 import { SituatedThing } from "../../SituatedThing";
 
-export abstract class MuseumThing extends SituatedThing<Room> {
+export abstract class MuseumThing extends SituatedThing<Museum> {
 
-    private roomId : string = '';
+    protected roomId : string = '';
 
     constructor(servient: Servient, init: WoT.ExposedThingInit, 
         initBase: WoT.ExposedThingInit = {}, 
-        environment : Room) {
+        environment : Museum) {
             
         super(servient, init, initBase, environment);
         this.roomId = this.environment.getTitle();
