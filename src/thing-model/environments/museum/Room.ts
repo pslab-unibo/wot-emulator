@@ -1,22 +1,11 @@
-import Servient from "@node-wot/core";
-import { Thing } from "../../Thing";
-
-export class Room extends Thing {
+export class Room {
 
     private title : string = '';    //identifier of the room.
     private volume: number = 0;     // The volume of the room in cubic meters (m³)
-    private ambientTemperature ?: number;   // The external or surrounding temperature affecting the room, in degrees Celsius.
     private temperature?: number;   // The current internal temperature of the room, in degrees Celsius.
     private humidity?: number;      // The current humidity level of the room as a percentage (0-100).
-    private coolingConstant: number = 0;    // A constant that represents the room's cooling characteristics
-    private humidityDecreaseRate: number = 0.01; // Rate at which humidity naturally decreases
-    private people: number = 0; // Number of people in the room
 
-    private static readonly specificHeatCapacity: number = 1005; // The specific heat capacity of air in Joules per kilogram per degree Celsius (J/kg°C).
-    private static readonly airDensity: number = 1.225; // The density of air in kilograms per cubic meter (kg/m³), used for thermal calculations.
-    private static readonly humidityIncreasePerPerson: number = 0.05; // Percentage increase per person per second
-
-    private totalEnergyConsumption: number = 0;  // // The total energy consumption of devices and systems in the room, in kilowatts (kW).
+    private totalEnergyConsumption: number = 0;  // The total energy consumption of devices and systems in the room, in kilowatts (kW).
 
     private static initBase: WoT.ExposedThingInit = {
         "@context": "https://www.w3.org/2019/wot/td/v1",
@@ -214,81 +203,44 @@ export class Room extends Thing {
         }
     };
 
-    constructor(servient: Servient, init: WoT.ExposedThingInit) {
-        super(servient, init, Room.initBase);
-
-        this.configureProperties(init);
-        this.setPropertiesDefaultHandler(init);
-
-        this.setActionHandler("addPerson", async () => {
-            this.emitEvent('peopleChanged', this.people+1);
-            return this.people++; 
-        });
-
-        this.setActionHandler("removePerson", async () => {
-            if (this.people > 0) {
-                this.people--;
-            };
-            this.emitEvent('peopleChanged', this.people);
-            return this.people;
-        });
+    constructor(title: string, volume: number, temperature: number, humidity: number) {
+        this.title = title;
+        this.volume = volume;
+        this.temperature = temperature;
+        this.humidity = humidity;
     }
 
     public getTitle() : string {
         return this.title;
     }
 
-    // Adjusts the humidity based on the number of people in the room.
-    private adjustHumidityFromPeople(deltaTime: number): void {
-        if (this.humidity !== undefined) {
-            const humidityIncrease = Room.humidityIncreasePerPerson * this.people * (deltaTime / 1000);
-            this.humidity = Math.min(100, this.humidity + humidityIncrease); 
-        }
+    public getVolume() : number {
+        return this.volume;
     }
 
-    // Increases the environment's temperature based on the input energy.
-    public async increaseTemperature(energy: number): Promise<void> {
+    public getTemperature() {
+        return this.temperature;
+    }
+
+    public getHumidity() {
+        return this.humidity;
+    }
+
+    public updateTemperature(deltaTemperature : number) {
         if (this.temperature) {
-            const mass = Room.airDensity * this.volume;
-            const deltaTemperature = energy / (mass * Room.specificHeatCapacity);
             this.temperature += deltaTemperature;
-            this.updateEnergyConsumption(energy);
         }
     }
 
-    // Decreases the humidity by a given percentage.
-    public async decreaseHumidity(energy: number): Promise<void> {
-        if (this.humidity) {
-            this.humidity = Math.max(0, this.humidity - (energy * this.humidityDecreaseRate)); // Cap at 0%
-            this.updateEnergyConsumption(energy);
+    public increaseHumidity(deltaHumidity : number) {
+        if(this.humidity) {
+            this.humidity = Math.min(100, this.humidity + deltaHumidity)
         }
     }
 
-    public update(deltaTime: number): void {
-
-        // Update the room's temperature based on the ambient temperature and cooling rate
-        if (this.ambientTemperature && this.temperature) {
-            const temperatureDifference = this.temperature - this.ambientTemperature;
-            const coolingRate = this.coolingConstant * temperatureDifference;
-            const temperatureDrop = coolingRate * (deltaTime / 1000);  
-            this.temperature -= temperatureDrop;
-            if (this.temperature > 30) {
-                this.emitEvent('maxTemperature', null);
-            } else if (this.temperature <= 18) {
-                this.emitEvent('minTemperature', null);
-            }
-        }
-
-        // Update the room's humidity based on natural decrease and other factors
-        if (this.humidity !== undefined) {
-            const humidityDrop = this.humidityDecreaseRate * (deltaTime / 1000);
-            this.humidity = Math.max(0, this.humidity - humidityDrop);
-            this.adjustHumidityFromPeople(deltaTime);
-            if (this.humidity > 55) {
-                this.emitEvent('maxHumidity', null);
-            } else if (this.humidity < 15) {
-                this.emitEvent('minHumidity', null);
-            }
+    public decreaseHumidity(deltaHumidity : number) {
+        if(this.humidity) {
+            this.humidity = Math.max(0, this.humidity - deltaHumidity);
         }
     }
 
@@ -296,11 +248,4 @@ export class Room extends Thing {
     public async updateEnergyConsumption(energy: number): Promise<void> {
         this.totalEnergyConsumption += energy/1000;
     }
-}
-
-//Factory function to create a new Room instance.
-export function create(servient: Servient, 
-    init: WoT.ExposedThingInit): Room {
-
-return new Room(servient, init);
 }
