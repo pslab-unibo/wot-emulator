@@ -1,44 +1,45 @@
 {
     "environments": [
         {
-            "id": "gallery1",
-            "type": "Room",
-            "title": "Gallery of Renaissance Art",
-            "volume": 500,
-            "humidity": 45,
-            "temperature": 22,
-            "ambientTemperature": 18,
-            "coolingConstant": 0.2
-        },
-        {
-            "id": "gallery2",
-            "type": "Room",
-            "title": "Modern Art Gallery",
-            "volume": 300,
-            "humidity": 50,
-            "temperature": 21,
-            "ambientTemperature": 18,
-            "coolingConstant": 0.15
-        },
-        {
-            "id": "gallery3",
-            "type": "Room",
-            "title": "Sculpture Hall",
-            "volume": 700,
-            "humidity": 50,
-            "temperature": 20,
-            "ambientTemperature": 17,
-            "coolingConstant": 0.3
-        },
-        {
-            "id": "gallery4",
-            "type": "Room",
-            "title": "Impressionist Exhibit",
-            "volume": 200,
-            "humidity": 48,
-            "temperature": 22,
-            "ambientTemperature": 19,
-            "coolingConstant": 0.1
+            "id": "Museum",
+            "type": "Museum",
+            "title": "Museum",
+            "ambientTemperature": 16,
+            "coolingConstant": 0.1,
+            "rooms": [
+                {
+                    "id": "gallery1",
+                    "type": "Room",
+                    "title": "Gallery of Renaissance Art",
+                    "volume": 500,
+                    "humidity": 45,
+                    "temperature": 22
+                },
+                {
+                    "id": "gallery2",
+                    "type": "Room",
+                    "title": "Modern Art Gallery",
+                    "volume": 300,
+                    "humidity": 50,
+                    "temperature": 21
+                },
+                {
+                    "id": "gallery3",
+                    "type": "Room",
+                    "title": "Sculpture Hall",
+                    "volume": 700,
+                    "humidity": 50,
+                    "temperature": 20
+                },
+                {
+                    "id": "gallery4",
+                    "type": "Room",
+                    "title": "Impressionist Exhibit",
+                    "volume": 200,
+                    "humidity": 48,
+                    "temperature": 22
+                }
+            ]
         }
     ],
     "servients": [
@@ -51,16 +52,25 @@
     ],
     "things": [
         {
+            "id": "peoplesensor",
+            "title": "PeopleSensor",
+            "type": "PeopleFlowSensor",
+            "environment": "Museum",
+            "period": 1000
+        },
+        {
             "id": "g1.1",
             "title": "DimmableLamp1.1",
             "type": "DimmableLamp",
-            "environment": "gallery1"
+            "environment": "Museum",
+            "roomId": "gallery1"
         },
         {
             "id": "g1.2",
             "title": "DimmableLamp1.2",
             "type": "DimmableLamp",
-            "environment": "gallery1"
+            "environment": "Museum",
+            "roomId": "gallery1"
         },
         {
             "id": "g1.3",
@@ -68,7 +78,8 @@
             "type": "Radiator",
             "power": 120,
             "isOn": false,
-            "environment": "gallery1"
+            "environment": "Museum",
+            "roomId": "gallery1"
         },
         {
             "id": "g1.4",
@@ -76,13 +87,15 @@
             "type": "Humidifier",
             "isOn": false,
             "power": 15,
-            "environment": "gallery1"
+            "environment": "Museum",
+            "roomId": "gallery1"
         },
         {
             "id": "g2.1",
             "title": "DimmableLamp2.1",
             "type": "DimmableLamp",
-            "environment": "gallery2"
+            "environment": "Museum",
+            "roomId": "gallery2"
         },
         {
             "id": "g2.2",
@@ -90,7 +103,8 @@
             "type": "Radiator",
             "power": 90,
             "isOn": false,
-            "environment": "gallery2"
+            "environment": "Museum",
+            "roomId": "gallery2"
         },
         {
             "id": "g2.3",
@@ -98,19 +112,22 @@
             "type": "Humidifier",
             "isOn": false,
             "power": 10,
-            "environment": "gallery2"
+            "environment": "Museum",
+            "roomId": "gallery2"
         },
         {
             "id": "g3.1",
             "title": "DimmableLamp3.1",
             "type": "DimmableLamp",
-            "environment": "gallery3"
+            "environment": "Museum",
+            "roomId": "gallery3"
         },
         {
             "id": "g3.2",
             "title": "DimmableLamp3.2",
             "type": "DimmableLamp",
-            "environment": "gallery3"
+            "environment": "Museum",
+            "roomId": "gallery3"
         },
         {
             "id": "g3.3",
@@ -118,7 +135,8 @@
             "type": "Radiator",
             "power": 150,
             "isOn": false,
-            "environment": "gallery3"
+            "environment": "Museum",
+            "roomId": "gallery3"
         },
         {
             "id": "g3.4",
@@ -126,7 +144,8 @@
             "type": "Radiator",
             "power": 100,
             "isOn": false,
-            "environment": "gallery3"
+            "environment": "Museum",
+            "roomId": "gallery3"
         },
         {
             "id": "g3.5",
@@ -134,13 +153,15 @@
             "type": "Humidifier",
             "isOn": false,
             "power": 15,
-            "environment": "gallery3"
+            "environment": "Museum",
+            "roomId": "gallery3"
         },
         {
             "id": "g4.1",
             "title": "DimmableLamp4.1",
             "type": "DimmableLamp",
-            "environment": "gallery4"
+            "environment": "Museum",
+            "roomId": "gallery4"
         },
         {
             "id": "g4.2",
@@ -148,7 +169,8 @@
             "type": "Radiator",
             "power": 75,
             "isOn": false,
-            "environment": "gallery4"
+            "environment": "Museum",
+            "roomId": "gallery4"
         },
         {
             "id": "g4.3",
@@ -156,7 +178,8 @@
             "type": "Humidifier",
             "isOn": false,
             "power": 15,
-            "environment": "gallery4"
+            "environment": "Museum",
+            "roomId": "gallery4"
         }
     ]
 }
