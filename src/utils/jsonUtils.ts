@@ -1,8 +1,18 @@
 import { Thing } from "../thing-model/Thing";
 
-export function generateJson(things: Thing[], environments: Thing[]) {
+export function generateJson(things: Thing[], environments: Thing[]): any[] {
     things = [...environments, ...things];
-    const thingsJson = things.map(thing => JSON.parse(thing.toString()));
+    const thingsJson: any[] = [];
+
+    things.forEach(thing => {
+        const parsedThing = JSON.parse(thing.toString());
+        if (Array.isArray(parsedThing)) {
+            thingsJson.push(...parsedThing);
+        } else {
+            thingsJson.push(parsedThing);
+        }
+    });
+
     return thingsJson;
 }
 
