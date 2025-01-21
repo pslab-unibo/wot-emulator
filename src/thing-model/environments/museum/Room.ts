@@ -248,4 +248,21 @@ export class Room {
     public async updateEnergyConsumption(energy: number): Promise<void> {
         this.totalEnergyConsumption += energy/1000;
     }
+
+    public toString(): string {    
+        return JSON.stringify(
+            {
+                title: this.getTitle(), 
+                type: this.constructor.name, 
+                ...Object.getOwnPropertyNames(this)
+                    .filter(field => 
+                        typeof (this as any)[field] !== 'function'
+                    )
+                    .reduce((obj: { [field: string]: any }, field) => { 
+                        obj[field] = (this as any)[field];
+                        return obj;
+                    }, {})
+            }
+        );
+    }
 }
