@@ -262,6 +262,41 @@ export class Museum extends Thing {
     public async updateEnergyConsumption(roomId : string, energy: number): Promise<void> {
         this.rooms.get(roomId)?.updateEnergyConsumption(energy);
     }
+
+    public toString(): string {
+        const excludeFields = ['environment', 'initBase', 'thing', 'lastUpdateTime'];
+    
+        const museumJson = {
+            title: this.getTitle(),
+            type: this.constructor.name,
+            ...Object.getOwnPropertyNames(this)
+                .filter(field =>
+                    typeof (this as any)[field] !== 'function' &&
+                    !excludeFields.includes(field) &&
+                    field !== 'rooms'
+                )
+                .reduce((obj: { [field: string]: any }, field) => {
+                    obj[field] = (this as any)[field];
+                    return obj;
+                }, {})
+        };
+    
+        const roomsJson = Array.from(this.rooms.entries()).map(([key, room]) => ({
+            key,
+            ...(typeof room.toString === 'function'
+                ? JSON.parse(room.toString())
+                : room)
+        }));
+    
+        const combinedJson = [
+            museumJson,
+            ...roomsJson
+        ];
+    
+        const jsonString = JSON.stringify(combinedJson, null, 2); 
+        return jsonString;
+    }
+    
 }
 
 //Factory function to create a new Room instance.
