@@ -118,71 +118,88 @@ export class Museum extends Thing {
 
     constructor(servient: Servient, init: WoT.ExposedThingInit) {
 
-        super(servient, init, Museum.initBase);
-        this.configureProperties(init);
-        this.setPropertiesDefaultHandler(init);
-
-        this.rooms = new Map();
-
+        const room = new Map();
         (init.rooms as any).forEach((roomInit: any) => {
-            this.rooms.set(roomInit.id, new Room(roomInit.title, roomInit.volume, roomInit.temperature, roomInit.humidity));
+            room.set(roomInit.id, new Room(roomInit.title, roomInit.volume, roomInit.temperature, roomInit.humidity));
             const roomId = roomInit.id;
 
-            (Museum.initBase.properties as any)[`rooms/${roomId}/properties/temperature`] = {
+            (Museum.initBase.properties as any)[`${roomId}-temperature`] = {
                 type: "number",
                 description: `Temperature of room ${roomId}`,
                 observable: true,
                 readOnly: true,
                 forms: [
                     {
-                        href: `/museum/rooms/${roomId}/properties/temperature`,
+                        href: `${roomId}-temperature`,
                         op: ["readproperty", "observeproperty"],
                         contentType: "application/json"
                     }
                 ]
             };
 
-            (Museum.initBase.properties as any)[`rooms/${roomId}/properties/humidity`] = {
+            (Museum.initBase.properties as any)[`${roomId}-humidity`] = {
                 type: "number",
                 description: `Humidity of room ${roomId}`,
                 observable: true,
                 readOnly: true,
                 forms: [
                     {
-                        href: `/museum/rooms/${roomId}/properties/humidity`,
+                        href: `${roomId}-humidity`,
                         op: ["readproperty", "observeproperty"],
                         contentType: "application/json"
                     }
                 ]
             };
-            (Museum.initBase.properties as any)[`rooms/${roomId}/properties/volume`] = {
+            (Museum.initBase.properties as any)[`${roomId}-volume`] = {
                 type: "number",
                 description: `Volume of room ${roomId}`,
                 observable: true,
                 readOnly: true,
                 forms: [
                     {
-                        href: `/museum/rooms/${roomId}/properties/volume`,
+                        href: `${roomId}-volume`,
                         op: ["readproperty"],
-                        contentType: "application/json"
-                    }
-                ]
-            };
-            (Museum.initBase.properties as any)[`rooms/${roomId}/properties/totalEnergyConsumption`] = {
-                type: "number",
-                description: `Total energy consumption of room ${roomId}`,
-                observable: true,
-                readOnly: false,
-                forms: [
-                    {
-                        href: `/museum/rooms/${roomId}/properties/totalEnergyConsumption`,
-                        op: ["readproperty", "writeproperty"],
                         contentType: "application/json"
                     }
                 ]
             };
         });
 
+        super(servient, init, Museum.initBase);
+        
+        this.configureProperties(init);
+        this.setPropertiesDefaultHandler(init);
+
+        this.rooms = new Map(room);
+
+        for (const roomId of this.rooms.keys()) {
+            const url1 = roomId + '-temperature';
+            this.setReadHandler(url1, async () => {
+                const temperature = this.rooms.get(roomId)?.getTemperature();
+                if (temperature === undefined) {
+                    throw new Error("Temperature not available");
+                }
+                return temperature; 
+            });
+
+            const url2 = roomId + "-humidity";
+            this.setReadHandler(url2, async () => {
+                const temperature = this.rooms.get(roomId)?.getHumidity();
+                if (temperature === undefined) {
+                    throw new Error("Temperature not available");
+                }
+                return temperature; 
+            });
+
+            const url3 = roomId + "-volume";
+            this.setReadHandler(url3, async () => {
+                const temperature = this.rooms.get(roomId)?.getVolume();
+                if (temperature === undefined) {
+                    throw new Error("Temperature not available");
+                }
+                return temperature; 
+            });
+        }
     }
 
     public getTitle() : string {
@@ -285,7 +302,7 @@ export class Museum extends Thing {
             key,
             ...(typeof room.toString === 'function'
                 ? JSON.parse(room.toString())
-                : room)
+                : null)
         }));
     
         const combinedJson = [
@@ -305,3 +322,5 @@ export function create(servient: Servient,
 
 return new Museum(servient, init);
 }
+
+
