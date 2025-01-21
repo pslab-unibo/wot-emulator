@@ -18,6 +18,16 @@ export function inizializeServer(): void{
         }
      });
 
+    // Serve the setup state via HTTP GET
+    app.get('/setup', (req, res) => {
+        if (scheduler) {
+            const setupData = scheduler.getThingState(); 
+            res.json(setupData); // Respond with the setup state as JSON
+        } else {
+            res.status(500).json({ error: 'Scheduler not initialized' });
+        }
+    });
+
     // Handle new WebSocket connections
     io.on("connect", (socket) => {
         console.log('Connected ...', socket.id);
