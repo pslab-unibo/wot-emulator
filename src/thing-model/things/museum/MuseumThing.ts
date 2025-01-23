@@ -11,7 +11,6 @@ export abstract class MuseumThing extends SituatedThing<Museum> {
         environment : Museum) {
             
         super(servient, init, initBase, environment);
-        this.roomId = this.environment.getTitle();
     }
 
     public abstract update(deltaTime: number): void;
