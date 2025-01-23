@@ -1,6 +1,4 @@
-import Servient, { Helpers } from "@node-wot/core";
-import { SituatedThing } from "../../SituatedThing";
-import { Room } from "../../environments/museum/Room";
+import Servient from "@node-wot/core";
 import { eventQueue } from "../../../simulation/eventQueue";
 import { ok } from "../../../utils/action-result";
 import { MuseumThing } from "./MuseumThing";
@@ -109,6 +107,7 @@ class DimmableLamp extends MuseumThing {
         this.setReadHandler('isOn');
         this.setReadHandler('intensity');
         this.setWriteHandler("intensity");
+        this.configureProperties(init);
 
         // Define the "toggle" action to switch the lamp's state
         this.setActionHandler("toggle", async () => {

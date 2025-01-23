@@ -12,7 +12,7 @@ export class Museum extends Thing {
     private static readonly specificHeatCapacity: number = 1005; // The specific heat capacity of air in Joules per kilogram per degree Celsius (J/kg°C).
     private static readonly airDensity: number = 1.225; // The density of air in kilograms per cubic meter (kg/m³), used for thermal calculations.
 
-    private rooms : Map<string, Room> = new Map();
+    private rooms : Map<string, Room> = new Map(); // A collection of rooms within the museum.
 
     private static initBase: WoT.ExposedThingInit = {
         "@context": "https://www.w3.org/2019/wot/td/v1",
@@ -117,12 +117,14 @@ export class Museum extends Thing {
     };
 
     constructor(servient: Servient, init: WoT.ExposedThingInit) {
-
         const room = new Map();
+
+        // Create and configure rooms from the initialization properties.
         (init.rooms as any).forEach((roomInit: any) => {
             room.set(roomInit.id, new Room(roomInit.title, roomInit.volume, roomInit.temperature, roomInit.humidity));
             const roomId = roomInit.id;
 
+            // Add temperature, humidity, and volume properties for each room to the WoT configuration.
             (Museum.initBase.properties as any)[`${roomId}-temperature`] = {
                 type: "number",
                 description: `Temperature of room ${roomId}`,
@@ -202,15 +204,17 @@ export class Museum extends Thing {
         }
     }
 
+    // Return museum title
     public getTitle() : string {
         return this.title;
     }
 
+    // Return the collection of rooms
     public getRooms() {
         return this.rooms;
     }
 
-    // Adjusts the humidity based on the number of people in the room.
+    // Adjusts the humidity based on the number of people in each room.
     public adjustHumidityFromPeople(rooms : Map<string, number>, deltaTime: number): void {
         for (const [roomId, people] of rooms) {
             const room = this.rooms.get(roomId);
@@ -222,7 +226,7 @@ export class Museum extends Thing {
         }
     }
 
-    // Increases the environment's temperature based on the input energy.
+    // Increases the room's temperature based on the input energy.
     public async increaseTemperature(roomId : string, energy: number): Promise<void> {
         const room = this.rooms.get(roomId);
         const temperature = room?.getTemperature();
@@ -234,7 +238,7 @@ export class Museum extends Thing {
         }
     }
 
-    // Decreases the humidity by a given percentage.
+    // Decreases the room's humidity by a given percentage.
     public async decreaseHumidity(roomId: string, energy: number): Promise<void> {
         const room = this.rooms.get(roomId);
         const humidity = room?.getHumidity();
@@ -266,7 +270,6 @@ export class Museum extends Thing {
             if (humidity) {
                 const humidityDrop = this.humidityDecreaseRate * (deltaTime / 1000);
                 room.decreaseHumidity(humidityDrop);
-                //this.adjustHumidityFromPeople(deltaTime);
                 const newHumidity = room.getHumidity();
                 if (newHumidity && newHumidity > 55) {
                     this.emitEvent('maxHumidity', id);
@@ -282,6 +285,7 @@ export class Museum extends Thing {
         this.rooms.get(roomId)?.updateEnergyConsumption(energy);
     }
 
+    // Converts the room object to a JSON string representation.
     public toString(): string {
         const excludeFields = ['environment', 'initBase', 'thing', 'lastUpdateTime'];
     
@@ -300,8 +304,8 @@ export class Museum extends Thing {
                 }, {})
         };
     
-        const roomsJson = Array.from(this.rooms.entries()).map(([key, room]) => ({
-            key,
+        const roomsJson = Array.from(this.rooms.entries()).map(([id, room]) => ({
+            id,
             ...(typeof room.toString === 'function'
                 ? JSON.parse(room.toString())
                 : null)

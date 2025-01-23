@@ -1,6 +1,4 @@
 import Servient from "@node-wot/core";
-import { SituatedThing } from "../../SituatedThing";
-import { Room } from "../../environments/museum/Room";
 import { eventQueue } from "../../../simulation/eventQueue";
 import { ok } from "../../../utils/action-result";
 import { MuseumThing } from "./MuseumThing";

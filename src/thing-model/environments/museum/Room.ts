@@ -14,34 +14,41 @@ export class Room {
         this.humidity = humidity;
     }
 
+    // Returns the title of the room.
     public getTitle() : string {
         return this.title;
     }
 
+    // Returns the volume of the room.
     public getVolume() : number {
         return this.volume;
     }
 
+    // Returns the current temperature of the room.
     public getTemperature() {
         return this.temperature;
     }
 
+    // Returns the current humidity of the room.
     public getHumidity() {
         return this.humidity;
     }
 
+    // Updates the temperature of the room by adding a delta value.
     public updateTemperature(deltaTemperature : number) {
         if (this.temperature) {
             this.temperature += deltaTemperature;
         }
     }
 
+    // Increases the humidity level of the room by a delta value, ensuring it does not exceed 100%.
     public increaseHumidity(deltaHumidity : number) {
         if(this.humidity) {
             this.humidity = Math.min(100, this.humidity + deltaHumidity)
         }
     }
 
+    // Decreases the humidity level of the room by a delta value, ensuring it does not drop below 0%.
     public decreaseHumidity(deltaHumidity : number) {
         if(this.humidity) {
             this.humidity = Math.max(0, this.humidity - deltaHumidity);
@@ -53,6 +60,7 @@ export class Room {
         this.totalEnergyConsumption += energy/1000;
     }
 
+    // Converts the room object to a JSON string representation.
     public toString(): string {    
         return JSON.stringify(
             {
