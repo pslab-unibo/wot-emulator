@@ -3,7 +3,7 @@ import { ExposedThing, Servient } from "@node-wot/core";
 // Abstract class representing a Thing in the Web of Things (WoT)
 export abstract class Thing {
 
-    private thing: ExposedThing;                  // ExposedThing instance representing the Thing              
+    protected thing: ExposedThing;                  // ExposedThing instance representing the Thing              
     private lastUpdateTime: number = Date.now();    // Tracks elapsed time since the last update
 
     constructor(servient: Servient, 
