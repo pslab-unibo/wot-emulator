@@ -4,6 +4,7 @@ import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { initialize } from "./init";
+import { error } from "../utils/action-result";
 
 // Initializes the server and sets up WebSocket communication with clients.
 export function inizializeServer(): void{
@@ -24,9 +25,18 @@ export function inizializeServer(): void{
             const setupData = scheduler.getThingState(); 
             res.json(setupData); // Respond with the setup state as JSON
         } else {
-            res.status(500).json({ error: 'Scheduler not initialized' });
+            error({code: 500, message: 'Scheduler not initialized'});
         }
     });
+
+    app.get('/status', (req, res) => {
+        if (scheduler) {
+            res.json({ running: scheduler.isRunning() });
+        } else {
+            error({code: 500, message: 'Scheduler not initialized'});
+        }
+    });
+    
 
     // Handle new WebSocket connections
     io.on("connect", (socket) => {
