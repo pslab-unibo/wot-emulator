@@ -1,6 +1,7 @@
 import Servient from "@node-wot/core";
 import { Museum } from "../../environments/museum/Museum";
 import { PeriodicThing } from "../../PeriodicThing";
+import { eventQueue } from "../../../simulation/eventQueue";
 
 class PeopleFlowSensors extends PeriodicThing<Museum> {
 
@@ -69,47 +70,74 @@ class PeopleFlowSensors extends PeriodicThing<Museum> {
     }
 
     public update(deltaTime: number): void {
-        const firstRoomId = Array.from(this.people.keys())[0]
+        const firstRoomId = Array.from(this.people.keys())[0];
         const peopleInFirstRoom = Array.from(this.people.values())[0];
         
-        const chanceToAddPeople = Math.random() * deltaTime;  
-        if (chanceToAddPeople > 0.8) {  
+        const chanceToAddPeople = Math.random() * deltaTime;
+        if (chanceToAddPeople > 0.8) {
             this.people.set(firstRoomId, peopleInFirstRoom + 1);
             this.emitEvent("peopleChanged", {
                 roomId: firstRoomId,
                 people: this.people.get(firstRoomId),
             });
         }
-
+    
         const rooms = Array.from(this.environment.getRooms().keys());
-        for (let i = 0; i < rooms.length - 1; i++) {
+        for (let i = 0; i < rooms.length; i++) {
             const currentRoomId = rooms[i];
-            const nextRoomId = rooms[i + 1];
+            const isLastRoom = i === rooms.length - 1;
     
             const peopleInCurrentRoom = this.people.get(currentRoomId) || 0;
     
             if (peopleInCurrentRoom > 0) {
                 const peopleToMove = Math.floor(Math.random() * Math.min(Math.ceil(peopleInCurrentRoom / 2), peopleInCurrentRoom));
     
-                if (peopleToMove > 0 && nextRoomId) {
-                    this.people.set(currentRoomId, peopleInCurrentRoom - peopleToMove);
-                    const peopleInNextRoom = this.people.get(nextRoomId) || 0;
-                    this.people.set(nextRoomId, peopleInNextRoom + peopleToMove);
+                if (peopleToMove > 0) {
+                    if (isLastRoom) {
+                        // Remove people in the last room
+                        this.people.set(currentRoomId, peopleInCurrentRoom - peopleToMove);
     
-                    this.emitEvent("peopleChanged", {
-                        roomId: currentRoomId,
-                        people: this.people.get(currentRoomId),
-                    });
+                        this.emitEvent("peopleChanged", {
+                            roomId: currentRoomId,
+                            people: this.people.get(currentRoomId),
+                        });
+                    } else {
+                        const nextRoomId = rooms[i + 1];
+                        if (nextRoomId) {
+                            this.people.set(currentRoomId, peopleInCurrentRoom - peopleToMove);
+                            const peopleInNextRoom = this.people.get(nextRoomId) || 0;
+                            this.people.set(nextRoomId, peopleInNextRoom + peopleToMove);
     
-                    this.emitEvent("peopleChanged", {
-                        roomId: nextRoomId,
-                        people: this.people.get(nextRoomId),
-                    });
+                            this.emitEvent("peopleChanged", {
+                                roomId: currentRoomId,
+                                people: this.people.get(currentRoomId),
+                            });
+    
+                            this.emitEvent("peopleChanged", {
+                                roomId: nextRoomId,
+                                people: this.people.get(nextRoomId),
+                            });
+                        }
+                    }
                 }
             }
-        }
 
-        console.log(this.people);
+            eventQueue.enqueueEvent(async () => this.environment.adjustHumidityFromPeople(this.people, deltaTime));
+        }
+    }
+    
+
+    public toString(): string {
+        return JSON.stringify(
+            {
+                title: this.getTitle(), 
+                type: this.constructor.name, 
+                ...Array.from(this.people.entries()).reduce((roomsObj, [room, peopleCount]) => {
+                    roomsObj[room] = peopleCount;
+                    return roomsObj;
+                }, {} as Record<string, number>)
+            }
+        );
     }
     
 }

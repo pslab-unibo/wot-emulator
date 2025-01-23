@@ -211,12 +211,14 @@ export class Museum extends Thing {
     }
 
     // Adjusts the humidity based on the number of people in the room.
-    private adjustHumidityFromPeople(roomId : string, deltaTime: number, people : number): void {
-        const room = this.rooms.get(roomId);
-        const humidity = room?.getHumidity();
-        if (humidity) {
-            const humidityIncrease = Museum.humidityIncreasePerPerson * people * (deltaTime / 1000);
-            room?.increaseHumidity(humidityIncrease);
+    public adjustHumidityFromPeople(rooms : Map<string, number>, deltaTime: number): void {
+        for (const [roomId, people] of rooms) {
+            const room = this.rooms.get(roomId);
+            const humidity = room?.getHumidity();
+            if (humidity) {
+                const humidityIncrease = Museum.humidityIncreasePerPerson * people * (deltaTime / 1000);
+                room?.increaseHumidity(humidityIncrease);
+            }
         }
     }
 
