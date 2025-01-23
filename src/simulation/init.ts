@@ -2,7 +2,6 @@ import { Scheduler } from "./scheduler";
 import * as fs from 'fs';
 import { servientManager } from "./ServientManager";
 import { CONFIG, THING_MODEL, ENV_MODEL } from "../main";
-import { Thing } from "../thing-model/Thing";
 
 //Initializes the simulation by setting up the environment and Things.
 export async function initialize(scheduler: Scheduler): Promise<void> {

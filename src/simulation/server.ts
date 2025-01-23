@@ -19,7 +19,6 @@ export function inizializeServer(): void{
         }
      });
 
-    // Serve the setup state via HTTP GET
     app.get('/setup', (req, res) => {
         if (scheduler) {
             const setupData = scheduler.getThingState(); 
@@ -31,7 +30,7 @@ export function inizializeServer(): void{
 
     app.get('/status', (req, res) => {
         if (scheduler) {
-            res.json({ running: scheduler.isRunning() });
+            res.json({ running: scheduler.isRunning() }); // Respond with the scheduler status as JSON
         } else {
             error({code: 500, message: 'Scheduler not initialized'});
         }
