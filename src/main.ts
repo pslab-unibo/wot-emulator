@@ -1,5 +1,3 @@
-import { Scheduler } from "./simulation/scheduler";
-import { initialize } from "./simulation/init";
 import { inizializeServer } from "./simulation/server";
 
 // Path to the main configuration file for the simulator, defining the setup for servients, environments, and things.

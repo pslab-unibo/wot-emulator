@@ -1,4 +1,4 @@
-import { ExposedThing, Servient } from "@node-wot/core";
+import { Servient } from "@node-wot/core";
 import { SituatedThing } from "./SituatedThing";
 import { Thing } from "./Thing";
 

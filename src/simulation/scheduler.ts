@@ -2,7 +2,7 @@ import { Thing } from "../thing-model/Thing";
 import { eventQueue } from '../simulation/eventQueue';
 import { PeriodicThing } from "../thing-model/PeriodicThing";
 import { servientManager } from "./ServientManager";
-import { generateJson, generatePatch } from "../utils/jsonUtils";
+import { generateJson, generatePatch, generateUri } from "../utils/jsonUtils";
 
 // Define scheduler states as an enum for better type safety
 enum SchedulerState {

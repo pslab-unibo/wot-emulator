@@ -1,5 +1,4 @@
 import Servient from "@node-wot/core";
-import { Room } from "../../environments/museum/Room";
 import { MuseumThing } from "./MuseumThing";
 import { eventQueue } from "../../../simulation/eventQueue";
 import { ok } from "../../../utils/action-result";
@@ -7,7 +6,7 @@ import { Museum } from "../../environments/museum/Museum";
 
 // Represents a radiator that emits heat to an environment when turned on.
 class Radiator extends MuseumThing {
-    public id: number = 1;
+   
     public isOn : boolean = false;
     private power : number = 0;
 
