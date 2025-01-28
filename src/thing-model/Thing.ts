@@ -13,7 +13,6 @@ export abstract class Thing {
         // Combine base initialization properties with specific initialization properties
         const fullInit = {
             "@context": "https://www.w3.org/2019/wot/td/v1",
-            "@type": "Thing",
             ...initBase,
             ...init
         } as WoT.ExposedThingInit;

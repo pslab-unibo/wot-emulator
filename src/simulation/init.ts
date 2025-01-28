@@ -32,7 +32,7 @@ async function initializeEnvironments(scheduler: Scheduler): Promise<Map<string,
                 scheduler.addEnvironment(environment);
 
                 // Add the environment to the map with its ID as the key
-                environmentMap.set(envConfig.id, environment);
+                environmentMap.set(envConfig.title, environment);
             }
         }
 
