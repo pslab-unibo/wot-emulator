@@ -5,6 +5,7 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import { initialize } from "./init";
 import { error } from "../utils/action-result";
+import { generateUri } from "../utils/jsonUtils";
 
 // Initializes the server and sets up WebSocket communication with clients.
 export function inizializeServer(): void{
@@ -23,6 +24,15 @@ export function inizializeServer(): void{
         if (scheduler) {
             const setupData = scheduler.getThingState(); 
             res.json(setupData); // Respond with the setup state as JSON
+        } else {
+            error({code: 500, message: 'Scheduler not initialized'});
+        }
+    });
+
+    app.get('/getThings', (req, res) => {
+        if (scheduler) {
+            const thingsData = generateUri(); 
+            res.json(thingsData);
         } else {
             error({code: 500, message: 'Scheduler not initialized'});
         }
