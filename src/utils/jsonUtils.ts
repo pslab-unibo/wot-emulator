@@ -1,4 +1,7 @@
+import { CONFIG } from "../main";
 import { Thing } from "../thing-model/Thing";
+import * as fs from 'fs';
+import slugify from 'slugify';
 
 export function generateJson(things: Thing[], environments: Thing[]): any[] {
     things = [...environments, ...things];
@@ -41,4 +44,28 @@ export function generatePatch(json1: any[], json2: any[]) {
     }
 
     return patch;
+}
+
+export function generateUri() {
+    const init = JSON.parse(fs.readFileSync(CONFIG, 'utf8'));
+    const things = [...init.environments, ...init.things];
+    const servients = init.servients;
+    const URL = [];
+
+    const servientsMap = new Map();
+
+    for (const item of servients) {
+        servientsMap.set(item.id, { host: item.host, port: item.port, type: item.type });
+    }
+
+    for (const thing of things) {
+        const id = thing.servient ? thing.servient : Array.from(servientsMap.keys())[0];
+        if (id !== undefined) {
+            const servient = servientsMap.get(id);
+            const url = servient.type + '://' + servient.host + ':' + servient.port + '/' + slugify(thing.title, {lower: true});
+            URL.push({"title": thing.title, "type": thing.type, "URI": url});
+        } 
+    }
+
+    return URL;
 }
