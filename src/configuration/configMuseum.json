@@ -1,7 +1,6 @@
 {
     "environments": [
         {
-            "id": "Museum",
             "type": "Museum",
             "title": "Museum",
             "ambientTemperature": 16,
@@ -52,28 +51,42 @@
     ],
     "things": [
         {
-            "id": "peoplesensor",
-            "title": "PeopleSensor",
+            "title": "PeopleSensor1",
             "type": "PeopleFlowSensor",
             "environment": "Museum",
-            "period": 1000
+            "roomId": "gallery1"
         },
         {
-            "id": "g1.1",
+            "title": "PeopleSensor2",
+            "type": "PeopleFlowSensor",
+            "environment": "Museum",
+            "roomId": "gallery2"
+        },
+        {
+            "title": "PeopleSensor3",
+            "type": "PeopleFlowSensor",
+            "environment": "Museum",
+            "roomId": "gallery3"
+        },
+        {
+            "title": "PeopleSensor4",
+            "type": "PeopleFlowSensor",
+            "environment": "Museum",
+            "roomId": "gallery4"
+        },
+        {
             "title": "DimmableLamp1.1",
             "type": "DimmableLamp",
             "environment": "Museum",
             "roomId": "gallery1"
         },
         {
-            "id": "g1.2",
             "title": "DimmableLamp1.2",
             "type": "DimmableLamp",
             "environment": "Museum",
             "roomId": "gallery1"
         },
         {
-            "id": "g1.3",
             "title": "Radiator1.1",
             "type": "Radiator",
             "power": 120,
@@ -82,7 +95,6 @@
             "roomId": "gallery1"
         },
         {
-            "id": "g1.4",
             "title": "Humidifier1",
             "type": "Humidifier",
             "isOn": false,
@@ -91,14 +103,12 @@
             "roomId": "gallery1"
         },
         {
-            "id": "g2.1",
             "title": "DimmableLamp2.1",
             "type": "DimmableLamp",
             "environment": "Museum",
             "roomId": "gallery2"
         },
         {
-            "id": "g2.2",
             "title": "Radiator2.1",
             "type": "Radiator",
             "power": 90,
@@ -107,7 +117,6 @@
             "roomId": "gallery2"
         },
         {
-            "id": "g2.3",
             "title": "Humidifier2",
             "type": "Humidifier",
             "isOn": false,
@@ -116,21 +125,18 @@
             "roomId": "gallery2"
         },
         {
-            "id": "g3.1",
             "title": "DimmableLamp3.1",
             "type": "DimmableLamp",
             "environment": "Museum",
             "roomId": "gallery3"
         },
         {
-            "id": "g3.2",
             "title": "DimmableLamp3.2",
             "type": "DimmableLamp",
             "environment": "Museum",
             "roomId": "gallery3"
         },
         {
-            "id": "g3.3",
             "title": "Radiator3.1",
             "type": "Radiator",
             "power": 150,
@@ -139,7 +145,6 @@
             "roomId": "gallery3"
         },
         {
-            "id": "g3.4",
             "title": "Radiator3.2",
             "type": "Radiator",
             "power": 100,
@@ -148,7 +153,6 @@
             "roomId": "gallery3"
         },
         {
-            "id": "g3.5",
             "title": "Humidifier3",
             "type": "Humidifier",
             "isOn": false,
@@ -157,14 +161,12 @@
             "roomId": "gallery3"
         },
         {
-            "id": "g4.1",
             "title": "DimmableLamp4.1",
             "type": "DimmableLamp",
             "environment": "Museum",
             "roomId": "gallery4"
         },
         {
-            "id": "g4.2",
             "title": "Radiator4.1",
             "type": "Radiator",
             "power": 75,
@@ -173,7 +175,6 @@
             "roomId": "gallery4"
         },
         {
-            "id": "g4.3",
             "title": "Humidifier4",
             "type": "Humidifier",
             "isOn": false,
