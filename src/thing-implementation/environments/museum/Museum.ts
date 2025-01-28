@@ -360,19 +360,18 @@ export class Museum extends Thing {
     
         const roomsJson = Array.from(this.rooms.entries()).map(([id, room]) => ({
             id,
-            ...(typeof room.toString === 'function'
-                ? JSON.parse(room.toString())
-                : null)
+            ...(typeof room.toString === 'function' ? JSON.parse(room.toString()) : null)
         }));
+
+        const combinedJson = {
+            ...museumJson,  
+            rooms: roomsJson 
+        };
     
-        const combinedJson = [
-            museumJson,
-            ...roomsJson
-        ];
-    
-        const jsonString = JSON.stringify(combinedJson, null, 2); 
+        const jsonString = JSON.stringify(combinedJson, null, 2);
         return jsonString;
     }
+    
     
 }
 
