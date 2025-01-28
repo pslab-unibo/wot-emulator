@@ -1,21 +1,12 @@
 import { CONFIG } from "../main";
-import { Thing } from "../thing-model/Thing";
+import { Thing } from "../thing-implementation/Thing";
 import * as fs from 'fs';
 import slugify from 'slugify';
 
-export function generateJson(things: Thing[], environments: Thing[]): any[] {
+export function generateJson(things: Thing[], environments: Thing[]) {
     things = [...environments, ...things];
-    const thingsJson: any[] = [];
 
-    things.forEach(thing => {
-        const parsedThing = JSON.parse(thing.toString());
-        if (Array.isArray(parsedThing)) {
-            thingsJson.push(...parsedThing);
-        } else {
-            thingsJson.push(parsedThing);
-        }
-    });
-
+    const thingsJson = things.map(thing => JSON.parse(thing.toString()));
     return thingsJson;
 }
 
