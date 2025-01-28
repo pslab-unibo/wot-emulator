@@ -152,6 +152,7 @@ export class Museum extends Thing {
                     }
                 ]
             };
+
             (Museum.initBase.properties as any)[`${roomId}-volume`] = {
                 type: "number",
                 description: `Volume of room ${roomId}`,
@@ -160,6 +161,20 @@ export class Museum extends Thing {
                 forms: [
                     {
                         href: `${roomId}-volume`,
+                        op: ["readproperty"],
+                        contentType: "application/json"
+                    }
+                ]
+            };
+
+            (Museum.initBase.properties as any)[`${roomId}-people`] = {
+                type: "number",
+                description: `Current people in the room ${roomId}`,
+                observable: true,
+                readOnly: true,
+                forms: [
+                    {
+                        href: `${roomId}-people`,
                         op: ["readproperty"],
                         contentType: "application/json"
                     }
@@ -214,15 +229,16 @@ export class Museum extends Thing {
         return this.rooms;
     }
 
+    public getPeople(room : string) {
+        return this.rooms.get(room)?.getPeople();
+    }
+
     // Adjusts the humidity based on the number of people in each room.
-    public adjustHumidityFromPeople(rooms : Map<string, number>, deltaTime: number): void {
-        for (const [roomId, people] of rooms) {
-            const room = this.rooms.get(roomId);
-            const humidity = room?.getHumidity();
-            if (humidity) {
-                const humidityIncrease = Museum.humidityIncreasePerPerson * people * (deltaTime / 1000);
-                room?.increaseHumidity(humidityIncrease);
-            }
+    public adjustHumidityFromPeople(room : Room, deltaTime: number): void {
+        const humidity = room?.getHumidity();
+        if (humidity) {
+            const humidityIncrease = Museum.humidityIncreasePerPerson * room.getPeople() * (deltaTime / 1000);
+            room?.increaseHumidity(humidityIncrease);
         }
     }
 
@@ -275,6 +291,44 @@ export class Museum extends Thing {
                     this.emitEvent('maxHumidity', id);
                 } else if (newHumidity && newHumidity < 15) {
                     this.emitEvent('minHumidity', id);
+                }
+
+                this.adjustHumidityFromPeople(room, deltaTime);
+            }
+        }
+
+        const firstRoomId = Array.from(this.rooms.keys())[0];
+        const peopleInFirstRoom = this.rooms.get(firstRoomId)?.getPeople();
+        
+        // Randomly add people to the first room with a probability influenced by deltaTime.
+        const chanceToAddPeople = Math.random() * deltaTime;
+        if (chanceToAddPeople > 0.8) {
+            this.rooms.get(firstRoomId)?.increasePeople();
+        }
+        
+         // Handle people movement between adjacent rooms.
+        const rooms = Array.from(this.getRooms().keys());
+        for (let i = 0; i < rooms.length; i++) {
+            const currentRoomId = rooms[i];
+            const isLastRoom = i === rooms.length - 1;
+    
+            const peopleInCurrentRoom = this.rooms.get(currentRoomId)?.getPeople() || 0;
+    
+            if (peopleInCurrentRoom > 0) {
+                const peopleToMove = Math.floor(Math.random() * Math.min(Math.ceil(peopleInCurrentRoom / 2), peopleInCurrentRoom));
+    
+                if (peopleToMove > 0) {
+                    if (isLastRoom) {
+                        // If it's the last room, just reduce the number of people in it.
+                        this.rooms.get(currentRoomId)?.removePeople(peopleToMove);
+                    } else {
+                        // Move people from the current room to the next room.
+                        const nextRoomId = rooms[i + 1];
+                        if (nextRoomId) {
+                            this.rooms.get(currentRoomId)?.removePeople(peopleToMove);
+                            this.rooms.get(nextRoomId)?.increasePeople(peopleToMove);
+                        }
+                    }
                 }
             }
         }
