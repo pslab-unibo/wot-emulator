@@ -4,12 +4,12 @@ import { ok } from "../../../utils/action-result";
 import { MuseumThing } from "./MuseumThing";
 import { Museum } from "../../environments/museum/Museum";
 
-//* Represents a humidifier that emits moisture to an environment when turned on.
 class Humidifier extends MuseumThing {
 
-    private isOn: boolean = false;
-    private power: number = 0;
+    private isOn: boolean = false;  // Tracks if the humidifier is on or off
+    private power: number = 0;      // Power level of the humidifier
 
+    // Base structure of the humidifier's TD
     private static initBase: WoT.ExposedThingInit = {
         description: "A humidifier that emits moisture",
         forms: [
@@ -68,6 +68,7 @@ class Humidifier extends MuseumThing {
 
         super(servient, init, Humidifier.initBase, environment);
 
+        // Set up action handler for 'toggle' action, which turns the humidifier on or off
         this.setActionHandler("toggle", async () => {
             eventQueue.enqueueEvent(async () => {
                 this.isOn = !this.isOn;
@@ -76,13 +77,14 @@ class Humidifier extends MuseumThing {
         });
 
         this.setPropertiesDefaultHandler(init);
-
         this.configureProperties(init);
         this.setReadHandler('isOn');
     }
 
-    /* Updates the state of the humidifier based on the elapsed time.
-       Emits moisture to the environment if the humidifier is turned on. */
+    /* 
+       Updates the state of the humidifier based on the elapsed time (deltaTime).
+       Emits moisture to the environment if the humidifier is turned on. 
+    */
     public update(deltaTime: number) {
         if (this.isOn) {
             eventQueue.enqueueEvent(() => this.environment

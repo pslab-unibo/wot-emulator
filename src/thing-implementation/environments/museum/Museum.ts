@@ -2,18 +2,22 @@ import Servient from "@node-wot/core";
 import { Thing } from "../../Thing";
 import { Room } from "./Room";
 
+// The Museum class represents an environment with multiple rooms,
+// each having temperature, humidity, and energy management.
 export class Museum extends Thing {
 
     private title : string = '';    //identifier of the room.
     private ambientTemperature ?: number;   // The external or surrounding temperature affecting the room, in degrees Celsius.
     private coolingConstant: number = 0;    // A constant that represents the room's cooling characteristics
     private humidityDecreaseRate: number = 0.01; // Rate at which humidity naturally decreases
+    
     private static readonly humidityIncreasePerPerson: number = 0.05; // Percentage increase per person per second
     private static readonly specificHeatCapacity: number = 1005; // The specific heat capacity of air in Joules per kilogram per degree Celsius (J/kg°C).
     private static readonly airDensity: number = 1.225; // The density of air in kilograms per cubic meter (kg/m³), used for thermal calculations.
 
     private rooms : Map<string, Room> = new Map(); // A collection of rooms within the museum.
 
+    // Base structure of the museum's TD
     private static initBase: WoT.ExposedThingInit = {
         "@context": "https://www.w3.org/2019/wot/td/v1",
         "@type": "Environment",
@@ -233,7 +237,7 @@ export class Museum extends Thing {
         return this.rooms.get(room)?.getPeople();
     }
 
-    // Adjusts the humidity based on the number of people in each room.
+    // Adjusts the humidity based on the number of people in a specified room.
     public adjustHumidityFromPeople(room : Room, deltaTime: number): void {
         const humidity = room?.getHumidity();
         if (humidity) {
@@ -298,7 +302,6 @@ export class Museum extends Thing {
         }
 
         const firstRoomId = Array.from(this.rooms.keys())[0];
-        const peopleInFirstRoom = this.rooms.get(firstRoomId)?.getPeople();
         
         // Randomly add people to the first room with a probability influenced by deltaTime.
         const chanceToAddPeople = Math.random() * deltaTime;

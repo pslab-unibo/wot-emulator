@@ -6,9 +6,10 @@ import { Museum } from "../../environments/museum/Museum";
 
 class DimmableLamp extends MuseumThing {
 
-    private intensity: string = "medium";  // Brightness level of the lamp
-    private isOn: boolean = false;  // Power state of the lamp (on/off)
+    private intensity: string = "medium";   // Brightness level of the lamp
+    private isOn: boolean = false;          // Power state of the lamp (on/off)
 
+    // Base structure of the dimmableLamp's TD
     private static initBase : WoT.ExposedThingInit = {
         "description": "A lamp that can change intensity level",
         forms: [
@@ -104,6 +105,7 @@ class DimmableLamp extends MuseumThing {
 
         super(servient, init, DimmableLamp.initBase, environment);
 
+        // Set read and write handlers for properties
         this.setReadHandler('isOn');
         this.setReadHandler('intensity');
         this.setWriteHandler("intensity");

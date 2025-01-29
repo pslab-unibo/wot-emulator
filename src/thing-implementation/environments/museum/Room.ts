@@ -4,7 +4,7 @@ export class Room {
     private volume: number = 0;     // The volume of the room in cubic meters (m³)
     private temperature?: number;   // The current internal temperature of the room, in degrees Celsius.
     private humidity?: number;      // The current humidity level of the room as a percentage (0-100).
-    private people : number = 0;
+    private people : number = 0;    // The number of people currently in the room.
 
     private totalEnergyConsumption: number = 0;  // The total energy consumption of devices and systems in the room, in kilowatts (kW).
 
@@ -35,14 +35,17 @@ export class Room {
         return this.humidity;
     }
 
+    // Returns the number of people currently in the room.
     public getPeople() {
         return this.people;
     }
 
+    // Increases the number of people in the room by a specified amount or by 1 if no number is provided.
     public increasePeople(total?: number) {
         total ? this.people+=total : this.people++;
     }
 
+    // Decreases the number of people in the room by a specified amount or by 1 if no number is provided, ensuring it does not go below 0.
     public removePeople(total?: number) {
         (total && this.people - total > 0) ? this.people-=total : this.people--;
     }

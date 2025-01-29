@@ -7,9 +7,10 @@ import { Museum } from "../../environments/museum/Museum";
 // Represents a radiator that emits heat to an environment when turned on.
 class Radiator extends MuseumThing {
    
-    public isOn : boolean = false;
-    private power : number = 0;
+    public isOn : boolean = false;  // Tracks if the radiator is on or off
+    private power : number = 0;     // Power level of the radiator
 
+    // Base structure of the radiator's TD
     private static initBase : WoT.ExposedThingInit = {
         description: "A radiator that emits heat",
         forms: [
@@ -67,7 +68,8 @@ class Radiator extends MuseumThing {
                 environment : Museum) {
 
         super(servient, init, Radiator.initBase, environment);
-
+        
+        // Set the action handler for the 'toggle' action (turning the radiator on/off)
         this.setActionHandler("toggle", async() => {
             eventQueue.enqueueEvent(async () => {
                 this.isOn = !this.isOn;
@@ -76,7 +78,6 @@ class Radiator extends MuseumThing {
         });
 
         this.setPropertiesDefaultHandler(init);
-
         this.configureProperties(init);
         this.setReadHandler('isOn');
     }

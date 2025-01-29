@@ -5,8 +5,9 @@ import { MuseumThing } from "./MuseumThing";
 // Represents a sensor system that tracks people flow between rooms in a museum environment.
 class PeopleFlowSensor extends MuseumThing {
 
-    private people : number = 0;
+    private people : number = 0;    // The current number of people in the room
 
+    // Base structure of the sensor's TD
     private static initBase: WoT.ExposedThingInit = {
             description: "A humidifier that emits moisture",
             forms: [
@@ -64,11 +65,15 @@ class PeopleFlowSensor extends MuseumThing {
         this.configureProperties(init);
     }
 
-    // Updates the state of the sensor, simulating people movement between rooms.
     public update(deltaTime: number): void {
+        // Get the current number of people in the room from the environment
         const people = this.environment.getPeople(this.roomId);
+
+        // Check if the number of people has changed
         if (people && people !== this.people) {
             this.people = people;
+
+            // Emit an event to notify about the change in the number of people in the room
             this.emitEvent("peopleChanged", {
                 roomId: this.roomId,
                 people: this.people,
@@ -77,10 +82,10 @@ class PeopleFlowSensor extends MuseumThing {
     }
     
 }
+
 //Factory function to create a new PeopleFlowSensor instance.
 export function create(servient: Servient, 
     init: WoT.ExposedThingInit, 
-    environment: Museum, 
-    period: number): PeopleFlowSensor {
+    environment: Museum): PeopleFlowSensor {
     return new PeopleFlowSensor(servient, init, environment);
 }

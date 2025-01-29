@@ -10,13 +10,14 @@ export abstract class Thing {
                 init: WoT.ExposedThingInit, 
                 initBase: WoT.ExposedThingInit = {}) {
 
-        // Combine base initialization properties with specific initialization properties
+        // Merge base initialization properties with specific initialization properties
         const fullInit = {
             "@context": "https://www.w3.org/2019/wot/td/v1",
             ...initBase,
             ...init
         } as WoT.ExposedThingInit;
 
+        // Initialize the ExposedThing instance with the merged properties
         this.thing = new ExposedThing(servient, fullInit);
     }
 
@@ -25,12 +26,12 @@ export abstract class Thing {
         return this.thing.title;
     }
 
-    // Returns the title of the Thing
+    // Returns the identifier of the Thing
     public getId() : string{
         return this.thing.id;
     }
 
-    // Returns the title of the Thing
+    // Returns the servient that expose the Thing
     public getServient() : string{
         return this.thing.servient;
     }
@@ -58,20 +59,14 @@ export abstract class Thing {
      */
     public abstract update(deltaTime: number): void;
 
-    /** 
-     * Configures the properties of the Thing based on the provided initialization.
-     * It will check for type consistency and assign the values to the properties of this Thing.
-     */
+    // Configures the properties of the Thing based on the provided initialization
     protected configureProperties(init: WoT.ExposedThingInit): void {
         Object.entries(init).forEach(([key, value]) => {
             this.setProperty(key, value);
         });
     }
     
-    /**
-     * Sets the default read handler for a property.
-     * This allows reading the property value directly or using a custom handler.
-     */
+    // Sets the default read handler for a property (or uses a custom handler)
     protected setReadHandler(propertyName: string, handler?: WoT.PropertyReadHandler): void {
         if (handler) {
             this.thing.setPropertyReadHandler(propertyName, handler);
@@ -88,10 +83,7 @@ export abstract class Thing {
         }
     }
 
-    /**
-     * Sets the default write handler for a property.
-     * This allows modifying the property value directly or using a custom handler.
-     */
+    // Sets the default write handler for a property (or uses a custom handler)
     protected setWriteHandler(propertyName: string, handler?: WoT.PropertyWriteHandler): void {
         if(handler) {
             this.thing.setPropertyWriteHandler(propertyName, handler);
@@ -154,7 +146,7 @@ export abstract class Thing {
     }
 
 
-    // Returns a JSON representation of the Thing.
+    // Returns a default JSON representation of the Thing.
     public toString(): string {
         const excludeFields = ['environment', 'initBase', 'thing', 'lastUpdateTime'];
     
