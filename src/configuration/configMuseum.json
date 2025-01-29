@@ -47,6 +47,12 @@
             "type": "http",
             "host": "localhost",
             "port": 8081
+        },
+        {
+            "id": 1,
+            "type": "http",
+            "host": "localhost",
+            "port": 8082
         }
     ],
     "things": [
@@ -78,13 +84,15 @@
             "title": "DimmableLamp1.1",
             "type": "DimmableLamp",
             "environment": "Museum",
-            "roomId": "gallery1"
+            "roomId": "gallery1",
+            "servient": 1
         },
         {
             "title": "DimmableLamp1.2",
             "type": "DimmableLamp",
             "environment": "Museum",
-            "roomId": "gallery1"
+            "roomId": "gallery1",
+            "servient": 1
         },
         {
             "title": "Radiator1.1",
@@ -106,7 +114,8 @@
             "title": "DimmableLamp2.1",
             "type": "DimmableLamp",
             "environment": "Museum",
-            "roomId": "gallery2"
+            "roomId": "gallery2",
+            "servient": 1
         },
         {
             "title": "Radiator2.1",
@@ -128,13 +137,15 @@
             "title": "DimmableLamp3.1",
             "type": "DimmableLamp",
             "environment": "Museum",
-            "roomId": "gallery3"
+            "roomId": "gallery3",
+            "servient": 1
         },
         {
             "title": "DimmableLamp3.2",
             "type": "DimmableLamp",
             "environment": "Museum",
-            "roomId": "gallery3"
+            "roomId": "gallery3",
+            "servient": 1
         },
         {
             "title": "Radiator3.1",
@@ -164,7 +175,8 @@
             "title": "DimmableLamp4.1",
             "type": "DimmableLamp",
             "environment": "Museum",
-            "roomId": "gallery4"
+            "roomId": "gallery4",
+            "servient": 1
         },
         {
             "title": "Radiator4.1",
