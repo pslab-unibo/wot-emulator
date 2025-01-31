@@ -69,7 +69,7 @@ export function generateUri() {
             const url = servient.type + '://' + servient.host + ':' + servient.port + '/' + slugify(thing.title, {lower: true});
             
             // Store the generated URL, along with the Thing's title and type
-            data.push({"title": thing.title, "type": thing.type, "roomId": thing.roomId, "URI": url});
+            data.push({"title": thing.title, "type": thing.type, "URI": url});
         } 
     }
 
