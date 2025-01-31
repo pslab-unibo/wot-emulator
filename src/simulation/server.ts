@@ -29,7 +29,7 @@ export function inizializeServer(): void{
         }
     });
 
-    app.get('/getThings', (req, res) => {
+    app.get('/things', (req, res) => {
         if (scheduler) {
             const thingsData = generateUri(); 
             res.json(thingsData);
