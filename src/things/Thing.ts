@@ -6,7 +6,6 @@ import { ExposedThing, Servient } from "@node-wot/core";
 export abstract class Thing {
 
     protected thing: ExposedThing;                  // ExposedThing instance representing the Thing              
-    private lastUpdateTime: number = Date.now();    // Tracks elapsed time since the last update
 
     constructor(servient: Servient, 
                 init: WoT.ExposedThingInit, 
@@ -22,29 +21,8 @@ export abstract class Thing {
         this.thing = new ExposedThing(servient, fullInit);
     }
 
-    // Returns the title of the Thing
-    public getTitle() : string{
+    public getTitle() : string {
         return this.thing.title;
-    }
-
-    // Returns the identifier of the Thing
-    public getId() : string{
-        return this.thing.id;
-    }
-
-    // Returns the servient that expose the Thing
-    public getServient() : string{
-        return this.thing.servient;
-    }
-
-    // Gets the last update time of the Thing
-    public getLastUpdateTime() : number{
-        return this.lastUpdateTime;
-    }
-
-    // Sets a new update time
-    public setLastUpdateTime(newTime : number) : void{
-        this.lastUpdateTime = newTime;
     }
 
     // Exposes the Thing to the network
@@ -153,7 +131,7 @@ export abstract class Thing {
     
         return JSON.stringify(
             {
-                title: this.getTitle(), 
+                title: this.thing.title, 
                 type: this.constructor.name, 
                 ...Object.getOwnPropertyNames(this)
                     .filter(field => 

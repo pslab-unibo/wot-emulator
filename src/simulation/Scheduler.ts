@@ -21,9 +21,6 @@ export class Scheduler {
 
     private state: SchedulerState = SchedulerState.STOPPED; // Current state of the scheduler
 
-    private pauseStartTime: number = 0;     // Timestamp when the scheduler was paused
-    private totalPauseTime: number = 0;     // Accumulated pause duration
-
     constructor(period: number) {
         this.period = period;
     }
@@ -80,25 +77,24 @@ export class Scheduler {
         console.log("Scheduler started");
         this.currentThingState = generateJson(this.things, this.environment);
         this.state = SchedulerState.RUNNING;
+        let previousTime = Date.now();
 
         while (this.isRunning()) {
+                let currentTime: number = Date.now();
+                let deltaTime = currentTime - previousTime;
                 // Processes queued events asynchronously
                 await eventQueue.processQueue();
 
                 // Update environment
                 if(this.environment) {
-                    this.updateEntity(this.environment);
+                    this.updateEntity(this.environment, deltaTime);
                 }
                 
                 // Update Things
                 for (const thing of this.things) {
-                    this.updateEntity(thing);
+                    this.updateEntity(thing, deltaTime);
                 }
-
-                // Reset pause time if no longer paused
-                if (this.totalPauseTime > 0){
-                    this.totalPauseTime = 0;
-                }
+                previousTime = currentTime;
 
             await this.wait(this.period);
         }
@@ -110,10 +106,8 @@ export class Scheduler {
             console.warn('Cannot pause: scheduler is not running or already paused');
             return;
         }
-    
         console.log("Scheduler paused");
         this.state = SchedulerState.PAUSED;
-        this.pauseStartTime = Date.now();
     }
 
     // Resumes the scheduler from the paused state.
@@ -122,14 +116,7 @@ export class Scheduler {
             console.warn('Cannot resume: scheduler is running or not paused');
             return;
         }
-
         console.log("Scheduler resumed");
-        
-        if (this.pauseStartTime > 0) {
-            this.totalPauseTime = Date.now() - this.pauseStartTime;
-            this.pauseStartTime = 0;
-        }
-
         await this.start();
     }
 
@@ -150,27 +137,14 @@ export class Scheduler {
         eventQueue.clearQueue();
         this.environment = undefined;
         this.things = [];
-        this.pauseStartTime = 0;
-        this.totalPauseTime = 0;
     }
     
 
     /**Calculates the deltaTime since the last update and calls the update function of the Thing.
     * If the Thing is periodic, it is updated only if the defined period has passed. */
-    private updateEntity(entity : Thing) {
-        const currentTime: number = Date.now();
-        let deltaTime = currentTime - entity.getLastUpdateTime();
-
-        // Subtract the total pause time from delta
-        if (this.totalPauseTime > 0) {
-            deltaTime -= this.totalPauseTime;
-        }
-
+    private updateEntity(entity : Thing, deltaTime: number) {
         try {
-            if (!(entity instanceof PeriodicThing) || deltaTime >= entity.getPeriod()) {
-                entity.update(deltaTime);
-                entity.setLastUpdateTime(currentTime);
-            }
+            entity.update(deltaTime);
         } catch(error) {
             console.error(`Error during update for ${entity.getTitle()}:`, error);
         }

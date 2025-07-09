@@ -8,7 +8,8 @@ import * as fs from 'fs';
 // EnvType is a generic type that represents the environment the Thing interacts with (a subclass of Thing).
 export abstract class PeriodicThing<EnvType extends Thing> extends SituatedThing<EnvType> {
 
-    protected period : number;   // Property to store the period value (time interval for periodic updates)     
+    protected period : number;   // Property to store the period value (time interval for periodic updates)   
+    protected lastUpdateTime: number = 0;  
 
     constructor(servient: Servient, 
                 init: WoT.ExposedThingInit, 
@@ -24,5 +25,15 @@ export abstract class PeriodicThing<EnvType extends Thing> extends SituatedThing
     public getPeriod() : number {
         return this.period;
     }
+
+    public update(deltaTime: number): void {
+        this.lastUpdateTime+=deltaTime;
+        if(this.lastUpdateTime >= this.period) {
+            this.lastUpdateTime = 0; // Reset last update time after the period has passed
+            this.triggerPeriodicBehaviour(); // Call the abstract method to perform the update
+        }
+    }
+
+    public abstract triggerPeriodicBehaviour(): void; // Abstract method to be implemented by subclasses for specific update behavior
     
 }
