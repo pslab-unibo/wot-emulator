@@ -1,13 +1,13 @@
-import { CONFIG } from "../../example/main";
 import { Thing } from "../things/Thing";
 import * as fs from 'fs';
 import slugify from 'slugify';
 
 // Function to generate a JSON representation of all things
-export function generateJson(things: Thing[], environments: Thing[]) {
+export function generateJson(things: Thing[], environment?: Thing) {
     // Combine environments and things into one array
-    things = [...environments, ...things];
-
+    if(environment){
+        things = [environment, ...things];
+    }
     // Convert each Thing to its JSON representation using the `toString` method
     const thingsJson = things.map(thing => JSON.parse(thing.toString()));
     return thingsJson;

@@ -1,5 +1,7 @@
 import { ExposedThing, Servient } from "@node-wot/core";
 
+
+
 // Abstract class representing a Thing in the Web of Things (WoT)
 export abstract class Thing {
 
@@ -17,7 +19,6 @@ export abstract class Thing {
             ...init
         } as WoT.ExposedThingInit;
 
-        // Initialize the ExposedThing instance with the merged properties
         this.thing = new ExposedThing(servient, fullInit);
     }
 
@@ -47,8 +48,8 @@ export abstract class Thing {
     }
 
     // Exposes the Thing to the network
-    public async expose(servient : Servient) : Promise<void>{
-        if (servient.addThing(this.thing)){
+    public async expose() : Promise<void>{
+        if (this.thing.servient.addThing(this.thing)){
             return this.thing.expose();
         }
     }

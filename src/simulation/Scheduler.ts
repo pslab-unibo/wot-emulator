@@ -1,7 +1,6 @@
 import { Thing } from "../things/Thing";
-import { eventQueue } from "./eventQueue";
+import { eventQueue } from "./EventQueue";
 import { PeriodicThing } from "../things/PeriodicThing";
-import { servientManager } from "./ServientManager";
 import { generateJson, generatePatch, generateUri } from "../utils/jsonUtils";
 
 // Define scheduler states as an enum for better type safety
@@ -15,7 +14,7 @@ enum SchedulerState {
 export class Scheduler {
 
     private period: number;         // The interval (in milliseconds) for periodic updates
-    private environments : Thing[] = [];    // Array of environment entities to be updated
+    private environment? : Thing;
     private things: Thing[] = [];   // Array of Things managed by the scheduler
 
     private currentThingState : any[] = [];      
@@ -27,6 +26,10 @@ export class Scheduler {
 
     constructor(period: number) {
         this.period = period;
+    }
+
+    public getEnvironment() {
+        return this.environment;
     }
 
     // Returns the list of Things managed by the scheduler.
@@ -47,7 +50,10 @@ export class Scheduler {
         if (!env) {
             throw new Error('Cannot set undefined or null environment');
         }
-        this.environments.push(env);
+        if(this.environment) {
+            console.warn('Environment already set, replacing with new one');
+        }
+        this.environment = env;
     }
 
     // Checks if the scheduler is currently running.
@@ -72,18 +78,18 @@ export class Scheduler {
         }
 
         console.log("Scheduler started");
-        this.currentThingState = generateJson(this.things, this.environments);
+        this.currentThingState = generateJson(this.things, this.environment);
         this.state = SchedulerState.RUNNING;
 
         while (this.isRunning()) {
                 // Processes queued events asynchronously
                 await eventQueue.processQueue();
 
-                // Update environments
-                for (const env of this.environments) {
-                    this.updateEntity(env);
+                // Update environment
+                if(this.environment) {
+                    this.updateEntity(this.environment);
                 }
-
+                
                 // Update Things
                 for (const thing of this.things) {
                     this.updateEntity(thing);
@@ -142,11 +148,10 @@ export class Scheduler {
     // Cleans up resources used by the scheduler.
     private async cleanup(): Promise<void> {
         eventQueue.clearQueue();
-        this.environments = [];
+        this.environment = undefined;
         this.things = [];
         this.pauseStartTime = 0;
         this.totalPauseTime = 0;
-        await servientManager.shutdown();
     }
     
 
@@ -177,7 +182,7 @@ export class Scheduler {
 
     // Returns the current state of Things and environments as JSON.
     public getThingState() : any[] {
-        return generateJson(this.things, this.environments);
+        return generateJson(this.things, this.environment);
     }
 
     // Compares the previous state with the current state and returns the changes.

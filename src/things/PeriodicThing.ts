@@ -1,6 +1,8 @@
 import { Servient } from "@node-wot/core";
-import { SituatedThing } from "../SituatedThing";
+import { SituatedThing } from "./SituatedThing";
 import { Thing } from "./Thing";
+
+import * as fs from 'fs';
 
 // Abstract class that extends SituatedThing and adds periodic behavior for the Thing
 // EnvType is a generic type that represents the environment the Thing interacts with (a subclass of Thing).
@@ -11,7 +13,8 @@ export abstract class PeriodicThing<EnvType extends Thing> extends SituatedThing
     constructor(servient: Servient, 
                 init: WoT.ExposedThingInit, 
                 initBase: WoT.ExposedThingInit = {}, 
-                environment : EnvType,  period : number) {
+                environment : EnvType,
+                period : number) {
 
         super(servient, init, initBase, environment);
         this.period = period; 
