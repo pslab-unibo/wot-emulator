@@ -8,6 +8,12 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+
+# Ignore test-related files
+/coverage.data
+/coverage/
+
+
 # Dependency directories
 /.pnp
 .pnp.js

@@ -1,6 +1,6 @@
-import { Thing } from "../thing-implementation/Thing";
-import { eventQueue } from '../simulation/eventQueue';
-import { PeriodicThing } from "../thing-implementation/PeriodicThing";
+import { Thing } from "../things/Thing";
+import { eventQueue } from "./eventQueue";
+import { PeriodicThing } from "../things/PeriodicThing";
 import { servientManager } from "./ServientManager";
 import { generateJson, generatePatch, generateUri } from "../utils/jsonUtils";
 

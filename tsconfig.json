@@ -9,7 +9,7 @@
     "outDir": "./dist",                         // Cartella di output
     "rootDir": "./src",                         // Cartella sorgente
     "moduleResolution": "node",                 
-    "types": ["node"]                           // Include i tipi di Node.js
+    "types": ["node", "jest"]                           // Include i tipi di Node.js
   },
   "include": ["src/**/*"],                      
   "exclude": ["node_modules"]                   

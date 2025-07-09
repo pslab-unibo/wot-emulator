@@ -1,5 +1,5 @@
 import { Servient } from "@node-wot/core";
-import { SituatedThing } from "./SituatedThing";
+import { SituatedThing } from "../SituatedThing";
 import { Thing } from "./Thing";
 
 // Abstract class that extends SituatedThing and adds periodic behavior for the Thing

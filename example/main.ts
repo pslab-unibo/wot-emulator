@@ -1,4 +1,4 @@
-import { inizializeServer } from "./simulation/server";
+import { inizializeServer } from "../library/simulation/server";
 
 // Path to the main configuration file for the simulator, defining the setup for servients, environments, and things.
 export const CONFIG = "./src/configuration/configMuseum.json";
@@ -11,4 +11,3 @@ export const ENV_MODEL = "../thing-implementation/environments/museum/";
 
 inizializeServer();
 
-        

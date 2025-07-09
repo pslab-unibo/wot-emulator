@@ -1,6 +1,6 @@
 import Servient from "@node-wot/core";
 import { Museum } from "../../environments/museum/Museum";
-import { SituatedThing } from "../../SituatedThing";
+import { SituatedThing } from "../../../library/SituatedThing";
 
 // Define an abstract class that extends SituatedThing. This will serve as a base class for all things in the museum.
 export abstract class MuseumThing extends SituatedThing<Museum> {

@@ -1,5 +1,5 @@
-import { CONFIG } from "../main";
-import { Thing } from "../thing-implementation/Thing";
+import { CONFIG } from "../../example/main";
+import { Thing } from "../things/Thing";
 import * as fs from 'fs';
 import slugify from 'slugify';
 
