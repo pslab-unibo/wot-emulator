@@ -1,16 +1,22 @@
 import Servient from "@node-wot/core";
 import { Thing } from "./Thing";
+import { EventQueue } from "../simulation/EventQueue";
 
-// Abstract class that extends Thing, representing a Thing situated in a specific environment (EnvType)
+/**
+ * Abstract class representing a Situated Thing.
+ * This class extends the Thing class and adds functionality for a Thing that is situated in a specific environment.
+ * EnvType is a generic type that represents the environment the Thing interacts with (a subclass of Thing).
+ */
 export abstract class SituatedThing<EnvType extends Thing> extends Thing{
     
     protected environment : EnvType; // Property to store the environment the Thing is situated in (EnvType)
 
-    constructor(servient: Servient, init: WoT.ExposedThingInit, 
+    constructor(queue: EventQueue, 
+                servient: Servient, init: WoT.ExposedThingInit, 
                 initBase: WoT.ExposedThingInit = {}, 
                 environment : EnvType) {
                     
-        super(servient, init, initBase);
+        super(queue, servient, init, initBase);
         this.environment = environment;
     }
 

@@ -1,7 +1,6 @@
 import { Thing } from "../things/Thing";
-import { eventQueue } from "./EventQueue";
-import { PeriodicThing } from "../things/PeriodicThing";
-import { generateJson, generatePatch, generateUri } from "../utils/jsonUtils";
+import { generateJson, generatePatch } from "../utils/jsonUtils";
+import { EventQueue } from "./EventQueue";
 
 // Define scheduler states as an enum for better type safety
 enum SchedulerState {
@@ -16,13 +15,15 @@ export class Scheduler {
     private period: number;         // The interval (in milliseconds) for periodic updates
     private environment? : Thing;
     private things: Thing[] = [];   // Array of Things managed by the scheduler
+    private eventQueue: EventQueue; // Event queue for processing events
 
     private currentThingState : any[] = [];      
 
     private state: SchedulerState = SchedulerState.STOPPED; // Current state of the scheduler
 
-    constructor(period: number) {
+    constructor(period: number, queue: EventQueue) {
         this.period = period;
+        this.eventQueue = queue;
     }
 
     public getEnvironment() {
@@ -83,7 +84,7 @@ export class Scheduler {
                 let currentTime: number = Date.now();
                 let deltaTime = currentTime - previousTime;
                 // Processes queued events asynchronously
-                await eventQueue.processQueue();
+                await this.eventQueue.processQueue();
 
                 // Update environment
                 if(this.environment) {
@@ -134,7 +135,7 @@ export class Scheduler {
 
     // Cleans up resources used by the scheduler.
     private async cleanup(): Promise<void> {
-        eventQueue.clearQueue();
+        this.eventQueue.clearQueue();
         this.environment = undefined;
         this.things = [];
     }

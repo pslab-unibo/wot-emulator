@@ -1,28 +1,28 @@
+export type SimulationEvent = {
+  handler: EventHandler,
+  priority: number,
+}
+
+type QueuedEvent = {
+  handler: EventHandler,
+  priority: number,
+  timestamp: number
+}
+
 type EventHandler = () => Promise<void>; 
 
 // Class managing a queue of events
-class EventQueue {
+export class EventQueue {
   
-    private eventQueue: Array<{
-        handler: EventHandler,
-        priority: number,
-        timestamp: number
-    }> = [];  
+    private eventQueue: QueuedEvent[] = [];  // Array to hold queued events
 
     /**
      * Adds a new event to the queue with an optional priority.
      * Events are automatically sorted by priority and timestamp (FIFO for same priority).
      */
-    public enqueueEvent(
-        handler: EventHandler, 
-        priority: number = 1
-    ) : void{
+    public enqueueEvent(event : SimulationEvent) : void{
       // Add the new event to the queue
-      this.eventQueue.push({
-          handler,
-          priority,
-          timestamp: Date.now()
-      });
+      this.eventQueue.push({...event, timestamp: Date.now()});
       
       // Sort the queue by priority (descending) and timestamp (ascending for same priority)
       this.eventQueue.sort((a, b) => {
@@ -40,7 +40,6 @@ class EventQueue {
         }
 
         try {
-
           // Remove the first event from the queue and execute its handler
           const event = this.eventQueue.shift();
           if (event) {
@@ -60,5 +59,3 @@ class EventQueue {
         this.eventQueue = []; 
     }
 }
-
-export const eventQueue = new EventQueue();

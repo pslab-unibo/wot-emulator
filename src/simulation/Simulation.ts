@@ -2,6 +2,7 @@ import { Configuration, EnvironmentConfiguration, ThingConfiguration } from "./c
 import { ServientManager } from "./ServientManager";
 import { Scheduler } from "./Scheduler";
 import { Thing } from "../things/Thing";
+import { EventQueue } from "./EventQueue";
 
 /**
  * Simulation class orchestrates the WoT simulation by managing servients, environments, and things.
@@ -12,9 +13,10 @@ export class Simulation {
     private servientManager: ServientManager;
     private scheduler: Scheduler;
     private config: Configuration
+    private eventQueue: EventQueue = new EventQueue(); // Create a new event queue instance
 
     constructor(config: Configuration){
-        this.scheduler = new Scheduler(config.period);
+        this.scheduler = new Scheduler(config.period, this.eventQueue);
         this.servientManager = new ServientManager(config.servients);
         this.config = config;
     }
@@ -36,7 +38,7 @@ export class Simulation {
             //load environment and instantiate it
             const servient = this.servientManager.getServient(config.servient);
             const envModule = await import(fullPath);
-            const environment = envModule.create(servient, config.data);
+            const environment = envModule.create(this.eventQueue, servient, config.data);
 
             //add environment to the simulation and expose it
             this.scheduler.addEnvironment(environment);
@@ -56,7 +58,10 @@ export class Simulation {
             //load thing and instantiate it
             const servient = this.servientManager.getServient(config.servient);
             const thingModule = await import(fullPath);
-            const thing = config.situated ? thingModule.create(servient, config.data, environment) : thingModule.create(servient, config.data);
+            const thing = config.situated ? 
+                thingModule.create(this.eventQueue, servient, config.data, environment) 
+                : 
+                thingModule.create(this.eventQueue, servient, config.data);
 
             //add thing to the simulation and expose it
             this.scheduler.addThing(thing);

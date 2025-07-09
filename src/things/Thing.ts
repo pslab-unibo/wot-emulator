@@ -1,4 +1,5 @@
 import { ExposedThing, Servient } from "@node-wot/core";
+import { EventQueue, SimulationEvent } from "../simulation/EventQueue";
 
 
 
@@ -6,8 +7,11 @@ import { ExposedThing, Servient } from "@node-wot/core";
 export abstract class Thing {
 
     protected thing: ExposedThing;                  // ExposedThing instance representing the Thing              
+    private queue: EventQueue;
 
-    constructor(servient: Servient, 
+    constructor(
+                queue: EventQueue,
+                servient: Servient, 
                 init: WoT.ExposedThingInit, 
                 initBase: WoT.ExposedThingInit = {}) {
 
@@ -17,7 +21,7 @@ export abstract class Thing {
             ...initBase,
             ...init
         } as WoT.ExposedThingInit;
-
+        this.queue = queue;
         this.thing = new ExposedThing(servient, fullInit);
     }
 
@@ -37,6 +41,14 @@ export abstract class Thing {
      * Defines the specific behavior of the Thing during updates.
      */
     public abstract update(deltaTime: number): void;
+
+    /**
+     * Enqueues a simulation event to be processed later
+     * @param event 
+     */
+    protected enqueueSimulationEvent(event : SimulationEvent) {
+        this.queue.enqueueEvent(event);
+    }
 
     // Configures the properties of the Thing based on the provided initialization
     protected configureProperties(init: WoT.ExposedThingInit): void {

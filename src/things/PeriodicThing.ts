@@ -1,23 +1,25 @@
 import { Servient } from "@node-wot/core";
 import { SituatedThing } from "./SituatedThing";
 import { Thing } from "./Thing";
+import { EventQueue } from "../simulation/EventQueue";
 
-import * as fs from 'fs';
-
-// Abstract class that extends SituatedThing and adds periodic behavior for the Thing
-// EnvType is a generic type that represents the environment the Thing interacts with (a subclass of Thing).
+/**
+ * Abstract class representing a periodic Thing
+ * This class extends SituatedThing and provides functionality for periodic updates.
+ */
 export abstract class PeriodicThing<EnvType extends Thing> extends SituatedThing<EnvType> {
 
     protected period : number;   // Property to store the period value (time interval for periodic updates)   
     protected lastUpdateTime: number = 0;  
 
-    constructor(servient: Servient, 
+    constructor(queue: EventQueue,
+                servient: Servient, 
                 init: WoT.ExposedThingInit, 
                 initBase: WoT.ExposedThingInit = {}, 
                 environment : EnvType,
                 period : number) {
 
-        super(servient, init, initBase, environment);
+        super(queue, servient, init, initBase, environment);
         this.period = period; 
     }
     
@@ -34,6 +36,10 @@ export abstract class PeriodicThing<EnvType extends Thing> extends SituatedThing
         }
     }
 
-    public abstract triggerPeriodicBehaviour(): void; // Abstract method to be implemented by subclasses for specific update behavior
+    /**
+     * Abstract method to be implemented by subclasses.
+     * Defines the specific behavior triggered every period.
+     */
+    public abstract triggerPeriodicBehaviour(): void; 
     
 }
