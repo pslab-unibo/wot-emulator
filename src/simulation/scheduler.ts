@@ -1,6 +1,6 @@
-import { Thing } from "../things/Thing";
+import { Thing } from "../thing-models/thing";
 import { generateJson, generatePatch } from "../utils/jsonUtils";
-import { EventQueue } from "./EventQueue";
+import { EventQueue } from "./event-queue";
 
 // Define scheduler states as an enum for better type safety
 enum SchedulerState {

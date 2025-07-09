@@ -1,6 +1,6 @@
 import Servient from "@node-wot/core";
-import { Thing } from "./Thing";
-import { EventQueue } from "../simulation/EventQueue";
+import { Thing } from "./thing";
+import { EventQueue } from "../simulation/event-queue";
 
 /**
  * Abstract class representing a Situated Thing.

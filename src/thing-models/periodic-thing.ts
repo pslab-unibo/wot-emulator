@@ -1,7 +1,7 @@
 import { Servient } from "@node-wot/core";
-import { SituatedThing } from "./SituatedThing";
-import { Thing } from "./Thing";
-import { EventQueue } from "../simulation/EventQueue";
+import { SituatedThing } from "./situated-thing";
+import { Thing } from "./thing";
+import { EventQueue } from "../simulation/event-queue";
 
 /**
  * Abstract class representing a periodic Thing

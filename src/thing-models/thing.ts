@@ -1,7 +1,5 @@
 import { ExposedThing, Servient } from "@node-wot/core";
-import { EventQueue, SimulationEvent } from "../simulation/EventQueue";
-
-
+import { EventQueue, SimulationEvent } from "../simulation/event-queue";
 
 // Abstract class representing a Thing in the Web of Things (WoT)
 export abstract class Thing {

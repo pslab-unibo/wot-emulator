@@ -1,4 +1,4 @@
-import { Thing } from "../things/Thing";
+import { Thing } from "../thing-models/thing";
 import * as fs from 'fs';
 import slugify from 'slugify';
 
@@ -45,33 +45,33 @@ export function generatePatch(json1: any[], json2: any[]) {
     return patch;
 }
 
-// Function to generate URIs for all things, using information from configuration
-export function generateUri() {
-    // Read and parse the configuration file
-    const init = JSON.parse(fs.readFileSync(CONFIG, 'utf8'));
+// // Function to generate URIs for all things, using information from configuration
+// export function generateUri() {
+//     // Read and parse the configuration file
+//     const init = JSON.parse(fs.readFileSync(CONFIG, 'utf8'));
     
-    // Combine the lists of environments and things into one array
-    const things = [...init.environments, ...init.things];
-    const servients = init.servients;
-    const data = []; // Store the generated URLs
+//     // Combine the lists of environments and things into one array
+//     const things = [...init.environments, ...init.things];
+//     const servients = init.servients;
+//     const data = []; // Store the generated URLs
 
-    // Create a map of servients by their ID, including host, port, and type
-    const servientsMap = new Map();
-    for (const item of servients) {
-        servientsMap.set(item.id, { host: item.host, port: item.port, type: item.type });
-    }
+//     // Create a map of servients by their ID, including host, port, and type
+//     const servientsMap = new Map();
+//     for (const item of servients) {
+//         servientsMap.set(item.id, { host: item.host, port: item.port, type: item.type });
+//     }
 
-    // Generate a URI for each thing, based on its associated servient
-    for (const thing of things) {
-        const id = thing.servient ? thing.servient : Array.from(servientsMap.keys())[0];
-        if (id !== undefined) {
-            const servient = servientsMap.get(id);
-            const url = servient.type + '://' + servient.host + ':' + servient.port + '/' + slugify(thing.title, {lower: true});
+//     // Generate a URI for each thing, based on its associated servient
+//     for (const thing of things) {
+//         const id = thing.servient ? thing.servient : Array.from(servientsMap.keys())[0];
+//         if (id !== undefined) {
+//             const servient = servientsMap.get(id);
+//             const url = servient.type + '://' + servient.host + ':' + servient.port + '/' + slugify(thing.title, {lower: true});
             
-            // Store the generated URL, along with the Thing's title and type
-            data.push({"title": thing.title, "type": thing.type, "URI": url});
-        } 
-    }
+//             // Store the generated URL, along with the Thing's title and type
+//             data.push({"title": thing.title, "type": thing.type, "URI": url});
+//         } 
+//     }
 
-    return data;
-}
+//     return data;
+// }

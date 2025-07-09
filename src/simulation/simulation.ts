@@ -1,8 +1,8 @@
-import { Configuration, EnvironmentConfiguration, ThingConfiguration } from "./configuration";
-import { ServientManager } from "./ServientManager";
-import { Scheduler } from "./Scheduler";
-import { Thing } from "../things/Thing";
-import { EventQueue } from "./EventQueue";
+import { Configuration, EnvironmentConfiguration, ThingConfiguration } from "../configuration";
+import { ServientManager } from "./servient-manager";
+import { Scheduler } from "./scheduler";
+import { Thing } from "../thing-models/thing";
+import { EventQueue } from "./event-queue";
 
 /**
  * Simulation class orchestrates the WoT simulation by managing servients, environments, and things.

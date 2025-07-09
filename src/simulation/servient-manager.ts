@@ -1,4 +1,4 @@
-import { ServientConfiguration, ServientType } from './configuration';
+import { ServientConfiguration, ServientType } from '../configuration';
 import { Servient} from '@node-wot/core';
 import { HttpConfig, HttpServer } from '@node-wot/binding-http';
 import { MqttBrokerServer, MqttBrokerServerConfig } from '@node-wot/binding-mqtt';
