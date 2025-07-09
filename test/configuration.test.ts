@@ -1,4 +1,4 @@
-import { Configuration, ServientType } from "../dist/configuration";
+import {Configuration, ServientType} from "../src"
 
 
 test("I can create a configuration", () => {
