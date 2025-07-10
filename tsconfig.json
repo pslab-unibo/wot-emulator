@@ -11,6 +11,6 @@
     "moduleResolution": "node",                 
     "types": ["node", "jest"]                           // Include i tipi di Node.js
   },
-  "include": ["src/**/*"],                      
+  "include": ["src/**/*", "src/configuration"],                      
   "exclude": ["node_modules"]                   
 }

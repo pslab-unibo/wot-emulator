@@ -7,19 +7,18 @@ import { EventQueue } from "../simulation/event-queue";
  * Abstract class representing a periodic Thing
  * This class extends SituatedThing and provides functionality for periodic updates.
  */
-export abstract class PeriodicThing<EnvType extends Thing> extends SituatedThing<EnvType> {
+export abstract class PeriodicSituatedThing<EnvType extends Thing> extends SituatedThing<EnvType> {
 
     protected period : number;   // Property to store the period value (time interval for periodic updates)   
     protected lastUpdateTime: number = 0;  
 
     constructor(queue: EventQueue,
                 servient: Servient, 
-                init: WoT.ExposedThingInit, 
-                initBase: WoT.ExposedThingInit = {}, 
+                td: WoT.ExposedThingInit, 
                 environment : EnvType,
                 period : number) {
 
-        super(queue, servient, init, initBase, environment);
+        super(queue, servient, td, environment);
         this.period = period; 
     }
     

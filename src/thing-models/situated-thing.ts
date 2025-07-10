@@ -12,11 +12,11 @@ export abstract class SituatedThing<EnvType extends Thing> extends Thing{
     protected environment : EnvType; // Property to store the environment the Thing is situated in (EnvType)
 
     constructor(queue: EventQueue, 
-                servient: Servient, init: WoT.ExposedThingInit, 
-                initBase: WoT.ExposedThingInit = {}, 
+                servient: Servient,
+                td: WoT.ExposedThingInit, 
                 environment : EnvType) {
                     
-        super(queue, servient, init, initBase);
+        super(queue, servient, td);
         this.environment = environment;
     }
 

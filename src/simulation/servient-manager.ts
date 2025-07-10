@@ -1,4 +1,4 @@
-import { ServientConfiguration, ServientType } from '../configuration';
+import { ServientConfiguration, ServientType } from '../configuration/types';
 import { Servient} from '@node-wot/core';
 import { HttpConfig, HttpServer } from '@node-wot/binding-http';
 import { MqttBrokerServer, MqttBrokerServerConfig } from '@node-wot/binding-mqtt';
@@ -25,17 +25,19 @@ export class ServientManager {
     }
 
     public async start() {
-        await Promise.all(
-            Array.from(this.servients.values())
-                .map(async (servient) => { servient.start()})
-        )
+        let promises : Promise<any>[] = [];
+        for (const [id, servient] of this.servients) {
+            promises.push(servient.start());
+        }
+        await Promise.all(promises);
     }
 
     public async stop() {
-        await Promise.all(
-            Array.from(this.servients.values())
-                .map(async (servient) => { servient.shutdown()})
-        )
+        let promises : Promise<any>[] = [];
+        for (const [id, servient] of this.servients) {
+            promises.push(servient.shutdown());
+        }
+        await Promise.all(promises);
     }
 
     public getServient(id: string): Servient {
@@ -45,5 +47,4 @@ export class ServientManager {
         }
         throw new Error(`Servient with id ${id} not found`);
     }
-
 }
