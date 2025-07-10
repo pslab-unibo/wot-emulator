@@ -1,6 +1,6 @@
 import { Servient } from "@node-wot/core";
 import { SituatedThing } from "./situated-thing";
-import { Thing } from "./thing";
+import { Property, Thing } from "./thing";
 import { EventQueue } from "../simulation/event-queue";
 
 /**
@@ -16,9 +16,10 @@ export abstract class PeriodicSituatedThing<EnvType extends Thing> extends Situa
                 servient: Servient, 
                 td: WoT.ExposedThingInit, 
                 environment : EnvType,
+                state: Map<string, Property<any>>,
                 period : number) {
 
-        super(queue, servient, td, environment);
+        super(queue, servient, td, environment, state);
         this.period = period; 
     }
     

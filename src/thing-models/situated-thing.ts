@@ -1,5 +1,5 @@
 import Servient from "@node-wot/core";
-import { Thing } from "./thing";
+import { Property, Thing } from "./thing";
 import { EventQueue } from "../simulation/event-queue";
 
 /**
@@ -14,9 +14,10 @@ export abstract class SituatedThing<EnvType extends Thing> extends Thing{
     constructor(queue: EventQueue, 
                 servient: Servient,
                 td: WoT.ExposedThingInit, 
-                environment : EnvType) {
+                environment : EnvType,
+                state: Map<string, Property<any>>) {
                     
-        super(queue, servient, td);
+        super(queue, servient, td, state);
         this.environment = environment;
     }
 

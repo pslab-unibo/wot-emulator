@@ -1,19 +1,28 @@
-import { ExposedThing, Servient } from "@node-wot/core";
+import { ExposedThing, ProtocolHelpers, Servient } from "@node-wot/core";
 import { EventQueue, SimulationEvent } from "../simulation/event-queue";
+import { Property } from "./property";
+import { ok } from "../utils";
+import { PropertyElement } from "wot-thing-description-types";
+
+
 
 // Abstract class representing a Thing in the Web of Things (WoT)
 export abstract class Thing {
-
-    protected thing: ExposedThing;                  // ExposedThing instance representing the Thing              
+    private thing: ExposedThing;                  // ExposedThing instance representing the Thing              
     private queue: EventQueue;
     private servient: Servient; 
+    private state : Map<string, Property<any>>
 
-    constructor(queue: EventQueue, servient: Servient, td: WoT.ExposedThingInit) {
+    constructor(queue: EventQueue, servient: Servient, td: WoT.ExposedThingInit, state: Map<string, Property<any>>) {
         this.queue = queue;
         this.servient = servient;
         this.thing = new ExposedThing(servient, {
             "@context": "https://www.w3.org/2019/wot/td/v1",
             ...td,
+        });
+        this.state = state;
+        this.state.forEach((property, name) => {
+            this.setPropertyHandlers(name, property);
         });
     }
 
@@ -43,6 +52,37 @@ export abstract class Thing {
      */
     protected enqueueSimulationEvent(event : SimulationEvent) {
         this.queue.enqueueEvent(event);
+    }
+
+    protected setProperty<T>(name: string, value: T) {
+
+    }
+
+    protected setPropertyHandlers(name: string, property: Property<WoT.DataSchemaValue>) {
+        const tdProp = this.thing.properties[name]
+        if(!tdProp) {
+            throw new Error(`Property '${name}' is not defined in the Thing Description.`);
+        }
+
+        if(!tdProp.writeOnly){
+            this.thing.setPropertyReadHandler(name, async () => property.getValue())
+        }
+
+        if (!tdProp.readOnly) {
+            this.thing.setPropertyWriteHandler(name, async (newValue) => property.setValue(newValue))
+        }
+
+        if(tdProp.observable) {
+            let handler = () => this.thing.emitPropertyChange(name)
+            this.thing.setPropertyObserveHandler(name, async () => {
+                    property.observe(handler);
+                    return ok()
+                })
+                .setPropertyUnobserveHandler(name, async () => {
+                    property.unobserve();
+                    return ok()
+                })
+        }
     }
 
     // // Configures the properties of the Thing based on the provided initialization
@@ -153,3 +193,5 @@ export abstract class Thing {
     // }
     
 }
+
+export { Property };
